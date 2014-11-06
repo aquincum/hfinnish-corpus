@@ -1,0 +1,1000 @@
+Rhapsody pohjautui suoraan OpenStepin versioon 4.2 .
+Sen sijaan ,  että Rhapsodyn versionumerointi olisi alkanut ykkösestä ,  se jatkoi siitä ,  mihin OpenStepin numerointi loppui .
+OpenStep-pohjansa ansiosta Rhapsodyssä oli muunnellun Mach-kernelin ja UC Berkeleyssä kehitetyn BSD : n muodostama ydin .
+Tämä ydin mahdollisti sen ,  että Mac OS : stä poiketen Rhapsody tuki keskeyttävää moniajoa sekä muistinsuojausta ,  jonka ansiosta yhden ohjelman häiriötoiminta ei voinut ajaa koko järjestelmää alas .
+OpenStepin ja Rhapsodyn Workspace Manager -ohjelmat Intel Pentium -pohjaisella tietokoneella Koska Rhapsody perustui täysin uuteen järjestelmäpohjaan ,  vanhat ohjelmat eivät toimineet sillä .
+Rhapsodyn kehityksen alkuvaiheessa oli puhuttu emulaattori-ikkunasta ,  jossa vanhat ohjelmat toimisivat .
+Applen asiakkaat olivat kuitenkin ilmaisseet ,  ettei heille kelpaisi emulaattori-ikkuna ,  vaan vanhojen Mac-ohjelmien tulisi toimia sujuvasti uusien ohjelmien seassa .
+Niinpä Applen esittelymateriaalien mukaan Rhapsodystä oli määrä julkaista kaksi versiota ,  Rhapsody sekä Rhapsody Unified ,  joista jälkimmäinen sisältäisi Allegro-koodinimellä kulkeneen Mac OS -version kokonaisuudessaan .
+Allegron avulla Rhapsodyn päällä voitaisiin ajaa vanhoja Mac OS -ohjelmia ilman varsinaista emulointia .
+Tämä yhteensopivuuskerros kulki tuolloin nimellä Blue Box .
+Rhapsodyn käyttöliittymä perustui pitkälti Platinum-ulkoasuun ,  jota Coplandin kehitysversiot olivat käyttäneet ,  joskin ikkunoiden kehyksiä ja painikkeita oli tummennettu .
+Ulkoasun nimeksi ilmoitettiin jokseenkin mielikuvitukseton ”Dark Platinum” .
+Applen käyttöliittymäyksikön mukaan vanhan Mac OS -tuntuman sovittaminen mahdollisimman muuttumattomana uuteen käyttöjärjestelmään oli ollut Rhapsodyn käyttöliittymän päätavoite .
+Tilanteissa ,  joissa OpenStepin ja Mac OS : n käyttöliittymäratkaisujen välillä oli ristiriitaa ,  oli lähes poikkeuksetta käytetty Mac OS : n ratkaisuja .
+OpenStep-tyyppisiä käytäntöjä oli sovellettu pääasiassa vain ,  jos Mac OS : stä ei löytynyt vastinetta jollekin OpenStepin toiminnolle .
+Eräs tällainen poikkeus oli mahdollisuus sulkea tai minimoida aktiivisen ikkunan takana olevia ikkunoita ja manipuloida niiden painikkeita ja muita kohteita .
+OpenStep-rungon ansiosta Rhapsodystä on olemassa myös Intel-prosessoreilla toimiva versio ,  joka on toiminnoiltaan identtinen PowerPC-version kanssa .
+Rhapsodyn OpenStepiin perustuvien kehittäjätyökalujen ansiosta sekä Intel-prosessoreilla että PowerPC : illä toimivien ohjelmien kehittäminen oli vaivatonta .
+Työkaluilla voitiin tuottaa ohjelmia ,  jotka sisälsivät molempien prosessorityyppien vaatimat resurssit .
+Demonstroidakseen tätä ominaisuutta Apple oli päivittänyt Mac OS : n vanhan Tarralaput-ohjelman Yellow Box -pohjaiseksi .
+Sama päivitetty Tarralaput-ohjelma toimitetaan nykyään Mac OS X : n mukana .
+Mac OS X : n Tarralaput-ohjelma perustuu tähän Rhapsodyn Yellow Box -pohjaiseen ohjelmaan ,  joka puolestaan perustuu vanhan Mac OS : n Tarralaput-ohjelmaan Vuoden 1997 aikana Mac OS -kehitysyksiköstä siirtyi runsaasti väkeä työskentelemään Rhapsody-projektin parissa ,  mutta Mac OS : n kehitys jatkui .
+Myöhemmin samana vuonna Apple julkaisi Mac OS 8.0 : n ,  joka sisälsi monia jo haudatusta Coplandista pelastettuja ominaisuuksia ja visuaalisia elementtejä ,  esimerkiksi Platinum-ulkoasun .
+Mac OS 8.0 : n saavuttua markkinoille Apple alkoi kaavailla Yellow Box -ohjelmistokehyksen sovitusta vanhaan Mac OS : iin valmistellakseen siirtymistä NeXTSTEP-pohjaiseen järjestelmään ja mahdollistaakseen Yellow Box -ohjelmien kehityksen uudelle käyttöjärjestelmälle jo ennakkoon .
+Yellow Boxin oli määrä saapua Mac OS : iin viimeistään Allegro-projektin eli Mac OS 8.2 : n myötä .
+Toukokuussa 1998 pidetyssä Worldwide Developers Conferencessa  ( WWDC )  tuolloin edelleen titteliä Interim CEO käyttänyt Jobs kertoi Mac OS -kehittäjille Applen uudesta kaksihaaraisesta käyttöjärjestelmästrategiasta ,  jonka mukaan Mac OS ja Rhapsody ,  jonka viralliseksi nimeksi ilmoitettiin Mac OS X ,  tulisivat olemaan yhtäaikaisesti jakelussa noin vuoden Mac OS X : n julkaisun jälkeen .
+Mac OS X ,  jonka nimen oli tarkoitus viestiä järjestelmän UNIX-perustasta ,  tulisi jakeluun vuoden 1999 syksyllä .
+Myöhemmin vuonna 1998 Apple julkaisi Allegron ,  jonka versionumero oli vaihdettu Mac OS 8.2 : sta Mac OS 8.5 : ksi .
+Se toi vanhaan Mac OS : iin lisää Copland-tyylisiä ominaisuuksia ,  kuten esimerkiksi teemamanagerin ,  joka osasi lukea Coplandin teematiedostoja .
+Teematiedostoja ei kuitenkaan toimitettu lopullisen Mac OS 8.5 : n mukana ,  vaikka Mac OS 8.5 : n betaversioiden mukana oli toimitettu Coplandin Gizmo- ja Hi-Tech-teemat .
+Aiemmin kaavaillun Yellow Box -tuen sijaan 8.5 : ssä oli valmisteleva tuki uudelle Carbon API : lle ,  joka oli virtaviivaistettu versio Mac OS : n perinteisestä Mac Toolbox -ohjelmakehyksestä .
+Carbon oli suunniteltu auttamaan vanhanmallisten ohjelmien siirtämisessä Mac OS X : een .
+Apple kertoi Carbonin olevan olemassa lähinnä siksi ,  että vanhat ohjelmat saataisiin nopeasti Mac OS X : lle ,  ja että Yellow Box oli se ohjelmistokehys ,  jonka varaan uudet Mac OS X -ohjelmat rakennettaisiin .
+Carbon oli Yellow Boxiin nähden uusi idea .
+Gil Amelio ,  joka toimi Applen toimitusjohtajana NeXT-yritysoston aikaan ,  oli esittänyt ,  että Rhapsody-strategian osana kaikki ohjelmat käännettäisiin Yellow Box -ohjelmiksi .
+Amelion erottua ja Jobsin noustua toimitusjohtajaksi Apple aloitti Carbon-projektin ,  koska oli epärealistista odottaa kehittäjien voivan nopeasti kääntää projektinsa Yellow Boxiin ,  etenkin kun Objective-C : hen perustuva Yellow Box ei ollut yhtä yhteensopiva muiden alustojen ohjelmakehysten kanssa kuin Mac Toolbox ,  johon Carbon perustui .
+Yellow Box -keskeisyys olisi merkinnyt heikentynyttä tukea esim. Adobelta ja Microsoftilta ,  ja tähän ei Applella ollut varaa .
+Rhapsody ei ollut Applen ensimmäinen UNIX-projekti .
+Kuvassa A / UX ,  joka yhdisti System 7 : n ja UNIXin Apple aloitti vuoden 1999 julkaisemalla Mac OS X Server 1.0 : n .
+Se oli Applen historian toinen palvelinkäyttöjärjestelmä ,  ensimmäinen sitten 68K-pohjaisille Macintosheille suunnitellun A / UX : n .
+Mac OS X Server 1.0 oli käytännössä uudelleennimetty Rhapsody aina Rhapsodystä tuttua Dark Platinum -ulkoasua myöten .
+Mac OS X Serverin ytimen versionumero 5.5 jatkoi Rhapsodyn ja OpenStepin versionumerointia .
+Maaliskuun 16. päivänä Apple ilmoitti julkaisevansa tämän ytimen avoimena lähdekoodina ,  nimellä Darwin .
+Sillä välin työasemiin ja kotikäyttöön suunnattua Mac OS X : n perusversiota vaivasivat lukemattomat kehitystyön myöhästelyt etenkin Blue Box -ympäristön kehitystyön vaikeuksista johtuen .
+Kahden samanaikaisesti ajettavan käyttöjärjestelmän välisen yhteistoiminnan toteuttaminen osoittautui odotettua vaikeammaksi .
+Mac OS X Client 1.0 : n oli määrä tulla jakeluun myöhemmin vuonna 1999 ,  mutta julkaisu viivästyi .
+Vuoden 2000 tammikuussa CEO Steve Jobs kertoi ,  että Mac OS X : n perusversion betavaihe oli alkamaisillaan ,  ja että uusi käyttöjärjestelmä tulisi jakeluun kesällä 2000 .
+Veden solinaa ja kaakaon tuoksua Vuoden 2000 alussa nähtiin ensi kertaa Mac OS X : n Aqua-ulkoasu .
+Mac OS X Developer Preview 3 oli luonut Rhapsodymaisen nahkansa ,  ja tilalla oli läpinäkyvyyksillä ja animaatioilla höystetty ulkoasu ,  joka peitti alleen muunmuassa Darwin 5.5 : n .
+Apple oli päättänyt hylätä Rhapsody-projektin käyttöliittymäyksikön pyrkimyksen tehdä uudestä järjestelmästä Mac OS 8 : n näköinen ja tuntuinen ,  ja yritti Aquan kautta luoda jotain näyttävämpää ja mahdollisesti parempaa .
+Aquan myötä UNIX-tyylinen hakemistorakenne bin- ja lib-tyyppisine hakemistonimineen oli piilotettu ,  tilalla oli selkeästi nimettyjä kansioita kuten Applications ja Users .
+OmniWeb ,  entinen OpenStep-ohjelma ,  nykyinen Mac OS X -ohjelma OpenStep-spesifikaation mukainen Yellow Box -ohjelmaympäristö kulki nyt nimellä Cocoa .
+Uudella nimellä viestittiin Cocoan uudesta luonteesta :  Cocoa-ohjelmia saattoi nyt tuottaa paitsi Objective-C : llä ,  myös Javalla  ( kyseessä on sanaleikki :  Java-nimi viittaa kahvilaatuun ,  kun taas Cocoa-sana viittaa kaakaoon )  .
+Cocoaa esiteltiin muunmuassa entisellä OpenStep-ohjelmalla ,  OmniWebillä ,  josta tuli samalla Mac OS X : n ensimmäinen WWW-selain .
+Samassa yhteydessä esiteltiin Carbon-ohjelmia ,  jotka toimivat muutoksitta sekä Mac OS 8.6 : ssa että Mac OS X DP3 : ssa .
+Carbonin ja Cocoan kerrottiin käyttävän Mac OS X : llä yhteisiä järjestelmätason palveluja ,  kuten ikkunointia ja muistinhallintaa .
+Sen sijaan Blue Box ,  jonka nimeksi oli vakiintunut Classic ,  käyttäisi ohjelmineen yksinomaan vanhan Mac OS : n järjestelmäpalveluja .
+Mac OS X DP3 : een mennessä Apple oli muuttanut politiikkaansa Carbonin suhteen .
+Siinä missä yhtiö oli aiemmin kertonut Carbonin olevan vain pikaisia vanhojen ohjelmien Mac OS X -päivityksiä varten ,  markkinoitiin Carbonia nyt Cocoan kanssa ”tasa-arvoisena Mac OS X -kansalaisena” .
+Tätä sanomaa levittääkseen Apple oli päättänyt pitää Finder-tiedostoselaimen Carbon-pohjaisena .
+Seuraava askel Toukokuussa 2000 pidetyssä Wordwide Developers Conferencessa ,  jossa Applen oli aiemman ilmoituksensa mukaan määrä julkaista Mac OS X ,  uuden käyttöjärjestelmän julkaisuajankohdaksi ilmoitettiin tammikuu 2001 .
+Ohjelmiston julkisen betaversion oli määrä tulla jakeluun myöhemmin kesällä 2000 ,  mutta sen julkaisu viivästyi syyskuuhun .
+Tammikuun 2001 MacWorld-messuilla Jobs kertoi ,  että julkaisua on lykätty vielä kerran ,  ja että Mac OS X julkaistaisiin vihdoin maaliskuun 24. päivänä .
+Mac OS X todellakin saapui jakeluun vihdoin 24.3.2001 .
+Se osoittautui kuitenkin vielä keskeneräiseksi laitokseksi .
+Versio 10.0 oli hidas ,  käyttöliittymältään jokseenkin kömpelö ,  eikä sillä voinut polttaa CD-levyjä eikä katsella DVD-elokuvia ,  vaikka Mac OS X Serverin ja Mac OS X : n julkaisupäivien välisenä aikana jakeluun tulleessa Mac OS 9 : ssä nämä toiminnot olivat .
+Vuoden 2001 syyskuussa julkaistu Mac OS X versio 10.1 paikkasi tilannetta monilta osin ,  tuoden käyttöjärjestelmään paljon kaivattua nopeutta ja tuen CD- ja DVD-levyjen poltolle sekä DVD-ROM-toistolle .
+10.1 oli monien mielestä uuden järjestelmän ensimmäinen jokapäiväiseen käyttöön soveltuva versio .
+Mac OS X v10.2 korvaa Mac OS : n vanhan värivalitsimen OpenStepin väripaletilla Kuluvan vuoden elokuussa jakeluun tullut Mac OS X versio 10.2 ,  lempinimeltään Jaguar ,  on Darwin 6.0 -ytimineen nopeuttanut ja hienosäätänyt jo olemassaolevia toimintoja ja samalla lisännyt Mac OS : iin uusia ominaisuuksia .
+Samalla se on laajentanut Mac OS X : n OpenStep-komplianssia ja tuonut käyttöliittymään monia OpenStep-ratkaisuja ,  korvaten esimerkiksi vanhan Mac OS -värivalitsimen järjestelmänlaajuisesti OpenStep-tyylisellä väripaletilla .
+Mac OS X : n perusta mahdollistaa sen ,  että käyttöjärjestelmä voidaan kohtuullisen pienellä vaivalla kääntää esimerkiksi Intel-prosessoreille .
+1997 aloitettu Rhapsody-on-Intel -projekti on edelleen käynnissä Applen päämajan suojissa Cupertinossa ,  joskaan enää ei puhuta Rhapsodystä vaan Mac OS X : stä .
+Marklar-nimellä kulkeva projekti on analyytikoiden mukaan joko valmistautumista Macintosh-tietokoneiden proesessorin vaihtoon tai Mac OS X : n julkaisuun Intel-pohjaisille tietokoneille .
+Kuitenkin vain Apple itse varmuudella tietää ,  mihin Mac OS X on matkalla ,  ja Darwinin ja Cocoan avulla yhtiö voi suoda itselleen valinnanvaraa määränpäiden suhteen .
+d23 Laurin juttu upea ,  entä eteenpäin ?
+pasitoi  ( 29.12.2002 ,  17 : 53 )  Lauri Kieksin juttu  " Aske askeleelta - eli Mac OS X : n historia "  Macsanomsisa 29.12.2002 oli todella mielenkiintoinen ja seikkaperäinen kuvaus eräästä sykähdyttävästä ajanjaksosta tietotekniikan historiassa .
+Hienoa !
+Olen seurannut Applea noin 16 vuoden ajan sekavin tuntein .
+Käytän huvikseni ja työkseni Mac OS X 10.2 iBookissani ,  Windows XP : tä ja Linuxia Merocompissani .
+Uskoin aikoinaan Appleen ja Macceihin ,  mutta luottamukseeni on tullut säröjä viime aikoina .
+Surullista uskolliselle Apple-fanille .
+Applesta on tullut rikkaiden ja hyvinkoulutettujen ihmisten tietokone ,  mitä Macmaailmakin toi viimeisimmässä numerossaan selkeästi esille .
+Suuntautuminen tähän kohderyhmään pitää markkinaosuudet minimissä eli 5 %  : ssa .
+Me loput ,  tavalliset ihmiset ,  tyydymme suosiolla halvempiin Wintel-vaihtoehtoihin .
+Microsoft ja Intel ovat aina onneksi olleet pienituloistenkin ystäviä ja ymmärtäneet edistää päätöksillään edullisia kokoonpanoja .
+Integroidut ratkaisut iMaccien tavoin ovat voineet olla varsin näppäriä ja toimivia ratkaisuja amerikkalaisissa kouluissa ,  mutta Euroopassa ne ovat lähinnä suuria huoltoriskejä .
+Erillisiä näyttö ja keskusyksikköratkaisuja on Wintel-koneiden tavoin edullista laajentaa uusilla tuotteilla ja komponenteilla sekä huoltaa jopa omin käsin .
+Tehokäyttäjät arvostavat nykyisten PowerMaccien kaltaisia laitteita ,  mutta PC : n hinnoilla .
+Tällä hetkellä Macistit maksavat Applen laitteista ylimääräistä ,  mutta saavat vastineeksi vähemmän takuuta ,  vähemmän nopeutta ,  vähemmän laajennettavuutta kuin mitä perus Wintel-koneet tarjoavat .
+Ammattikäyttäjät maksavat PC-hinnaston mukaan koneistaan tuhdisti ekstraa tavallisiin kuluttajiin verrattuna .
+Onneksi ylläpitokulut jäävät sentään pääsääntöisesti alhaisemmiksi Maceissä .
+Uusimmat Pentium 4 : t näyttäisivät käytännössä jyräävän mennen tullen Power PC : t käytännössä .
+Applen olisikin lisättävä kuluttajamalleihin alennettu Power Mac-malli erillisine näyttöineen integroitujen eMacien tai iMacien rinnalle .
+Kannettavissa Apple on aina ollut vahva ja on edelleen !
+MacWorld Expo tammikuussa 2003 ei paranna ennustukseni mukaan tilannetta .
+Hintoja ei tarkisteta alaspäin eikä Mac OS X koe merkittäviä käyttöliittymäparannuksia .
+Olen vuosikaudet odottanut Windowsin ja Linuxin kaltaisia ulkoasu- ja kovalevynhallintaominaisuuksia myös Macosiin .
+Turhaan .
+Applen webbi-sivuilla kerätään palautetta ,  mutta johtaako se mihinkään ?
+Macit voivat olla ulospäin kauniita ja värikkäitä ,  mutta Macosin työpöydät ja ikkunat pysyvät vuodesta toiseen vain valkoisina perussovelluksissa .
+Valkoisen värin on todettu lääketieteessä rasittavan silmiä eniten .
+Sekä Windows- että Linux-kehittäjät ottivat tämän tosiasian nopeasti huomioon edistääkseen tietotyöläisten terveyttä monipuolisilla ulkoasuominaisuuksilla ,  mutta Apple haluaa taas ajatella liian pitkään eri tavoin .
+Kiitos Microsoft !
+Microsoftilla on paljon hyviä ideoita kopioitavaksi esim. Windows Explorer ,  Display Properties ja Administrative Toolsit .
+Pyörä on pyöreä kaikkialla riippumatta ,  kuka sen on keksinyt .
+Toivon RE : Laurin juttu upea ,  entä eteenpäin ?
+attenka  ( 30.12.2002 ,  12 : 46 )  3fb Samaa mieltä kuin Mr  " pasituu "  eli hieno kirjoitus vaikka osa asioista jäi luonnollisesti aika abstraktille tasolle .
+Olen myös samaa mieltä pasituun kanssa rauta-asioista .
+Tilauksessa on kaksi  " hitaahkoa "  P4-koostetta  ( 1,5 GHz )  ja tarkoitus on siirtyä vähitellen linux- ja Windows-puolelle juuri tuon raudan teho-hinta-suhteen vuoksi .
+Toki vanha Yikes ,  jolla nyt kirjoittelen tätä juttua ,  jää käyttöön ,  mutta kyllä nyt näyttää siltä ,  että Intel-linux-leiri vie voiton .
+MacOSX on ainoa syy käyttää PowerPC-rautaa ,  mutta linuxin kehittyessä ,  miksi maksaa niin paljon Motorola-raudasta ?
+Linux vie tarpeitteni kohdalla osin jo voiton OSX : stä .
+Esimerkkinä Canon usb-skanneriini tuli vihdoin tuki linuxiin ,  muttei vastaavaa näy OSX : n puolella .
+Samoin videoeditointi firewireineen on viimein alkanut toimia linuxissakin .
+Kun vielä saisi jotkin musiikkiohjelmat linux-puolelle ,  ei tarvitsisi enää vaihtaa välillä OSX : ään .
+Marklar-projekti antaa toivoa Applelle .
+En usko tähän Motorola-juttuun enää .
+fe4 Mikä marklar-projekti ?
+Marklar lkieksi  ( 30.4.2003 ,  13 : 19 )  Marklar on siis ihan yksinkertaisesti Mac OS X Intel-alustalla .
+Marklarin PC-laitetuki on rajattua ,  eikä Marklaria todennäköisesti tulla myymään tavallisiin PC-koneisiin .
+Mutta jos Apple joutuu vaihtamaan Intel-prosessoreihin ,  niin onpahan käyttöjärjestelmä valmiina .
+Nimi Maklar tulee muistaakseni South Parkin avaruusolioista ,  koska OS X on muukalainen Intel-perustaisella koneella ...
+Uutisarkisto Uudet uutiset www.fimug.fi  : ssä 30.7 .
+Macsanomat on palannut www.fimug.fi : hin 18.7 .
+MacRisteily 9.–11.9.2005 18.7. iTunes Music Store ylitti 500 miljoonaan myydyn kappaleen rajan 17.7 .
+Halon demoversio viimein Macille 17.7 .
+Graafinen käyttöliittymä podcastien luomiseen Tapahtumat 28.4 .
+InDesign-kurssi klo 10.00–16.00 5.5 .
+Mac-peruskurssi ,  Helsinki klo 10.00 10.5. fiMUG ry : n vuosikokous klo 18.00 12.5 .
+Mac-peruskurssi ,  Mikkeli klo 10.00 12.5 .
+Mac-kurssi ,  Oulu klo 10.00 Tilattavissa iCal : iin  [ fimug.fi ]  Arvostelut 12.5 .
+RadioShark – tietokone radioksi 21.4 .
+Elgato EyeTV 610 - Macista digitaalitelevisio 25.2. iLife '05 :  GarageBand 2 ja Jam Packit 6.5 .
+Pikatestissä Orthografix-oikoluku- ja tavutusohjelma 4.3 .
+GarageBand - taitavampi kuin moni kellaribändi Artikkelit 5.7 .
+Ohjelmistopatenteista Euroopan unionissa 3.7 .
+MacTohtorit-palsta 2005 # 02 31.5 .
+Tiikerin puutteet puhuttavat 19.2 .
+MacTohtorit-palsta 2005 # 01 7.1 .
+DOCEND 1088020716179643594260943184131578224313187 2679
+DOCSTART 1088020716179643594260943184131578224313187 2687
+2.3.TAAJAMA- JA KAUPUNKILUONTO Taajamaluonto on muutakin kuin vihreää Taajama- ja kaupunkiluonto muodostavat rikkaan kirjon erilaisia ympäristötyyppejä lähes luonnontilaisista voimakkaasti ihmisen muokkaamiin .
+Taajama- ja kaupunkiluonnossa ,  sen elinympäristöissä ja eliöpopulaatioissa toimivat samat luonnon kiertokulut kuin rakennetun alueen ulkopuolella .
+Nämä vaikuttavat taajamien eliöiden leviämiseen ,  esiintymisen ehtoihin ,  lisääntymiseen ja suhteisiin .
+Taajamia ja kaupunkeja ympäröivä luonto on myös kiinteässä vuorovaikutuksessa taajama- ja kaupunkiluonnon kanssa ,  eliöpopulaatioita häviää ja ilmestyy ,  leviää ja kukoistaa .
+Taajamassa on myös ihmistoiminnan synnyttämiä pienympäristöjä ,  esimerkiksi ruderaattialueita ,  joita ei ole muualla .
+Taajamaluonto antaa esimerkin kulttuurin ja luonnon vuorovaikutuksesta ja yhteenkietoutumisesta .
+Tekstissä käytetään lyhyyden vuoksi vain termiä taajamaluonto ,  ja sillä tarkoitetaan sekä kaupunki- että taajamaluontoa .
+Maankäytön ja hoidon tarpeisiin on kehitetty erilaisia viheralueiden luokituksia ,  esimerkiksi ympäristöministeriön Taajaman viheralueet - käyttö- ja hoitoluokitus  ( 1992 )  .
+Nämä luokitukset kertovat alueen käyttöpaineesta tai hoitotavasta .
+Ne eivät ole riittäviä luonnon ja sen monimuotoisuuden arviointiin .
+Alueen biologisista ominaisuuksista ne kertovat hyvin vähän .
+Viheralue-käsite on määritelty lukuisin eri tavoin ,  milloin hoidon ,  maankäytön suunnittelun ,  milloin taas virkistyksen tai käytön näkökulmasta .
+Toisinaan esimerkiksi maa- ja metsätalousalueet ,  pihat ja ruderaattialueet ovat mukana ,  toisinaan eivät .
+Viheralue-termiä määriteltäessä näkökulmana on usein alueen hoitaminen ,  muokkaaminen tai muuttaminen .
+Kaavamerkinnät ovat maankäytön suunnittelun merkintöjä alueen suunnitellusta ja käyttötarkoituksesta ,  luonnonoloista ne kertovat vähän .
+Taajamaluonnosta puhuttaessa lähtökohtana ovat alueen biologiset ominaisuudet riippumatta esimerkiksi kauneusarvosta tai ihmisen muutoshaluista .
+Viheralue on vain harvoin synonyymi taajamaluonnolle .
+Lähiluonnosta puhuttaessa lähtökohtana on luonnon ominaisuuksien ja ihmisen luontosuhteen yhteenkietoutuminen .
+Taajamissa monenlaisia merkittäviä elinympäristöjä Tärkeitä taajamien vaalimisen kohteita ovat luonnonsuojelullisesti arvokkaat kohteet ,  metsälain nimeämät erityisen tärkeät elinympäristöt ,  luonnonsuojelulain nimeämät suojellut luontotyypit ,  vesilain nimeämät alle hehtaarin järvet ja lammet ,  pienet uomat ja purot sekä uhanalaisten lajien elinympäristöt .
+Taajamaluonnossa on myös omia luontotyyppejä ,  omia tärkeitä elinympäristöjä ,  joille ei löydy suoraa vastinetta alkuperäisluonnostamme .
+Niiden lajisto on osittain ihmisen mukana saapunutta ,  osin alkuperäistä lajistoamme .
+Tällaisia voivat olla muun muassa metsänlaiteiden pensaikot ja tiheiköt ,  rikkaruohostot ,  ojien ja puron varret ,  pienvedet ,  kosteikot ,  rannat ,  katajikot ,  lehdot ,  vanhat metsät ,  metsäpaloalueet ,  niityt ,  kallioalueet ,  vanhat puutarhat ,  pihat laiteineen ,  painolastikentät ja vanhat puutaloalueet .
+Puistokulttuurimmekin piirissä voidaan ottaa luonnon monimuotoisuuden edistäminen yhdeksi lisäarvoksi :  esimerkiksi lahopuut kääpien ja koristekasvit perhosten elinympäristöinä .
+Vanhojen talojen kivijalat ,  muurit tai kiviportaikot tarjoavat kasvupaikan yllättävän monelle kasville ja eliölle ,  joita osa on muinaistulokkaita ,  osa uustulokkaita ,  osa viljelykarkulaisia ja osa alkuperäislajistoa .
+Esimerkiksi Vanhassa Raumassa arvostetaan talojen lisäksi miljöön muitakin osia :  alueen kasvistosta ja linnuista on tehty yleisöesitteet  ( Lampolahti 1998 ;  Saarinen 1998 )  .
+Taajamaluonto on ainutkertaista Taajamaluonto on muun luonnon tapaan lajistoltaan paikallisesti ja ajallisesti ainutkertaista .
+Luonnontieteelliset kaupunkiekologiset tutkimukset ovat vahvistaneet ,  että kaupungeissa tavataan hämmästyttävän paljon kasvi- ja eläinlajeja .
+Paikallisen luonnon tutkimisessa ja seurannassa haetaan tietoa ihmisen aiheuttaman muutoksen laadusta ,  suunnasta ja pysyvyydestä ,  jotta voidaan löytää sopivat taajamaluonnon vaalimisen keinot ja alueet .
+Kaupungissa ja taajamassa ihmisen vaikutus on erityisen merkittävää .
+Valtakunnallisilla luokitteluilla ja tutkimuksilla haetaan kokonaistietoa taajamaluonnon tilasta .
+Luonnontieteissä taajamaluonnon ympäristöjen luokittelu tehdään elollisen ja elottoman luonnon perusteella .
+Taajamaluontotiedon taso vaihtelee .
+Esimerkiksi Hämeenlinnan ,  Rovaniemen ja Oulun kasvistotietot ovat vuosikymmenten takaa .
+Sen sijaan Helsingin linnut  ( Pakkala ,  Tiainen  &  Pitkänen 1998 )  ja Vantaan kasvit  ( Ranta  &  Siitonen 1996 )  tunnetaan hyvin ,  ja nämä uudet selvitykset ovat välittömästi suunnittelun hyödynnettävissä ,  koska niihin sisältyy paikkatieto .
+Taajamien vähiä suojelualueita on kartoitettu erikseen .
+Yleensä parhaat tiedot koskevat putkilokasvilajistoa ja pesimä- ,  talvi- ja muuttolinnustoa ,  esimerkiksi nisäkkäistä on yleensä vain hajatietoa  ( esimerkiksi Lappalainen  &  Vuorisalo 1996 ;  Liukko 1990 )  .
+Paikalliseen tiedon hankintaan suunnittelun ja suojelun perustaksi on jo sovellettavissa esimerkiksi Heikki Toivosen ja Anneli Leivon Kasvillisuus- ja kasvupaikkaluokitus  ( 1997 )  .
+Sitä on käytetty taajamaluonnon kasvillisuuskartoituksissa muun muassa Porissa ,  Paraisilla ja Joensuussa .
+Koska luokitteluyksiköt kuvaavat sekä kasvillisuutta että maankäyttöä ,  voivat kuviot muuttua jopa vuosittain .
+Muita luokituksia erilaisiin tarkoituksiin ja erilaisin perustein on tehty esimerkiksi Vantaalla ,  pääkaupunkiseudulla ja Espoossa .
+Vantaalla tehtiin biotooppiluokitus Vantaan kaupunkisuunnittelun ja kaupunkiluonnon suojelun perustaksi ;  luokituksessa on 55 luokkaa  ( Ranta  &  Siitonen 1996 )  .
+Pääkaupunkiseudulla tutkittiin urbaanien viheriöiden ekologista monipuolisuutta ja tutkimusalueet ryhmiteltiin hyönteisten tutkimisen kannalta mielekkäisiin luokkiin  ( Haila ym 1989 )  .
+Etelä-Espoossa on tehty asemakaavoitettujen puistojen habitaattien luokittelu tavoitteena selvittää ,  miten kaavoittajat ottavat huomioon luonnonolot  ( Wuorenrinne 1993 )  .
+Kuntien paikkatietojärjestelmillä ei juurikaan vielä voi seurata taajamaluonnon tai viheralueiden määrää tai laadun muutoksia. Ympäristöatlakset ovat kunnan ympäristöaiheisia alueellisia tai paikallisia karttaesityksiä ,  joihin yhdistetään paikkojen ominaisuustietoja ja joilla voidaan seurata paikan ajallista muutosta .
+Toistaiseksi näitä on harvoissa kunnissa ,  ja luonnon- ja viheralueisiin liittyvät tiedot ovat muutenkin vain harvoin kiinnostuksen kohteena .
+Valtakunnan koko kuva Suomessa puuttuu kattavaa tietoa taajamien tavallisten rakentamattomien alueiden ominaisluonteesta ,  niiden elinympäristötyypeistä sekä niillä vallitsevista lajistosuhteista .
+Taajamissa olevia luonnon elinympäristötyyppejä ,  esimerkiksi kasvillisuuden kasvupaikkatyyppejä ,  ei ole luonnontieteellisesti juurikaan tutkittu Suomessa .
+Puuttuva tieto vaikeuttaa maanlaajuisen kokonaiskuvan saamista .
+Urbaanien luontotyyppien olemuksien selvittämistä tarvitaan ,  jotta voidaan täydentää elinympäristöluokituksia ,  seurata ja verrata taajamaluonnon kehitystä sekä löytää oikeat vaalimisen keinot .
+Seurannan järjestäminen taajamaluonnon muutokselle on ensisijaisesti ympäristöministeriön ja Suomen ympäristökeskuksen tehtävä ,  jotta taajamaluonnon vaalimiseen saadaan selkeämmät pelivälineet .
+Samalla Suomen biologista monimuotoisuutta koskevan kansallisen toimintaohjelman kaupunki- ja taajamaluontokohtaa voidaan kehittää .
+Tarkastelutasot seudulta kortteliin Luonnon monimuotoisuutta ja taajamaluontoa voidaan tarkastella eri tasoilla .
+Seututason asiat ovat välillisesti tärkeitä pienellekin osalle kaupunkia tai taajamaa .
+Seututasolla tarkastellaan luonnonalueiden yhtenäisyyttä ja luonnonsuojelualueita .
+Kuntatasolla tärkeitä ovat luonnonsuojelulliset asiat .
+Sellaisia ovat muun muassa eri laeissa mainitut tärkeät elinympäristöt tai muut vaalittavat kohteet ,  rakentamattomien rantojen säilyttäminen ,  uhanalaisten lajien esiintymisalueet ,  viherkäytävien huomioiminen ja metsien käytön ja hoidon määrittäminen .
+Kaupunginosan ,  kylän tai taajama-alueen tasolla tärkeää on hoitotapojen tarkastelu ,  takapihadiversiteetti eli kyse on usein asukkaiden luonnon monimuotoisuutta edistävistä tai vähentävistä ratkaisuista pihoilla ja kasvimailla .
+Yksityiskohtaisemmassa tarkastelussa otetaan huomioon myös ylemmän tason vaatimat asiat .
+( Liukko 1998 )  .
+Edelleen voidaan tarkastelutasoiksi erottaa esimerkiksi kortteli ,  piha ja kukkapenkkitaso .
+Jokaisella tasolla tarkastellaan sille keskeisiä lähiluonnon elinvoimaisuuden sekä opetus- ja virkistyskäytön asioita .
+Yrjö Haila  ( 1995 )  on esittänyt seuraavanlaisen ,  edellisen kanssa samansuuntaisen jaottelun biologisen monimuotoisuuden vaalimisen mittakaavoista :   Tarkastelutaso  Suojelusuunnittelu  Ekologiset ongelmat  Valtakunnan taso  suojeluohjelmat  erityiskohteet  Seudullinen taso  seutukaava  luontotyyppien pa-suhteet  Alueellinen taso  yleiskaava  tärkeiden luontotyypp.säil .
+ Paikallinen taso  asemakaava  pienpiirteinen vaihtelevuus  Toteutustaso   käytännön hoito  hallittu hoitamattomuus Mikä on taajamaluonnon oikea määrä ?
+Heikki Wuorenrinne on alan pioneerina kuvannut Espoon metsäalan ja viheralueiden pirstoutumista historialliselta ajalta nykypäivään .
+Painotuotteessa on karttasarja Espoon metsäalan pirstoutumisesta 1750-luvulta 1990-luvulle .
+Samansuuntainen muutos on käynnissä kaikkialla rakennetuilla alueilla .
+Määrän lisäksi kiinnostavaa on alueiden laatu ja erityisesti ihmisen toimien aiheuttamien muutosten kauaskantoisuus ja pysyvyys .
+Luonnon elinympäristöille voitaisiin periaatteessa antaa eloyhteisöjen omilla ehdoilla tapahtuvasta kehityksestä tehdyn arvion avulla teoreettisia vähimmäispinta-aloja .
+Nämä tosin riippuvat ympäristössä jatkuvasti tapahtuvista muutoksista sekä luontolaikkujen sijainnista ja koosta .
+Tällaista tietoa ei vielä ole riittävästi .
+Ennen tuon tiedon saamista ja käyttöönottamista on sovellettava varovaisuusperiaatetta ,  jonka mukaan ei hävitetä sellaista mitä ei tunneta .
+Ihmisen kannalta taajamaluonnon oikean määrän hahmottaminen liittyy fyysiseen ja henkiseen terveyteen ,  viihtyvyyteen ,  luontosuhteen kehittymiseen ja paikkaan sitoutumiseen .
+On mahdoton määritellä yhtä oikeaa pinta-alaa .
+Koska vähentämispaineita kuitenkin on koko ajan ja koska kosketus lähellä olevaan luontoon luo perustan ympäristösuhteelle ,  on vähennystoimet perusteltava .
+Suunnitelmia tehtäessä on etukäteen tarkasteltava muutoksen jälkeistä tilannetta ja esitettävä korvaavat ulkoilu ,  virkistys ,  opetus ,  leikki ,  kävely ja muut vastaavat alueet .
+Esimerkiksi Lontoon Chiswickissä kaavoitettiin 1983 neljäkymmenvuotias metsittynyt vanhan rautatiealue Gunnerbury Triangle merkittäväksi luontoalueeksi teollisuusalueen sijaan ,  koska se oli Länsi-Lontoossa ainoa vastaava elinympäristö ja ihmisille sopiva luontokohde  ( The Greater London Council 1984 )  .
+Biologisten seikkojen lisäksi ratkaisuun vaikutti vahvasti asukkaiden mahdollisuus kävellä ,  ulkoilla ja oppia alueella .
+Viher- ja luonnonalueiden määrässä keskeistä on alueiden saavutettavuus ,  kuljettava etäisyys ja ylitettävät tai kierrettävät esteet .
+Etäisyys linnuntietä ei aina ole sama kuin esimerkiksi kävelyetäisyys .
+Edes jonkin alueen on oltava jokaisen asukkaan saavutettavissa kohtuullisessa kävelyajassa .
+Eri yhteyksissä on esitetty erilaisia lukuja viheralueiden etäisyydelle ja koolle ,  lähipuiston etäisyydeksi on muun muassa esitetty 280 ,  300 ja 500 metriä sekä viiden minuutin kävelyä  ( Harrison et al .
+1995 ;  Pouta  &  Heikkilä 1998 ;  Box  &  Harrison 1993 ;  Komiteamietintö 1973 )  .
+Painotuotteen kuvassa on esitetty ajatus ,  jonka mukaan lähellä asuinpaikkaa olisi ainakin pieni puisto tai luontoalue  ( kuvassa esimerkiksi 150 metrin päässä kahden hehtaarin alue )  ja etäisyyden kasvaessa viher- tai luontoalueen koko kasvaa .
+Lasten sitoutuminen ympäristöön on aikuisia välittömämpää ja tehokkaampaa :  kukapa muu taajama-asukas tuntisi kaikki lähitienoon nyppylät ,  pikkumetsiköt ,  puronuomat ja parkkipaikan pusikot .
+Pinta-alallisesti pienetkin luonnonalueet ovat lapsille tärkeitä ,  ja niiden merkitys tulisi tuoda esiin ja muistaa suunnittelussa .
+Ruotsin Kalmarissa on tarkasteltu viheralueiden riittävyyttä ,  laatua ja sijaintia pohtimalla alueiden merkitystä eri tasoilla .
+Alue voidaan Ruotsin esimerkin mukaan hahmottaa korttelin ,  kaupunginosan tai koko kaupungin kannalta .
+Huomio voidaan myös suunnata erityisesti koululaisten ,  lasten tai vanhusten virkistykseen ja terveyteen tai luonnon monimuotoisuuteen ja kulttuurisen identiteettiin .
+Kaikista tarkasteluista tehtiin oma kartta ,  joiden pohjalta analysoitiin uhkat ,  mahdollisuudet ja toteuttamisen seuraukset .
+Tavoitteet ja visiot oli mietitty jo etukäteen .
+Työn pohjalta tehtiin viherrakennekartta ,  jossa asetettiin asioita arvojärjestykseen .
+Sitten voitiin luoda toimenpideohjelma talousarvioineen ja muine tarpeellisine osineen .
+Työssä käytettiin paikkatietojärjestelmää  ( Tallhage-Lönn 1994 )  .
+Paikallisen luontotiedon hallinta myös lähiluonnon kannalta on edellytys hyvään suunnitteluun .
+DOCEND 1088020716179643594260943184131578224313187 2687
+DOCSTART 1088020716179643594260943184131578224313187 2692
+Melulla tarkoitetaan terveydelle haitallista ,  ympäristön viihtyisyyttä merkittävästi vähentävää tai työntekoa merkityksellisesti haittaavaa ääntä tai tärinää .
+Suomessa melusta säädetään uudessa ympäristönsuojelulaissa  ( YSL )  ,  aikaisemmin meluntorjuntalaissa .
+YSL : n 3§ : ssä määritellään pilaantumisen käsite ,  johon myös melu kuuluu .
+Melun aiheuttaminen vaatii lupaa .
+Myös tilapäisen melun aiheuttamisesta tulee ilmoittaa ympäristöviranomaisille ennakkoon .
+Ympäristömelua ei ole työpaikan melu tai kotona omasta toiminnasta aiheutuva melu  ( esim. korvalappustereoiden kuuntelu )  ,  jolle altistuu vapaaehtoisesti .
+Melua mitataan desibeliasteikolla Melun määrä ilmaistaan yleensä suhteellisella yksiköllä ,  desibelillä  ( dB )  .
+Perusyksikkö on beli ,  1 B  =  10 dB .
+Koska desibeliasteikko on suhteellinen ,  0 dB ei tarkoita  " absoluuttisen hiljaista "  ,  vaan sitä alinta äänenpainetasoa ,  jonka ihmiskorva vielä aistii .
+Asteikko on vaikeatajuinen :  logaritminen ja vielä kymmenkertainen.  Havaittua melua siis tavallaan verrataan alimpaan ihmiskorvan aistimaan äänitasoon .
+10 dB : n melu tarkoittaa ,  että äänienergia on kymmenkertaistunut tähän lähtötasoon verrattuna ,  20 dB vastaa satakertaistumista ,  30 dB tuhatkertaistumista .
+( Sen sijaan äänekkyysaistimuksena 10 dB lisäys tietää äänekkyyden kaksinkertaistumista )  .
+Desibeliasteikko hämää kiloihin ja metreihin tottuneita ihmisiä :  kolmen desibelin nousu ei tunnu isolta ,  vaikka se merkitsee äänen tehon kaksinkertaistumista !
+Melun ympäristövaikutukset Ympäristömelu on merkittävä ongelma ympäristövaikutustensa laajuuden ja moninaisuuden vuoksi .
+Se on jostain syystä jäänyt yllättävän vähälle huomiolle ,  vaikka sen terveysvaikutukset ovat merkittäviä ja altistuneiden määrä suuri :  Suomessa 1.5 - 1.8 miljoonaa ihmistä altistuu melulle päivittäin  ( meluohjearvot ylittävät asuinalueilla 55 desibeliä ) .  Melu vaikuttaa ihmisen terveyteen :  se aiheuttaa mm. kuulovaurioita ,  häi-ritsee unta ja verenkiertoelimistön toimintaa .
+Välillisiä vaikutuksia ovat väsyneisyys ,  mielialan ja suorituskyvyn lasku .
+Kroonisen melun on todettu vaikuttavan myös lasten oppimiskykyyn heikentävästi .
+Näitä asioita on tutkittu mm. Helsingin yliopiston psykologian laitoksella Juri Shtyrovin ja Teija Kujalan toimesta .
+Heidän mukaansa lisää tutkimustietoa tarvitaan erityisesti keskushermostoon liittyvien vaikutusten osalta .
+Melu alentaa myös viihtyisyyttä ,  häiritsee ihmisiä ja vaikeuttaa kommunikaatiota Tietoa melun vaikutuksista linnustoon ja muihin eläimiin on vähän Suomesta .
+Tutkija Rauno Yrjölä on tutkinut liikennemelun vaikutuksia linnustoon mm. valtatie 7 : llä Loviisan lähellä .
+Tutkimusten mukaan lintujen pesintämenestys heikkenee ja lisääntyminen vaikeutuu melun vuoksi .
+Tosin eri lajien välillä on suuria eroja .
+Suurimmasta osasta suomalaisia lajeja ei ole mitään tietoa .
+Tutkimukseen olisi tälläkin alueella voimakkaasti panostettava .
+Ympäristömelun taloudelliset vaikutukset ovat myös mittavat .
+Arvioiden mukaan siitä aiheutuu EU : n alueella 13
+-
+38
+miljardin euron vahingot .
+Vahinkoja aiheuttavat mm. asuntojen hinnan lasku ,  terveydenhuoltokustannukset ,  maankäyttömuotojen rajoittuminen ja menetetyistä työpäivistä aiheutuvat kustannukset.  Melun lähteet Tärkein ympäristömelun lähde on liikenne .
+Muita tyypillisiä melulähteitä ovat teollisuus ,  rakentaminen ja erilaiset vapaa-ajan toiminnot kuten ampuma- ja moottoriurheiluradat ,  puutarhatyökoneet ,  konsertit ja muut yleisötapahtumat .
+Melua säädellään ohjearvoilla Melutasoihin pyritään vaikuttamaan ohjearvoilla  ( vuodelta 1992 )  .
+Valtioneuvoston hyväksymien ohjeiden mukaan esimerkiksi asumiseen käytettävillä alueilla ,  virkistysalueilla ,  taajamissa ja niiden läheisyydessä melutaso ei saa ylittää päivällä  ( klo 7
+-
+22
+)  55 desibeliä .
+Yöaikaan  ( klo 22
+-
+7
+)  melu ei saa ylittää 45
+-
+50
+desibeliä .
+Uusilla asuinalueilla yöohjearvo on 45 desibeliä .
+Näitä sovelletaan lähinnä liikenne- ja teollisuusmelun arvioinnissa .
+Asuinhuoneissa ulkoa kantautuvan melun pitäisi jäädä päiväsaikaan alle 35 desibeliä ja öisin 30 desibeliä .
+Virkistysalueilla ja luonnonsuojelualueilla päiväohjearvo on 45 desibeliä ja yöarvo 40 desibeliä .
+Suomalaiset melunormit ovat alemmalla tasolla kuin muisssa Pohjoismaissa .
+Puutteita on myös viranomaisten käytössä olevissa arviointitavoissa :  ne ovat liian yksinkertaisia ja usein puutteellisin tiedoin toteutettuja .
+Suurimmat puutteet ovat olosuhteiden huomioon ottamisessa  ( esim. melun vaimenemista arvioidaan laskentamalleilla ,  joissa Suomen vesistörikkaissa olosuhteissa usein esiintyviä vähän ääntä vaimentavia olosuhteita ei oteta huomioon )  .
+Mittauksissa ei myöskään oteta huomioon sitä ,  että eri asiayhteyksissä ihmiset kokevat melun eri tavoin ja eri ihmisten meluherkkyys vaihtelee .
+Tutkimustietoa tarvitaankin lisää.  Meludirektiivi tulossa Meluongelmiin ollaan kiinnittämässä erityistä huomiota Euroopan unionissa :  komissiolla on jo valmiina ehdotus  melua säätelevästä puitedirektiivistä ,  joka on tulossa voimaan parin vuoden sisällä .
+Direktiivi ei sisällä yksityiskohtaisia ohjearvoja melulle ,  vaan ne jäävät kunkin jäsenmaan säädettäviksi .
+Lähteet :  Ehdotus Euroopan parlamentin ja neuvoston direktiiviksi ympäristömelun arvioinnista ja hallinnasta  .
+Euroopan yhteisöjen komissio .
+Bryssel 26.7.2000 ,  KOM ( 2000 )  468 lopullinen .
+2000 / 0194  ( COD )  .
+Survo ,  Kyösti ,  Hänninen ,  Otto  ( 1998 )  .
+Altistuminen ympäristömelulle Suomessa .
+Esiselvitys .
+Suomen Ympäristö 241 ,  teema :  ympäristönsuojelu .
+Luennot Suomen luonnonsuojeluliiton meluseminaarissa 28.1.2000 Björk ,  Erkki .
+Melun ympäristövaikutusten arviointi Elvhammar ,  Hans .
+Environmental noise effects in residential and recreational areas Shtyrov ,  Yuri .
+Effects of noise on auditory perception in the human brain Yrjölä ,  Rauno .
+DOCEND 1088020716179643594260943184131578224313187 2692
+DOCSTART 1088020716179643594260943184131578224313187 2694
+23.4.1998Ydinjätteen loppusijoituksen YVA-ohjelma on kuin Posiva Oy : n mainos Suomen luonnonsuojeluliiton mielestä Posiva Oy : n käytetyn ydinpolttoaineen loppusijoituspaikan ympäristövaikutusten arviointiohjelma on mainosmainen esitys Posivan hankkeesta .
+Varsinainen asia - ydinjätteen loppusijoituksen ja siinä käytettävien menetelmien ympäristövaikutusten arviointitavat - ei ohjelmasta selviä lainkaan .
+Posivan YVA-ohjelma suorastaan vilisee väitteitä ,  joita ei perustella mitenkään .
+Ohjelmassa ei näytä olevan mitään menetelmiä tai välineitä tai edes pyrkimystä arvioida hankkeen tekniseen suunnitteluun liittyviä epävarmuustekijöitä ja siihen väistämättä liittyviä virhemahdollisuuksia .
+Luonnonsuojeluliitto muistuttaa ,  että ydinjätteen loppusijoittamista tai siihen verrattavaa hanketta ei ole koskaan aikaisemmin ihmiskunnan historiassa toteutettu eikä täyttä varmuutta hankkeen turvallisuudesta nykytiedon valossa voida taata .
+Luonnonsuojeluliitto toteaa kauppa- ja teollisuusministeriölle antamassaan lausunnossa ,  että YVA-hanketta tulisi tässä vaiheessa tarkastella pitkälti eri lähtökohdista kuin mitä Posivan YVA-ohjelmassa on ehdotettu .
+Koska mitään teknistä ratkaisua ei ole vielä valittu eikä yhdenkään ratkaisun kaikkia teknisiä yksityiskohtia ole vielä tiedossa ,  YVAn tulisi tässä vaiheessa painottua pääasiassa erilaisten mahdollisten teknisten ratkaisujen esittelyyn ja niiden ympäristövaikutusten käsittelyyn .
+Posivan ehdottaman YVA-ohjelman mukaisena toteutettaessa YVA tulisi palvelemaan päätöksentekoa lähinnä sijoituspaikan valinnassa .
+YVAn tärkeimpänä tavoitteena pitäisi kuitenkin olla ympäristön kannalta parhaan ratkaisun löytäminen ja siihen liittyvien teknisten ja geologisten turvallisuuskriteereiden määritteleminen ja tarkentaminen .
+Ydinjätteiden mahdollisten sijoituspaikkojen valinta ja niiden arviointi pitää jättää myöhemmäksi eli aikaisintaan siihen hetkeen ,  kun kaikki hankkeen toteutukseen liittyvät tekniset yksityiskohdat ovat tiedossa .
+Pohjavesien saastumista aliarvioitu Käytetyn ydinpolttoaineen sijoitushankkeen keskeisin ja todennäköisin vakava ympäristöuhka syntyy radioaktiivisten aineiden kulkeutumisesta pohjavesien mukana pintavesiin ja sitä kautta luontoon ja ihmisiin .
+Pohjaveden liikkeiden arviointi ja mallintaminen on erittäin vaikeaa .
+Sen voidaan perustellusti sanoa olevan jopa mahdotonta ,  kun kyseessä on lähes äärettömän pitkä aika ja useita ennalta arvaamattomia muuttujia .
+Tällaisia ovat esimerkiksi kallion lämpiäminen ,  itse rakentamisen vaikutukset räjäytyksineen ja tulevan jääkauden tai kasvihuoneilmiön vaikutukset .
+Posivan YVA-ohjelmassa sanotaan  ( s .
+58 )  ,  että  " Pohjavesiolosuhteiden muuttuminen arvioidaan jo tehtyjen ja käynnissä olevien pitkäaikaisten tarkkailumittausten ,  kallioperästä mitattujen vedenläpäisevyystietojen sekä käytössä olevien virtausmallien perusteella "  ,  mutta ei kerrota ,  mitä nämä mallit ja menetelmät ovat .
+Menetelmien luotettavuudesta on niin ollen mahdotonta sanoa mitään .
+Virtausmallintamiseen sisältyy voimakkaita lähtöoletuksia ,  jotka tulisi tuoda selvästi esille .
+Jo YVA-ohjelmassa tulisi selvittää käytettävät tutkimusmenetelmät .
+Posivan YVA-ohjelmassa väitetään  " pohjavesien virtausolosuhteiden palautuvan vähitellen lähes ennalleen "  .
+Väitettä ei perustella mitenkään ,  eikä sille esitetä mitään tutkimuslähdettä tueksi .
+YVAn uskottavuus on kyseenalainen ,  mikäli pohjavesien virtauksista tehdään jo tässä vaiheessa näin voimakkaita olettamuksia ilman tarkasti dokumentoituja perusteluja .
+Luonnonsuojeluliitto muistuttaa ,  että on aivan eri asia tehdä tarkasteluja muutaman vuoden päähän kuin arvioida ydinjäteluolaston luotettavuutta yli 200 000 vuoden ajalla .
+Tämän vuoksi pohjaveden virtauksien arviointiin ja kuvaamiseen käytetyt mallit ja mallintamistyö tulee ehdottomasti tarkastuttaa riippumattomalla kansainvälisellä asiantuntijataholla .
+DOCEND 1088020716179643594260943184131578224313187 2694
+DOCSTART 1088020716179643594260943184131578224313187 2697
+26.7.1999Rantavehnä leviää merenrannoilta tienvarsille Rantavehnä on lähtenyt viime vuosikymmeninä Itämeren rannoilta valloittamaan sisämaata .
+Syynä rantavehnän leviämiseen on teiden talvinen suolaus .
+Suolaus tappaa muut kasvit asfaltin reunasta ,  mutta rantavehnä merenrantakasvina sietää vahvasti suolautuneen maaperän .
+Rantavehnä on 50
+-
+150
+sentin korkuiseksi kasvava ,  jäykkäkortinen heinä .
+Rantavehnän karheat lehdet ovat omalaatuisen vaalean siniharmaat .
+Aivan asfaltin reunassa kasvavat rantavehnämättäät tunnistaa liikkuvasta autostakin .
+Suomen Luonto -lehti on ryhtynyt selvittämään ,  kuinka laajalle rantavehnä on jo levinnyt .
+Suomen Luonto pyytää lukijoitaan ja muita luonnosta kiinnostuneita kertomaan rantavehnän havaintopaikan ,  siis tien numeron ja paikkakunnan .
+Samalla kortilla voi kertoa useammastakin esiintymästä .
+Tiedot esiintymän laajuudesta lisäävät vastauksen arvoa .
+Havainnot rantavehnästä voi ilmoittaa postikortilla ,  kirjeellä tai sähköpostilla 1.10.1999 mennessä osoitteella :  Suomen Luonto ,  Kotkankatu 9 ,  00510 Helsinki ,  sähköposti :  ritva.kupari @ sll.fi tai alice.karlsson @ sll.fi .
+Havaintojen lähettäjän nimi ja osoite tulee liittää mukaan ilmoitukseen ,  sillä kaikkien havaintoja lähettäneiden kesken arvotaan polkupyörä ja kirjoja .
+LISÄTIEDOT :  Seppo Vuokko :  Rantavehnä leviää merenrannoilta tienvarsille .
+- Suomen Luonto 6 / 99 ,  sivu 39 .
+DOCEND 1088020716179643594260943184131578224313187 2697
+DOCSTART 1088020716179643594260943184131578224313187 2699
+6.9.2000Suomen pihalintukisan voitto Hankoon Viime lauantaina  ( 2.9. )  järjestettiin kolmannet Ruotsin avoimet mestaruuskilpailut  " tonttibongaajille "  .
+Kisassa piti havaita vuorokauden aikana tontilta tai pihalta mahdollisimman monta eri lintulajia .
+- Kisaan osallistuneet ahvenanmaalaiset lintuharrastajat olivat haastaneet mannersuomalaiset mukaan .
+Suomen pihalintukisan voitto meni Hankoon ,  jossa tunnettu ornitologi Jörgen Palmgren havaitsi päivän mittaan Tvärminnen Halsholmenilla 82 lintulajia .
+Saaresta keksittiin niin kesäisiä viivyttelijöitä  ( käki ,  lehtokerttu ,  punavarpunen )  kuin pohjoisen läpimuuttajia  ( lapinkirvinen ,  lapinsirkku )  .
+Paikallisista linnuista komeimpia olivat seitsemän merikotkaa .
+Halsholmen ei ole aivan tavallinen  " piha "  tai  " tontti "  ,  vaan noin viiden hehtaarin saari ,  jolla olevan vanhan kalastajamökin Helsingin yliopisto on muuttanut tutkija-asunnoksi .
+Varsinais-Suomessa Jorma Tenovuo kirjasi Halikon vapaa-ajanasuntonsa 0,7 hehtaarin suuruisella merenrantatontilla 66 lajia .
+Kaukana Hangon jäljessä tulivat muut uusmaalaiset kunnat :  Helsinki 62 ,  Inkoo 61 ja sisämaassa Lohja 52 lajia .
+Erityismaininnan ansaitsee Jari Kostet  ,  joka Helsingin Vuosaaressa laski 54 lajia parvekkeeltaan !
+Ahvenanmaalaiset ylsivät 51 lajiin .
+Sisämaassa kirjattiin hyvin tasaisesti vajaan puolen sadan lajin tuloksia :  Ruokolahden Äitsaaressa kesämökkipihalla 48 ,  Piikkiössä omakotitalon tontilla 47 ,  Lappeenrannan Vainikkalassa 47 ja Valkeakoskella rivitalon pihalla 46 .
+Ruotsi voitti Finnkampenin Länsinaapurin runsaslintuisin tontti löytyi länsirannikolta Forshällan kunnasta .
+Sää oli lintujen tarkkailun kannalta ihanteellinen ja Jan Uddén havaitsikin 11 tunnin ja 15 minuutin intensiivisen tarkkailun aikana 91 lintulajia ,  mikä toi Ruotsin mestaruuden .
+Viimevuotiset öölantilaisvoittajat eivät pystyneet uusimaan tekoaan :  ennätykselliset 101 lajia supistui nyt 62 lajiin ,  kun tarkkailu jäi muutaman tunnin mittaiseksi .
+Ruotsin runsaslintuisimmat pihat lauantaina 2.9. olivat maakunnittain :  Bohuslän 91 ,  Sörmland 85 ,  Itä-Götanmaa 83 ,  Närke 82 ,  Södermanlanti 82 ,  Gotlanti 80 ,  Uplanti 77 ,  Hallanti 76 ,  Öölanti 62 ,  Norrbotten 60 ,  Skoone 60 ,  Smoolanti 55 ,  Vestmanlanti 52 ,  Länsi-Götanmaa 40 ,  Vermlanti 37 ,  Blekinge 31 ,  Gestriklanti 31 ,  Helsinglanti 28 ja Västerbotten 23 .
+Kannatettava harrastusmuoto Luonnonsuojeluliitto pitää lintujen tarkkailemista kotipihalla kannatettavana harrastusmuotona .
+Harvinaisiakin lintuja on mahdollista tavata varsinkin näin syysmuuton aikaan kaikkialla Suomessa .
+DOCEND 1088020716179643594260943184131578224313187 2699
+DOCSTART 1088020716179643594260943184131578224313187 2701
+29.11.2000Lehtipuhallin on Vuoden turhake Suomen Luonto -lehden lukijat ovat valinneet Vuoden turhakkeeksi lehtipuhaltimen .
+Turhake on turha ja tarpeeton tavara tai kapine .
+Kielitoimiston mukaan turhake on leikkimielinen ja kriittinen ilmaisu ilmiölle ,  joka ei ole kovin tärkeä .
+Turhake on uudissana ,  jota käytetään hyödykkeen vastakohtana .
+Turhakkeiden turhaketta perusteltiin näin :   " Puhallin on turha .
+Jos lehdet vain ajaisi silpuksi ruohon päälle ,  vetäisivät madot ne maan sisään ,  ja nurmikko voisi entistä paremmin .
+Kaatopaikkajätettä kertyisi vähemmän ja kauniin väriset syksyn lehdet saisivat olla ilonamme numikolla pitempään "  .
+Lisäperusteluja olivat lehtipuhaltimen käsittämätön ja ärsyttävä meteli ,  pakokaasut ja laitteen tehottomuus .
+Suomen Luonto ei palkinnut Vuoden turhaketta .
+Turhakkeen ehdottaja Sarri Nykänen palkittiin Suomen Luonto -lehden vuosikerralla .
+Muita turhakkeita Suomen Luonnon lukijoiden mielestä olivat ulkomailta tuotu vesi ,  rantaveteen ankkuroitava kelluva kukkaruukku ,  kännykän kuljetusvaunu ja vesiskootteri .
+Suomen Luonto on Luonnonsuojeluliiton julkaisema kerran kuussa ilmestyvä aikakauslehti .
+DOCEND 1088020716179643594260943184131578224313187 2701
+DOCSTART 1088020716179643594260943184131578224313187 2702
+28.2.2001Kauppa- ja teollisuusministeriölle Lausunto uuden ydinvoimalaitosyksikön rakentamista koskevaan periaatepäätöshakemukseen Lausuntopyyntö 4 / 330 / 2000 ,  27.11.2000 Lausuntonaan Suomen luonnonsuojeluliitto esittää seuraavaa :  YLEISTÄ Periaatepäätöksen hakijan Teollisuuden Voima Oy : n  ( TVO )  mukaan hanke on yhteiskunnan kokonaisedun mukainen ottaen huomioon Suomen ilmasto- ja ympäristötavoitteet ,  sähkön tuotantovarmuus ,  tuontiriippuvuus sekä ydinsähkön kilpailukykyinen ja vakaa hinta .
+Suomen luonnonsuojeluliitto  ( SLL )  katsoo jäljempänä esitetyin perustein ,  että hakija ei pysty osoittamaan lain vaatimaa yhteiskunnan kokonaisetua vaan sivuuttaa ydinvoiman vaihtoehdot ja ydinvoiman koko tuotantoketjuun liittyvät haitat .
+Ydinvoimaan liittyvien ympäristö- ja turvallisuusongelmien sivuuttaminen antaa huonon kuvan hakijan turvallisuuskulttuurista ja ympäristöosaamisesta .
+Hakemuksessa annetaan runsaasti harhaanjohtavaa tietoa ,  eikä se siten voi yksinään toimia pohjana tarkasteltaessa ydinvoiman kokonaisedullisuutta yhteiskunnan kannalta .
+HAKEMUKSESTA PUUTTUVAT ARVIOINNIN KANNALTA OLEELLISET ASIAKIRJAT Lausuntopyynnön mukana on lausunnonantajalle toimitettu seuraavat asiakirjat :  Uuden ydinvoimalaitoksen rakentamista koskeva periaatehakemus  ( Teollisuuden Voima Oy ,  15.11.2000 asiakirjakooste )  ja Loviisan ja Olkiluodon voimalaitosten mahdollista laajentamista koskevat ympäristövaikutusten arviointiraportit sekä Valtioneuvoston periaatepäätös käytetyn ydinpolttoaineen loppusijoituslaitoksen rakentamisesta .
+SLL toteaa ,  että valtioneuvoston periaatepäätöksessä on kyse laaja-alaisesta taloudellista ,  teknistä ja yhteiskunnallista kehitystä viitoittavasta ratkaisusta sekä Suomen kansainvälistä yhteistyötä globaalisessa ilmastostrategiassa koskevasta periaateratkaisusta .
+Tätä laajaa kokonaisuutta ei voida arvioida vain hakijayrityksen omia intressejä ajavien asiakirjojen pohjalta .
+Niinpä se mitä lausuntojen kautta tuodaan esille periaatepäätöstä varten on SLL : n mielestä otettava huomioon primaariaineistona eikä vain kommentteina hakijan asiakirjoissa esitettyihin asioihin .
+Lausunnossaan SLL on käyttänyt lähdeaineistona myös muun muassa seuraavia asiakirjoja ,  joita on valmisteltu Kioto-ministerityöryhmälle tai aiottu esitykseksi eduskunnalle kansallisesta ilmastostrategiasta :  Luonnos 8.1.2001 ;  Kasvihuonekaasujen vähentämistarpeet ja -mahdollisuudet Suomessa ja Luonnos 7.2.2001 ;  Kansallinen ilmastostrategia .
+Valtioneuvoston selonteko eduskunnalle .
+KTM : n ydinvoimaa puoltavassa esityksessä ratkaiseva ero ydinvoimaan perustuvan ja maakaasuun perustuvan ilmastostrategian välillä syntyy laskennallisista kustannuseroista näiden vaihtoehtojen välillä ,  jotka on esitetty konsulttiyritys Electrowatt-Ekono Oy : n tekemässä selvityksessä Sähkön hankinnan rakenteen muutoksen vaikutus sähkön hintaan sekä julkisen vallan toimenpiteiden vaikutus kariutuneiden kustannusten määrään ja lisäksi on VATT : ilta ja VTT : ltä tilattu kansantaloudellisten vaikutusten arviointiraportti .
+Kumpaakaan näistä ei hakija ole jättänyt arvioitavaksi lausuntopyynnön yhteydessä .
+SLL : n mielestä on mahdotonta ,  että valtioneuvosto voisi tehdä periaatepäätöksensä asianmukaisella tavalla yhteiskunnan kokonaisedun mukaisesti ilman ,  että lausunnon antajat ovat voineet esittää arviointinsa myös näiden asiakirjojen sisällöstä ja tutustua laskelmien perusteisiin .
+Sen perusteella mitä luonnoksissa on esitetty voidaan jo nyt nähdä ,  että laskelmat ja niistä tehdyt johtopäätökset ovat kiistanalaisia ja yksipuolisesti intressisidonnaisia ,  ja ne saattavat olla myös yhteiskunnan kokonaisedun kannalta virheellisiä .
+Vaikuttaa siltä ,  että hakemusasiakirjoja ja luonnoksia valmisteltaessa on systemaattisesti haluttu välttää mainituista intresseistä riippumatonta asiantuntijatietoa ja yleensä ydinvoimalle kriittisiä tietoja .
+Tällaisia tietoja ovat muun muassa useimpien EU-maiden kielteinen suhtautuminen ydinvoiman lisärakentamiseen sekä myönteisesti ydinvoimaan maailmassa suhtautuvien maiden ydinvoimatekniikan liittyminen samanaikaiseen ydinaseen ylläpitoon tai kehittämiseen ,  tiedot asiantuntijoiden tekemistä turvallisuustutkimuksista ja niihin perustuvista kongressin päätöksistä maailman kehittyneimmässä ydinvoimamaassa USA : ssa sekä VTT : n tekemistä turvallisuusselvityksistä Suomessa ,  riippumattomien energia-alan tutkijoiden voimataloudelliset ja ympäristö- ja ilmasto-ongelman ratkaisuvaihtoehtoja ja niiden kustannustehokkuutta koskevat tutkimukset sekä ydinvoimavastaisen kansalaismielipiteen olemassaolo .
+Merkillistä on myös se ,  ettei ollenkaan viitata eduskunnan jo kertaalleen tekemään kielteiseen päätökseen vuonna 1993 ,  vaan lähdetään ikään kuin mitään sellaista ei olisi tapahtunutkaan .
+Yhteiskunnallisen kokonaisedun arvioinnin kannalta olisi välttämätöntä osoittaa ,  että aikaisemmin kielteiseen päätökseen johtanut tilanne on näinä vuosina muuttunut siten ,  että aikaisempaa päätöstä on syytä harkita uudestaan .
+ILMASTOTAVOITTEET Hakijan näkemys ,  jonka mukaan lisäydinvoiman rakentaminen on vaikutuksiltaan ja kustannuksiltaan tehokkain tapa sähköntuotannon hiilidioksidipäästöjen rajoittamiseen ,  perustuu vaihtoehtojen järjestelmälliselle sivuuttamiselle .
+Hallituksen ilmastostrategiassa on myös toinen vaihtoehto KIO1 ,  jossa päästöt vähenevät ydinvoimaskenaariota KIO2 enemmän ,  mutta kustannukset eivät ole olennaisesti suurempia kuin ydinvoimavaihtoehdossa .
+Itse asiassa KIO2 skenaario osoittaa ,  että ydinvoimalla ei tavoitetta voida kunnolla edes saavuttaa  ( Kansallinen ilmastostrategia luonnos hallituksen iltakouluun 7.2.2001 )  .
+Vuonna 1999 ilmestyneen seitsemän ympäristöjärjestön viidellä yliopiston tutkijalla teettämän skenaariotarkastelun mukaan Suomi pystyy toteuttamaan Kioton tavoitteet ilman ydin- ja maakaasuvoiman rakentamista ,  vaikka kansantalous kasvaa 2,5  %  : lla vuodessa .
+Kansantaloutta kasvattaa tässä ratkaisussa osaltaan myös uusiutuvan energian ja energiansäästöteknologian voimakkaasti kasvava vienti .
+( Kestävä energiapolitiikka ;  vertailevia skenaarioita kauppa- ja teollisuusministeriön Energiatalous 2025 skenaariotarkasteluihin ;  Suomen luonnonsuojeluliiton energianeuvosto ym. ,  1999 )  .
+Ruotsin ilmastostrategiassa esitetään hiilidioksidipäästöjen vähentämistä 2  %  : lla vuoden 1990 tasosta vuoteen 2012 mennessä ja 50  %  : lla vuoteen 2050 mennessä huolimatta ydinvoiman alasajosta  ( SOU 2000 : 23 )  .
+Hakijan näkemyksestä poiketen energiatehostamisen mahdollisuuksista on Suomessa vieläkin valtaosa käyttämättä .
+Tutkimusten ja kokemusten mukaan investoinnit sähkön säästöön tuottavat selvästi Suomen halvinta sähköä ,  energiansäästöprojektit ovat kahdesta kymmeneen kertaan kannattavampia kuin energiantuotannon lisärakentaminen .
+( Motiva 1999 ,  Energiakatselmustoimikunnan tilannekatsaus 1998 ;  ETLA 1999 ,  Suomen energiaklusterin kilpailuetu ;  VTT 1999 ,  Intergrated cost-effectiveness of greenhouse gas emission abatement ,  the case of Finland ;  Keskuslaboratorio Oy 1998 ,  Kestävä paperi ­tutkimusohjelman loppuraportti ;  KTM 1997 Energiansäästöpolitiikan tuloksellisuuden arviointi ;  KTM 1995 ,  Energiasäästötoimikunnan mietintö )  .
+Uusiutuvat energianlähteet sivuutetaan hakemuksessa väitteellä ,  ettei yksikään niistä ole vaihtoehto suunnitellun ydinvoimalaitosyksikön tuotantoa vastaavan perusvoiman tuotantoon .
+Sen sijaan uusiutuvien energianlähteiden yhteenlaskettuja mahdollisuuksia ei arvioida .
+Tällaisella tarkoitushakuisella tavalla hakija päätyy siihen ,  että ydinvoiman ainoat vaihtoehdot ovat kivihiili- ja maakaasulauhdevoima .
+Suomen uusiutuvan energian edistämisohjelman mukaan uusiutuvilla energianlähteillä tuotetun sähkön kapasiteetti nousee yli 2000 MW : lla vuoteen 2010 mennessä ja ko. kapasiteettia voidaan nostaa vielä erittäin paljon .
+EU : n uusiutuvilla energiamuodoilla tuotetun sähkön direktiiviehdotuksessa Suomi velvoitetaan nostamaan uusiutuvan sähkön osuutta 10 prosenttiyksikköä .
+Puuhakkeen käyttö voidaan VTT : n mukaan lähes kaksinkertaistaa ja tekniset mahdollisuudet ovat vielä suuremmat .
+Vaikka puuenergia on jo nykyään hyvin kilpailukykyistä ,  sen kustannusten odotetaan pienenevän useita kymmeniä prosentteja korjuumenetelmien tehostuessa .
+Tuulivoima on hyvä tuotantovaihtoehto ,  koska Suomen monipuolinen sähköntuotantojärjestelmä sisältää runsaasti säätövoimaa .
+Tämän avulla avulla 5
+-
+20
+%  sähkön tuotannosta voitaisiin tehdä tuulella ilman muutoksia varastointi- ja säätökapasiteetissa ,  siis tuottaen osakkaille ympäri vuoden ja vuorokauden käytettävissä olevaa sähkötehoa .
+Yhteispohjoismaisten sähkömarkkinoiden takia tuulivoiman säätövoimana voidaan lisäksi käyttää norjalaista ja ruotsalaista vesivoimaa ,  joten sähkömarkkinoiden tarkasteleminen pelkästään Suomen mittakaavassa on epärelevanttia .
+Osakkeenomistajille on luonnollisesti tärkeää ,  että tuotanto vastaa kulutusta ,  joka vaihtelee voimakkaasti .
+Ruotsin ilmastostrategiassa  ( SOU 2000 : 23 )  esitetään tuulivoiman lisärakentamista 3 - 5 TWh : lla vuoteen 2010 mennessä ,  mikä on 3 -7 -kertaa enemmän kuin Suomen hallituksen uusiutuvien energialähteiden edistämisohjelman tuulivoimatavoite .
+Suuren pääomantarpeen vuoksi uuden ydinvoimalan rakentaminen sitoisi Suomen energia- ja elinkeinopolitiikkaa seuraavat kymmenen vuotta ,  ennen kuin se on tuottanut vielä yhtään energiaa .
+Ohjaamalla elinkeinorakennetta sähköintensiiviseen suuntaan ydinvoimala tekee siten itsestään tarpeellisen .
+Hakemuksessa esitetyissä sähkönkulutuksen kasvuennusteissa on muun muassa arvioitu sähkölämmityksen markkinaosuuden säilyvän pientalotuotannossa 60 - 65 prosentissa .
+Mikäli sähkön ja lämmön yhteistuotannon osuus jatkossakin lisääntyy sähkölämmityksen markkinaosuus lähtee vääjäämättä laskuun .
+Syrjäyttämällä sähkön- ja lämmön yhteistuotantoa viides ydinvoimala saattaa kuitenkin olemassaolollaan toteuttaa ennustuksen sähkölämmityksen osuuden säilymisestä nykyisellä tasollaan .
+Ydinvoiman lisärakentamisella olisi myös haitallinen vaikutus säästävän ja energiatehokkaan politiikan toteuttamiseen ja uusiutuvien energiamuotojen ja hajautetun energiahuollon kehittämiseen .
+KTM arvioi sähköenergian kokonaiskulutuksen kasvavan lähivuosikymmeninä noin 1,1 %  vuosivauhtia .
+Näin hitaalla kasvuvauhdilla ydinvoimayksikön saamiseen täyteen perusvoimakuormaan menee yli 15 vuotta ilman muiden voimalaitosyksiköiden käynnin rajoituksia .
+Käytännössä asia kuitenkin merkitsee sitä ,  että kaikki laitokset joiden muuttuvat kustannukset ovat suurempia kuin ydinvoiman polttoainekustannukset joutuvat seisomaan .
+Pääomia uppoaa ja muut voiman tuottajat ,  erityisesti pienet laitokset ,  joutuvat maksumiehiksi ja energiasäästöstä luovutaan ylitarjonnan vuoksi .
+Ydinvoiman lisärakentaminen on siten energian säästövaihtoehdot ja pienimuotoisten energiateknologioitten kehittämisen romuttava ratkaisu päinvastoin kuin mitä hakijat ja KTM esittävät .
+Siten ydinvoimalan lisärakentaminen on pitkällä tähtäyksellä Suomen ilmastotavoitteiden vastainen .
+TYÖLLISYYSVAIKUTUKSET Yhteiskunnan kannalta työllistäminen on erittäin tärkeää .
+Hakemuksen mukaan tämän hankkeen työllistämisvaikutukset ovat suuret ,  mutta täytyy huomata ,  että uusiutuvien energiamuotojen työllistämisvaikutus on ydinvoimaan verrattuna 2
+-
+5
+-kertainen ,  jopa suurempikin .
+Viidennen ydinvoimalan rakentamisen ja käytön työllistämisvaikutuksia olisikin verrattava vaihtoehtoisiin skenaarioihin .
+Uusiutuvien energialähteiden käytön työllistävyys kohdentuu lisäksi koko Suomeen ,  erityisesti maaseudulle ja monenlaisen koulutustason työvoimaan ,  kun taas ydinvoiman työllistyvyys kohdistuu pienelle alueelle ja pitkälle erikoistuneeseen työvoimaan .
+Uusiutuviin energianlähteisiin pohjautuvissa vaihtoehdoissa tärkein tuotantopanos on ihmistyö ,  ydinvoimavaihtoehdossa tärkein tuotantopanos on pääoma .
+Ensin mainitun vaihtoehdon työllistävä vaikutus on huomattavasti suurempi ,  sillä palkkatulot ja puunmyyntitulot jäävät kansantalouden hyödyksi ,  kun taas pääoman korkotulot menevät suurelta osin ulkomaille .
+Hankkeen toteuttaminen tarkoittaisi ,  että menetettäisiin kotimaisen energiantuotannon korkeampi työllistävyysvaikutus .
+Sähkömarkkinoiden täyttyessä ja todennäköisen ylituotantotilanteen syntyessä kotimaisten energiamuotojen kehittäminen ja käyttöönotto vaikeutuisi pitkälle tulevaisuuteen .
+Samalla menetettäisiin uusiutuvien energiamuotojen hyötyvaikutukset monilla yhteiskunnan sektoreilla kuten kauppasektorilla .
+Hankkeen suunnitelmankin olemassaolo on jo vaikeuttanut Suomen uusiutuvien energialähteiden edistämisohjelman toteuttamista ,  koska tämä hanke voisi tukkia sähkömarkkinat muilta vaihtoehdoilta ja siten voimalaitosinvestoijat odottavat tämän hakemuksen käsittelyä ennen omia investointipäätöksiään .
+Uusiutuva energia on luonteeltaan pienimuotoista ja hajautettua .
+Hajautetun energiatuotannon sarjavalmistusetu on paljon merkittävämpi kuin suurten voimalaitosten skaalaetu .
+Taloudellisesti hajautettu energiantuotanto on siis paljon halvempaa kuin keskitetty ,  kunhan suurten sarjojen valmistus saadaan toteutettua .
+Energiantuotantoteollisuus tullee läpikäymään samanlaisen kehityksen kuin tietokoneteollisuus ,  jossa siirryttiin suurista keskustietokonejärjestelmistä hajautettuun tietojenkäsittelyyn .
+Se tarkoittaa energiamarkkinoiden uusjakoa ja paikallistalouksien vahvistumista .
+Esillä oleva hanke vaikeuttaisi merkittävästi Suomen energiateollisuuden mahdollisuuksia osallistua tähän globaaliin energiasektorin rakennemuutokseen ja sitä kautta avautuviin vientimarkkinoihin .
+Ko. alalla vientimarkkinat varsinkin kehitysmaihin olisivat varsin merkittävät ;  yhtenäisten sähkönsiirtoverkkojen puuttuessa ja tuontipolttoaineen ollessa suhteessa erittäin kallista olisi monessa kehitysmaassa kotimaiseen biomassaan perustuva hajautettu energiahuolto hyvin kannattavaa .
+Siten riittävä valtiollinen panostus tähän sektoriin ja riittävä määrä kotimaisia referenssejä voisivat poikia merkittävät vientimarkkinat .
+Jos tuulivoimalan lisärakentamisesta tehtäisiin suuren mittakaavan kehityshanke sisältäen myös kotimaisen ,  suuren tuulivoimalan kehittämisen ,  olisi merkittävienkin vientimarkkinoiden saavuttaminen mahdollista tällä alalla .
+Tuulivoiman installoitu kapasiteetti lisääntyi maailmassa viime vuonna noin 4000 MW ;  vastaavat investoinnit olivat 24 miljardia markkaa .
+Tätä merkittävää markkina-aluetta Suomi hyödyntää toistaiseksi lähinnä vain yhtenä vaihteistotoimittajana .
+Jos tuulivoimateollisuuteen olisi panostettu 80-luvulla ,  voisi edistyksellisestä lujitemuoviteollisuudestaan ja aerodynamiikan hyvästä osaamisestaan tunnettu Suomi olla nyt merkittävä tuulivoimaloiden kokonaistoimittaja .
+Riittävällä panostuksella tähän olisi edelleen mahdollisuuksia .
+Hakemuksessa esitetty arvio rakentamisaikaisista kotimaisista työllistämisvaikutuksista saattaa jäädä huomattavasti esitettyä alhaisemmaksi ,  koska EU : n kilpailulainsäädännön mukaan ydinvoimalaitoksen rakentamishanke on kilpailutettava EU : n alueella .
+Ympäristöjärjestöjen esittämässä hajautettuun energiantuotantoon perustuvassa mallissa vastaavaa vaaraa ei ole .
+Hakija ei pidä hajautettua energiantuotantoa toteuttamiskelpoisena vaihtoehtona muun muassa ,  koska se edellyttäisi useita erillisiä voimaloita eri puolille Suomea ja siitä aiheutuvaa byrokratiaa ja yhtiön organisatorisia muutoksia .
+Yhteiskunnan kannalta hajasijoitus ,  joka vielä painottuu kehitysalueille ,  olisi kuitenkin kannattavampaa muun muassa työllisyyssyistä .
+TUOTANTO- JA HUOLTOVARMUUS Hakija perustelee ydinvoiman lisärakentamista sähkön tuotantovarmuudella ,  vaikka se muuttaisi energian tuotantorakennetta entistä keskittyneemmäksi ja lisäisi tuontiriippuvuutta .
+Keskitetty voimantuotanto sisältää merkittävän huoltovarmuusriskin ,  sillä asiakkaat ovat riippuvaisia harvoista ,  usein kaukana sijaitsevista suurista voimalaitosyksiköistä sekä sähköverkosta .
+Äärimmäiset sääilmiöt ovat Suomessakin osoittaneet sekä verkon että tuotantoyksiköiden haavoittuvuuden .
+Hankkeen mukainen voimalaitosyksikkö vastaisi noin kymmenesosasta Suomen sähkön tuotannosta ja yhdessä sijoituspaikkansa 2 muun reaktorin kanssa jopa viidesosasta Suomen sähkön tuotannosta .
+Uuden ydinvoimalaitoksen kooksi on esitetty jopa 1600 MW .
+Näin suuren yksikön sijoittaminen Suomen sähköverkkoon vaatii myös monia verkon ja sen säätö- ja häiriövarmuuden vahvistamistoimenpiteitä ,  jotka on jätetty TVO : n hakemuksessa huomioon ottamatta ja oletettu yhteiskunnan hoitavan ne ilman lisäkustannuksia ydinvoimahankkeelle .
+Markkinataloudessa näin ei ole oikein menetellä eikä TVO : n tule sallia vyöryttää näitä eikä muita ulkoisia kustannuksia muiden kannettaviksi .
+Tuotantovarmuutta heikentää myös käytettävän polttoaineen tunnettujen resurssien rajallisuus .
+Nykyisellä globaalilla käyttötasolla polttoainetta nykyisillä hyödyntämiskustannuksilla riittää 40 - 55 vuodeksi  ( Energianhuoltostrategia Euroopalle ,  Vihreä kirja ,  marraskuu 2000  )  eli sitä ei riitä hakijan esittämälle ydinvoimalan käyttöajalle ,  ellei uusia varantoja löydetä tai ydinvoiman globaali käyttö vähene .
+Hakija esittää hakemuksessaan turvallisuudeltaan kyseenalaisia ratkaisuja tämän ongelmaan ratkaisuun ,  kuten jäljempänä lausunnossamme joudutaan toteamaan .
+Tuotantovarmuutta heikentää myös se ,  että reaktoritekniikka samoin kuin polttoaine tulevat ulkomailta .
+Suuren energiatiheyden takia ydinpolttoainetta on helpompi varmuusvarastoida kuin muita ulkomaisia polttoaineita .
+Käytännössä varmuusvarastointi on kuitenkin Suomessa ollut vain 2 vuoden kulutuksen suuruinen .
+Hakemuksessa ei esitetä miten ydinpolttoaineen saanti turvataan pidemmissä kriisitilanteissa .
+Ydinreaktori sekä käytettävä polttoaine ovat ulkomaisia ,  joten tuontiriippuvuutemme sekä energiatekniikan että polttoaineen osalta lisääntyvät entisestään .
+Tämä ei ole yhteiskunnan kokonaisedun mukaista ottaen huomioon vaikutukset muun muassa vaihtotaseeseen .
+Tällä hetkellä riippuvuutemme ulkomaisesta energiasta on jo 70 prosenttia eikä sitä todellakaan pitäisi enää lisätä .
+EU : n energiapolitiikassa huoltovarmuus merkitsee kotimaisen uusiutuvan energian käytön edistämistä .
+EU : n uusiutuvan energian ja energian säästön edistämisohjelmat johtuvat paljolti siitä ,  että EU ei halua kasvattaa tuontiriippuvuuttaan enää nykyisestä 50  %  : sta .
+Yllä olevista syistä johtuen tämä hanke tuottaisi sähkön huoltovarmuusriskin ,  joka ei ole yhteiskunnan kokonaisedun mukainen .
+Sähköntuotannon varmuuden edistämiseksi tuotannon hajauttaminen on oleellisen tärkeää .
+Se on nykytekniikalla mahdollista aina yksittäisen talon tasolle asti. Tuotantovarmuuden kannalta paras vaihtoehto on hajautettujen järjestelmien kytkeminen yleiseen sähköverkkoon .
+KILPAILUKYKYISYYS JA VAKAA HINTA Tuotantohinta on tärkeä tekijä sekä yhteiskunnan että tuotantoyhtiön kannalta .
+Siksi koko LTKK : n diplomityönä tehty laskelma ydinvoiman ,  kivihiilen ,  maakaasun ja turpeen kustannusrakenteista ja tuotantokustannuksista ,  johon hakijan väite ydinvoiman taloudellisuudesta perustuu ,  olisi tullut sisällyttää hakemukseen .
+Erityisesti laskelmassa tulisi näkyä se peruste ,  jolla hakija katsoo voivansa esittää ,  että uuden ydinvoiman tuotanto on Suomessa maailman halvinta ,  siis halvempaa kuin esimerkiksi kehitysmaissa tai maissa ,  joilla on oma ydinreaktori- ja polttoaineteollisuus sekä omat polttoainevarat .
+Ydinvoimalaa ei ole Länsi-Euroopassa tilattu vuoden 1986 jälkeen eikä USA : ssa vuoden 1978 jälkeen .
+Tähän ovat vaikuttaneet osaltaan ympäristösyyt ,  mutta pääasiallinen syy on huono kilpailukyky .
+Syinä ovat kilpailevien energiamuotojen tuotantotekniikan nopea kehittyminen ,  ydinvoimalan turvallisuustason parantamistarpeet ja velvoite 60 miljardin markan tuhot kattavan onnettomuusvakuutuksen hankkimiseen vapailta markkinoilta .
+Ydinvoima on lauhdevoimaa ,  ja tuotannossa syntyvä lämpö lasketaan mereen .
+Hakemuksen hintavertailussa kilpailevina vaihtoehtoina on esitetty ainoastaan kivihiili- ,  maakaasu- ja turvelauhdevoima .
+Nämä ovat kaikki tuhlaavia tapoja polttoaineen käyttöön ,  joten on luonnollista ,  että niiden tuotantohinta on korkea .
+Sähkön ja lämmön yhteistuotannossa polttoaineen käytön hyötysuhde on noin kaksinkertainen ja sähkön tuotantohinta on alempi kuin ydinvoimalla .
+Vertailusta jätetään pois muun muassa biomassa ,  joka myöskin on yhteistuotannossa ydinlauhdetta halvempi vaihtoehto .
+Ja kuten Loviisa 3 : n YVA-raportissa mainitaan tuulivoiman ennustetaan olevan tukemattomanakin kilpailukykyinen jo tämän vuosikymmenen loppupuolella eli 5. ydinreaktorin valmistumisaikana .
+Tuettuna sen hinta on nytkin kilpailukykyinen kaikkien hakemuksessa esitettyjen vaihtoehtojen kanssa .
+Energiasektorin kustannusarvioissa on tyypillistä ,  että energian tuotantokapasiteetin ,  erityisesti keskitetyn ,  sallitaan maksavan investointinsa takaisin hyvin hitaasti ,  n. 15
+-
+30
+vuodessa tai tässä hakemuksessa mahdollisesti vieläkin hitaammin  ( tämä toteutetaan laskelmissa alhaisella pääoman korkovaatimuksella )  .
+Energiansäästöinvestointien puolestaan vaaditaan maksavan itsensä takaisin kuukausissa tai korkeintaan parissa vuodessa .
+Hajautetun energiantuotannon takaisinmaksuaikavaatimus sijoittuu näiden välille .
+Tämä laskentatapa edistää voimakkaasti erityisesti keskitettyä tuotantoa ja siis tuhlausta energian säästön kustannuksella .
+Hakemuksessa ei myöskään eritellä korkotason mahdollisten vaihtelujen vaikutusta kustannuksiin .
+Suurista pääomakustannuksista johtuen korkotason vaihteluilla on hyvin suuri vaikutus ydinvoimalla tuotetun sähkön tuotantokustannuksiin ,  sillä energian hinnasta 60 prosenttia koostuu pääoman hinnasta .
+Hakemuksessa esitetään ,  että polttoaineen hinnalla on erittäin pieni osuus tuotetun sähkön hintaan .
+Pitää paikkansa ,  mutta tulisi ottaa huomioon ,  että resurssien vähetessä hinta voi nousta jopa kertaluokkia ,  jolloin kyse ei enää ole marginaalisesta osasta tuotantohintaa eikä voida puhua vakaasta tuotantohinnasta .
+Yllä olevista syistä johtuen tämä hanke tuottaisi merkittäviä taloudellisia riskejä ,  jotka eivät ole yhteiskunnan kokonaisedun mukaisia .
+RATKAISEMATON LOPPUSIJOITUS Hakemuksessa esitetään näkemys ,  että  " käytettävissä on turvalliset menetelmät uuden ydinvoimalaitosyksikön koko ydinjätehuollon järjestämiseksi "  .
+Näkemys on kansainvälisesti ainutlaatuinen ,  sillä muualla maailmassa tutkimukset ovat pahasti kesken .
+Loppusijoitukseen liittyy runsaasti ratkaisemattomia ongelmia ,  kuten mm. Suomen luonnonsuojeluliiton laatimissa selvityksissa ja lausunnoissa esitetään  ( SLL Raportti ,  jonka o laatinut geologian konsultti Philip J. Richardson  ( 1998 )  :  Suomen ydinjätesijoitukseen liittyvät ongelmat ;  SLL : n lausunto ydinjätteiden loppusijoituksen YVA-ohjelmasta sekä lausunto edk. ympäristövaliokunnalle Posiva Oy :  ,  loppusijoituslupahakemuksesta )  .
+Loppusijoitukseen liittyvät ongelmat sivuutetaan kuitenkin hakemuksessa lähes tyystin .
+Käytetyn ydinpolttoaineen sijoitushankkeen keskeisin ja todennäköisin vakava ympäristöuhka syntyy radioaktiivisten aineiden kulkeutumisesta pohjavesien mukana pintavesiin ja sitä kautta luontoon ja ihmisiin .
+Tulevan jääkauden todennäköisiä vaikutuksia  ( syvä ikirouta ,  kallioperän tektoniikka )  ei ole mahdollista mallintaa eikä ennakoida .
+Ratkaisemattomia ongelmia liittyy muun muassa säilytyskapseleiden korroosio-ongelmiin ,  veden virtaukseen kallionhalkeamissa ja halkeamien tunnistamiseen .
+Mikäli loppusijoituksessa edetään Posivan esittämässä tahdissa ,  Suomi olisi ensimmäinen valtio maailmassa ,  jossa loppusijoitetaan korkea-aktiivista ydinjätettä .
+Aikaisempien kokemusten puuttuminen saattaa aiheuttaa suuria yllätyksiä toteuttamisvaiheessa ,  joilla voi olla suuria vaikutuksia myös kustannuksiin .
+Vaarana on ,  että yhteiskunta joutuu maksumieheksi tai turvallisuudesta tingitään ,  mikäli ydinjätehuoltoon varatut rahastot osoittautuvat alimitoitetuiksi .
+URAANIN LOUHINTA Hakija mainitsee uraaninhuollon vaihtoehtoina Kanadan Saskatchewanin provinssin ,  Australian Olympic Damin ja sen ,  että Venäjältä saadaan tavallista uraania sekä ydinaseista saatavaa uraania .
+Uraania on hankittu nykyisiin voimalaitoksiin myös ainakin Nigeristä ,  Kiinasta ,  Venäjältä ja Yhdysvalloista .
+Uraanin louhintaan ja erotukseen malmista liittyy suuria ympäristöongelmia ,  joiden olemassaolo jätetään hakemuksessa täysin vaille huomiota ja jotka sivuutetaan myös YVA-selvityksissä .
+Yhdestä uraanimalmitonnista saadaan normaalisti 200 g ­ 2 kg luonnonuraania .
+Uraanin erottamiseksi malmi murskataan ja liuotetaan rikkihappoon .
+Erotuksessa syntyy noin 3 tonnia liejumaista jätettä ,  joka sisältää paitsi kemikaaleja ja raskasmetalleja ,  lähemmäs 90  %  malmin alkuperäisestä radioaktiivisuudesta .
+Kanadan Saskatchewanista löytyy erityisen rikkaita malmiesiintymiä ,  joista saadaan yli 100 kg uraania malmitonnia kohti .
+Erotusjätteiden määrä on tuolloin luonnollisesti alhaisempi ,  mutta vastaavasti säteilyn määrä volyymiyksikköä kohti on suurempi .
+Suuri osa jätteestä on nestemäistä .
+Lieju lasketaan jätealtaisiin ,  jossa kiinteät jätteet laskeutuvat pohjaan ja nestemäiset jätteet valuvat alapuolisiin vesistöihin .
+Alueilla ,  jossa haihdunta on suuri jätealtaat saattavat kuivua ja radioaktiivista ainesta kulkeutuu tuulen mukana .
+Uraaninlouhintaan liittyy usein myös ihmisoikeusongelmia ,  sillä alkuperäiskansojen ääni ei ole louhoksista päätettäessä kuulunut ,  eivätkä ne juurikaan ole louhoksista hyötyneet .
+Aktiivisimpia uraaninlouhinnan vastustajia ovatkin alkuperäiskansojen edustajat ,  joiden alueilla louhitaan valtaosa ydinvoimaloiden polttoaineesta .
+Suomeenkin tuotavaa uraania louhitaan kanadalaisten intiaaniheimojen ja Australian aboriginaalien alueilla .
+Etelä-Australiassa sijaitsevan Olympic Dam -kaivoksen uraani louhitaan 500 metrin syvyydestä maan alta .
+Uraaninerottelussa syntyvät nestemäiset jätteet ,  joissa on jäljellä 80 %  malmin radioaktiivisuudesta ,  varastoidaan avoimessa ja aitaamattomassa altaassa ,  jonne eläimet pääsevät vapaasti .
+Tämä kenties maailman laajin radioaktiivisen jätteen säilytyspaikka sijaitsee vain kymmenen kilometrin päässä Roxbyn kaivoskaupungista .
+Vuonna 1994 kaivosyhtiö raportoi itse ,  että viimeisen kahden vuoden aikana altaasta oli vuotanut jopa 5 miljoonaa kuutiometriä nestettä .
+Ongelmia on myös Pohjois-Australiassa Kakadun kansallispuiston keskellä sijaitsevalla Rangerin avolouhoksella .
+Kaivos sijaitsee runsassateisella trooppisella alueella .
+Sadekauden aikaiset altaiden ylivuodot ovat saastuttaneet läheistä Magelajokea ,  josta alueen aboriginaalit kalastavat merkittävän osan ravinnostaan .
+Valtion määräyksestä aluetta tutkivat tiedemiehet ovat havainneet muutoksia joen simpukoissa .
+Kaivoksen laajentaminen uhkaa parhaillaan tämän maailmanperintökohteen tulevaisuutta ,  sillä sen myötä jokeen tulevat vuodot kaksinkertaistuisivat .
+Tulevaisuuden uraaninlouhintamenetelmänä hakija mainitsee liuosuuttomenetelmän .
+Kyseinen menetelmä on käytössä muun muassa Beverleyn ja Honeymoonin kaivoksissa Etelä-Australiassa .
+Tässä In Situ Leaching  ( ISL )  -menetelmässä pumpataan happoa uraania sisältävään kallioperään .
+Uraani liukenee pohjaveteen ,  joka pumpataan ylös .
+Uraanin erottamisen jälkeen vesi pumpataan takaisin maahan .
+Halpuutensa vuoksi yhtiöt haluaisivat käyttää ISL-menetelmää laajemminkin .
+Ongelmana on ,  ettei voida olla varmoja siitä ,  mitä maan alla tapahtuu ,  sillä liuenneessa muodossa oleva uraani saattaa liikkua kallioperässä .
+Pohjaveden liikkeistä ei ole myöskään tehty tutkimuksia .
+Menetelmä on pilannut pohjavettä monilla seuduilla Euroopassa ja Yhdysvalloissa .
+Tulevaisuudessa uraaninlouhinta saattaa uhata myös Suomen lähialueita sillä Venäjän Karjalaan Äänisniemelle on suunnitteilla uraanikaivos .
+Rikastuksessa syntyvät jätevedet valuisivat Äänisjärveen .
+Kaivoksen välittömällä vaikutusalueella asuu noin 7000 henkeä .
+VÄKEVÖINTI Suurin osa sekä Olkiluodon että Loviisan voimaloiden uraanista väkevöitetään jollakin Venäjän neljästä  ( MINATOMin hallinnoimista )  väkevöintilaitoksesta .
+Olkiluodon voimala ostaa lisäksi väkevöintipalveluja jonkin verran myös Keski-Euroopasta .
+Nykyään Venäjän laitokset käyttävät sentrifugierottelua ,  joka kuluttaa huomattavasti vähemmän sähköä kuin vanhempi kaasudiffuusioprosessi .
+Väkevöintiin liittyvät vakavammat ongelmat on kuitenkin edelleen ratkaisematta .
+Rikastuslaitoksiin tuodusta uraanista ainoastaan yksi seitsemäsosa päätyy valmiiseen polttoaineeseen ,  loppu on jätettä ilman merkittävää siviilikäyttöä .
+Osa tästä jäteuraanista käytetään ydinaseplutoniumin valmistukseen .
+Kuvaavaa on ,  että kun kanadalaista uraania väkevöitetään Venäjällä ,  Kanada ei salli Venäjän pitää köyhdytettyä uraania rajojensa sisällä sen sotilaallisen potentiaalin takia  ( Canadian Coalition for Nuclear Responsibility )  .
+VOIMALAN TURVALLISUUS Voimalaan liittyvät turvallisuuskysymykset käsitellään hakemuksessa hyvin ylimalkaisesti .
+YVA-raportissa turvallisuusteknologian väitettiin tekevän suuronnettomuuden mahdottomaksi ,  mutta tekniset perustelut eivät ole vakuuttavia Toisaalta ydinvoima-ammattilaisille on ainakin julkisissa esiintymisissä tyypillistä riskien väheksyminen ja luja usko turvallisuusteknologiaan ,  mikä voi käytännössä johtaa inhimillisen tekijän riskin kasvuun .
+Raportissa väitetään ,  että Tshernobylin tyyppinen onnettomuus ei ole mahdollinen Olkiluoto 3 : ssa ,  koska reaktori on rakenteeltaan erilainen .
+Totta kai rakenteen erilaisuus tarkoittaa ,  että teknisesti samanlaista onnettomuutta ei voi syntyä ,  mutta Tshernobylin onnettomuudessa olennaisinta olikin ,  että turvajärjestelmät kytkettiin pois päältä ja reaktoria käytettiin sääntöjen vastaisesti ,  koska kokenut henkilökunta piti määräyksiä turhan rajoittavina eikä tiennyt onnettomuudelle olennaisten määräysten ydinfysikaalista syytä .
+Inhimillisiä erehdyksiä on tapahtunut myös länsimaisissa ydinvoimalaitoksissa ,  joten niitä ei voida sivuuttaa vetoamalla venäläisen ja länsimaisen turvallisuuskulttuurien eroavaisuuksiin .
+Esimerkiksi Ruotsissa Oskarshamn 1 : ssä automaattinen hätäjäähdytysjärjestelmä unohtui viikon ajaksi pois päältä .
+Mahdollinen onnettomuus ,  joka olisi osunut tälle viikolle ,  olisi saanut katastrofaalisia seurauksia .
+Vuonna 1992 Statens Kärnkraftsinspektion  ( SKI )  sulki neljä ydinvoimalaa Ruotsissa Barsebäckissa sattuneen onnettomuuden jälkeen ,  joka paljasti vakavat ongelmat voimaloiden hätäjäähdytysjärjestelmissä .
+Barsebäckin onnettomuuden aiheuttaja oli ohjausventtiilin huolimaton asennus .
+Vakavammalta onnettomuudelta vältyttiin ainoastaan sen takia ,  että reaktori ei ollut tapahtumahetkellä käymässä täydellä teholla .
+Ydinvoimaloissa tapahtuneet onnettomuudet ja käyttöhäiriöt eivät siis rajoitu pelkästään 'itäblokin' ydinvoimaloihin .
+Myös suomalaisissa ydinvoimaloissa on tapahtunut häiriöitä ,  vaikkakaan niiden luonne ei ole ollut erityisen vakava .
+Hakemuksesta ei kuitenkaan käy ilmi ,  miten niitä pyritään vastaisuudessa ehkäisemään .
+Hakemuksessa esitetty ydinvoimalaitosyksikön suunniteltu käyttöikä 60 vuotta on erittäin pitkä ,  mihin myös ydinturvallisuusneuvottelukunta kiinnittää huomiota .
+Vakiintuneen tavan mukaan käyttöluvat on myönnetty huomattavaksi lyhyemmäksi ajaksi .
+Useat reaktorit Yhdysvalloissa ,  Kanadassa ,  Iso-Britanniassa ,  Saksassa ja Ranskassa on suljettu jo 20 - 25 vuoden käytön jälkeen joko taloudellisista syistä tai turvallisuussyistä .
+Vaarana on ,  että yhteiskunta jää maksumieheksi ,  mikäli voimaloita joudutaan turvallisuussyistä sulkemaan aikaisemmin .
+Suomessa voimassa olevat turvallisuusvaatimukset ovat maanjäristysten ja lentokonetörmäysten osalta lievempiä kuin Länsi-Euroopassa on tavanomaista .
+Varsinkin lentokonetörmäysten osalta vaatimukset tulisi nostaa länsi-eurooppalaiselle tasolle ,  sillä turvallisuusmääräykset tulisi mitoittaa poikkeustilanteiden varalle eikä normaaliolojen mukaan .
+Esimerkiksi mahdollisen terroristihyökkäyksen kannalta vaatimus on aivan liian lievä .
+Lentokonetörmäyksenä oletetaan Suomessa yksimoottorinen pienlentokone ,  kun esimerkiksi Saksassa oletetaan suihkuhävittäjä .
+Monissa maissa on ydinvoimalaitoksille säädetty huomattavasti suuremmat korvausvastuut mahdollisen ydinvahingon varalta .
+Lähivuosina näköpiirissä onkin korvausvastuiden minimimäärien nostaminen .
+Turvallisuusmääräysten tiukentamisen ja korvausvastuiden nostamisen vaikutuksia ydinvoimalan kustannuksiin ei kuitenkaan hakemuksessa käsitellä .
+Amerikkalaisten asiantuntijoiden viranomaisten toimeksiannosta tekemät turvallisuustutkimukset ovat toistuvasti 1950 / 60-lukujen vaihteesta lähtien selvittäneet länsimaiden reaktorien käyttöön liittyviä riskejä ja USA : n ydinvastuulaki on aina kymmenen vuoden välein uudistettu tutkimusten tulosten perusteella .
+KTM : n raporteissa ja TVO : n hakemuksessa ei kuitenkaan mainita näitä perustavan tärkeitä turvallisuustutkimuksia eikä huomioida niiden vaikutuksia korvausvelvollisuuteen .
+Tässä yhteydessä on aihetta kiinnittää huomiota viimeisimpään USA : n hallitukselle esitettyyn selvitykseen  " Report to Congress on The Price-Anderson Act "  .
+Se antaa ydinvoiman turvallisuudesta ja korvausvastuista kansalaisten näkökulmasta toisenlaista ajattelemisen aihetta kuin mitä meillä markkinoidaan .
+Raportti löytyy kokonaisuudessaan verkosta osoitteesta :  http :  /  / www.nrc.gov / NRC / COMMISSION / SECYS / secy1998
+-
+160
+/ 1998
+-
+160
+scy.html  .
+Ydinvoimateollisuuden korvausvelvollisuus USA : ssa on nyt 9,43 miljardia dollaria reaktorionnettomuutta kohti eli yli 60 miljardia markkaa  ( meidän 1,7 miljardin sijasta )  .
+Lisäksi raportissa todetaan ,  että ydinvoimaonnettomuus saattaa johtaa paljon suurempiinkin vahinkoihin .
+Niihin kongressi on varautunut päättämällä ,  että ylimeneviltä osin vahingot korvataan valtion varoista täysimääräisesti ja viivyttelemättä .
+Myös säteilyriskeistä saadaan toisenlainen käsitys ,  joka kehottaa suurempaan varovaisuuteen ,  kuin mitä meillä jatkuvasti viestitään viranomaistenkin taholta julkisessa keskustelussa .
+Säteilyn vaikutuksista on saatu uutta tutkimustietoa erityisesti Hiroshiman ja Nagasakin uusien tutkimusten myötä ,  minkä perusteella raportissa todetaan ,  että  " A significant change that has occurred is the overall increase in the estimate of lifetime cancer risk attributable to a given radiation dose "  .
+Ja toinen lainaus :   "  Notwithstanding these gains in the knowledge base ,  however ,  much still is unknown about the biological effects of radiation .
+Hakijan mielestä ydinvoimaan liittyvä riski on mitätön ,  ja katastrofaalisen onnettomuuden seurauksia ei pidä ottaa huomioon ,  koska sen todennäköisyys on niin pieni .
+Tämä tulee havainnollisesti esille hakemuksen YVA selvityksissä ,  jossa ohimennen mainitaan onnettomuusluokka INES7 .
+Sen seuraukset Suomessa muodostuisivat katastrofaalisiksi yksinomaan taloudellisilta seurauksiltaan  ( VTT : n arvion mukaan jo 1980-luvulla noin 100 mrd. mk suuruisiksi )  .
+Sitä koskeva sanonta 'kerran miljoonassa vuodessa sattuva vahinko' on ilmaisuna vaikuttava ,  ja sitä on myös hakemuksessa käytetty .
+Mutta tilastotieteellisesti se on populismia ja harhauttaa järkevää ajattelua .
+Onnettomuus voi tulla jo huomenna tai ensi vuonna tai jonakin muuna hetkenä laitoksen ollessa käynnissä .
+Ei kuitenkaan miljoonan vuoden kuluttua ,  koska laitosta ei silloin enää ole .
+Onnettomuusriski koskee yhtä paljon tätä hetkeä ja meitä kuin tulevia sukupolvia ,  ja jokainen uusi ydinvoimala luo uuden katastrofaalisen riskin keskuuteemme tässä ja nyt .
+Juuri tämä tilastotieteellinen tosiasia yhdessä seurausten katastrofaalisuuden kanssa antaa jokaiselle kansalaiselle oikeuden osallistua riskin suuruuden määrittelyyn ja siitä päättämiseen .
+Hankkeen turvallisuusselvitys on teetettävä hakijasta riippumattomilla asiantuntijoilla eikä tyydyttävä myyjien vakuutteluihin .
+On oleellista että katastrofaalisten seurausten korvausasiat ovat kunnossa myös meillä ennen kuin uusia riskejä rakennetaan kansalaisten kannettaviksi .
+Riskin suuruutta ei voidakaan typistää pelkäksi todennäköisyysluvuksi ,  kuten hakemusasiakirjoissa pyritään tekemään ,  vaan rationaalisen päätöksenteon teorian mukaan ja ihmisten rationaalisen käyttäytymisen perusteella riskin suuruuteen kuuluvat oleellisina komponentteina myös odotettavissa olevien seurausten vakavuus ja korvausmenettelyn kattavuus ,  luonne ja toteutus .
+Näin arvioiden ydinvoimaan liittyvä riski ei ole pieni vaan katastrofaalinen ,  kuten USA : n turvallisuusasiakirjoissakin todetaan .
+TVO : n hakemus ei täytä kansalaisten oikeutettuja odotuksia uuden ydinvoimalaitoksen riskien arvioinnin ja korvausvelvollisuuden suhteen .
+Nykyinen ydinvastuulaki asettaa riskin kansalaisten kannettavaksi ja siten samalla vääristää myös vertailulaskelmia ,  joista riskin seurausten vastuu täten ulkoistetaan .
+EU : n komission Energiahuoltostrategiassa  ( Vihreä kirja ,  marraskuu 2000 )  todetaankin ,  että  " suuronnettomuudesta aiheutuvan toiminnanharjoittajien vahinkovastuun enimmäismäärää koskevaa järjestelmää voitaisiin pitää valtiontuen tapaisena tukena "  .
+Helsingissä 28.2.2001 Suomen luonnonsuojeluliitto r.y .
+DOCEND 1088020716179643594260943184131578224313187 2702
+DOCSTART 1088020716179643594260943184131578224313187 2706
+5.12.2002Ulkomainen pullovesi on vuoden turhake Suomen Luonto -lehti valitsi vuoden 2002 turhakkeeksi ulkomailta rahdatun pulloveden .
+Voittaja seuloutui lähes sadan ehdokkaan joukosta .
+Suomessa on useita veden pullottajia ,  vesi on hyvää ja pulloissa on varaa valita .
+Miksi siis ulkomailta tuodaan miljoona litraa vettä ?
+Tullin tilasto kertoo ,  että meille on tammi-elokuussa rahdattu jo reilut 700 000 litraa pullotettuja hiilihapottomia luonnon kivennäisvesiä .
+Vesistä lähes kaikki on peräisin Ranskasta ,  pieniä määriä tulee lisäksi Saksasta ,  Ruotsista ,  Italiasta ja Belgiasta .
+Tuonnin kasvu edelliseen vuoteen lasketaan sadoissa prosenteissa .
+" Suomessakin on ryhdytty trendinomaisesti apinoimaan kelvottomaan johtoveteen tottuneita keskieurooppalaisia ja ostetaan meidän oloissamme useimmiten täysin tarpeetonta vähittäispakattua vettä ,  jota kaiken lisäksi rahdataan ympäristöä kuormittavasti satojen tai tuhansien kilometrien takaa .
+Totuushan on ,  että Suomen erinomainen vesijohtovesi on aivan yhtä hyvää ,  ja jos pullotteeseen jostakin syystä on erityinen tarve ,  kotimaisia vaihtoehtoja löytyy runsaasti "  ,  eräs turhakekisaan osallistunut viestitti .
+Vesijohtovesi on testatusti hyvää Suomen Luonto testautti kotimaisen Solinan ,  ranskalaisen Evianin ja Helsingin vesijohtoveden .
+Näytteet analysoitiin Helsingin ympäristökeskuksen ympäristölaboratoriossa .
+Tulosten mukaan vedet ovat mikrobiologiselta laadultaan moitteettomia ,  hyviä juomavesiä .
+" Sokkotestasimme lisäksi viisi erilaista vettä kahdeksalla koehenkilöllä "  ,  pullovesien paremmuutta selvittänyt Alice Karlsson kertoo .
+Testaajia pyydettiin arvioimaan vesien väriä ,  hajua ja makua .
+Vesistä pyydettiin myös valitsemaan paras .
+Testattavana oli kaksi ulkomaista ja kaksi kotimaista pullovettä sekä Helsingin vesijohtovesi .
+" Viisi kahdeksasta koehenkilöstä valitsi parhaaksi Helsingin vesijohtoveden .
+Evian sai yhden ykkössijan .
+Kaksi ei pystynyt arvioimaan paremmuutta .
+Testaajien tehtävä oli vaikea .
+Kaikki vedet olivat lähinnä neutraaleja .
+Yleisimmät laatusanat olivat hajuton ,  kirkas ja raikas "  ,  Alice Karlsson summaa sokkotestin tulokset .
+Turhakkeiksi ehdotettiin muun muassa :  Antibakteeriset tuotteet ,  designkuvioitu pikkuhousunsuojakotelo ,  digitaalinen paistinhaarukka ,  elektroninen hierova sänky ,  elektroninen kärpäslätkä ,  hammasharja actigel-siivekkeillä ,  ilotulitteet ,  jouluvalot ,  jääpalakone ,  jääteekone ,  kaupunkimaasturi ,  kehonrakennusvyöt ja -laatat ,  letityskone ,  lumiskootteri ,  lumitykki ,  nestemäiset kananmunat ,  omenankuorimakone ,  paahtoleipäteline ,  paristokäyttöinen nitoja paristokäyttöinen perunankuorimaveitsi ,  pikaveneet ,  puutarhatonttu  ( lähestymiskytkimellä )  ,  rakennekynnet ,  salaattilinko ,  silikonirinnat ,  sipsikone ,  sähköinen kynsimanikyyrilaite ,  sähköinen viinipullonavaaja ,  sähkökäyttöinen kasvoharja ,  sähkökäyttöinen maidonvaahdotin ,  terassilämmitin ,  tutkanpaljastin ,  tyynynviilentäjä ,  vakuumiin pakatut perunat ,  valokuvaava kännykkä ,  vesiautomaatti ,  vesiskootteri ,  vesipatja ,  vitaminoidut ,  kiinteyttävät sukkahousut ,  voileipägrilli Suomen Luonto valitsi vuoden turhakkeen nyt kolmatta kertaa .
+Vuonna 2000 turhakkeeksi valittiin lehtipuhallin ja vuonna 2001 vaipankätkijä .
+DOCEND 1088020716179643594260943184131578224313187 2706
+DOCSTART 1088020716179643594260943184131578224313187 2707
+Tiedote6.9.2002 Laajennettua maanpuolustusta Armeija vartioi harvinaisia hyönteisiä Porin prikaati turvaa palosirkkojen ,  ruususiipisirkkojen ,  raunikkivyökoiden ja harjusinisiipien asuinpaikkaa Säkylässä .
+Harvinaiset hyönteiset elävät pienehköllä harjualueella ,  jonka ammunnat ja varusmiesten saappaananturat pitävät avoimena .
+" Kranaatti tekee maahan halkaisijaltaan noin metrin kokoisen jäljen ,  joka pian puskee kissankäpäliä ja kangasajuruohoja .
+Niiden perässä seuraavat sirkat ja sinisiivet "  ,  majuri Erkki Kallio selvittää tänään ilmestyneessä Suomen Luonnon syyskuun numerossa .
+Ruususiipisirkka ,  raunikkivyökoi ja harjusinisiipi ovat äärimmäisen uhanalaisia .
+Niille Säkylänharju on viimeinen turvapaikka .
+Palosirkan taantuminen jatkuu :  sitä tavattiin 1980-luvulla vielä yli 20 paikasta ,  1990-luvulta tunnetaan enää kymmenkunta esiintymää Säkylän harjusinisiipiä ja palosirkkoja on siirtoistutettu Ruokolahdelle .
+Palosirkan siirtoistutus näyttää onnistuneen .
+Harjusinisiiven siirto ei onnistunut ,  vaikka  " Punainen kirja "   ( Suomen lajien uhanalaisuus 2000 )  kertoi vielä viime vuonna toiveikkaana ,  että harjusinisiivelle on siirtoistutuksella perustettu uusi kanta Ruokolahdelle .
+- Suomen Luonto 2 / 2002 ,  sivut 32
+-
+34
+( 3 liuskaa ohessa )  Mainittujen hyönteislajien ruotsinkieliset nimet :  harjusinisiipi  =  batonblåvinge ,  raunikkivyökoi  =  såpörtmal ,  ruususiipisirkka  =  rosenvingad gräshoppa ,  palosirkka  =  trumgräshoppa .
+DOCEND 1088020716179643594260943184131578224313187 2707
+DOCSTART 1088020716179643594260943184131578224313187 2708
+18.6.2002Kiertoartikkeli toimituksenne vapaaseen käyttöön Ympäristöpalkittu Pentti Malaska :  Ydinvoimapäätös jarrutti kestävän kehityksen Professori Pentti Malaskan mielestä viides ydinvoimala on kestävän kehityksen jarru .
+Uusi voimala lisää tarpeetonta kasvua ja energian kulutusta .
+Sen sijaan huomio tulisi kiinnittää tehokkuuteen ,  tekniikan parantamiseen ja säästömahdollisuuksiin .
+Vaikka ydinvoimasähkön aiheuttamat suorat päästöt ovat pienet ,  niin ydinvoimalan toiminnasta aiheutuvat toisen kertaluvun päästövaikutukset vastaavat hiilisähkön päästömääriä .
+Malaskan mukaan viidennen ydinvoimalan jälkeen Suomessa on sähköntuotannossa ylikapasiteettia .
+1600 megawatin kapasiteetti riittää kymmenen vuoden kasvuun ,  kun sähkön kulutus kasvaa vuodessa hallituksen arvioiden mukaan noin puolitoista prosenttia .
+" Olin kauppa- ja teollisuusministeri Sinikka Mönkäreen kanssa eräässä ajankohtaistoimituksen televisio-ohjelmassa ,  jossa ministeriltä kysyttiin ,  mitä ylijäämäsähkölle tehdään .
+Malaskan mielestä tämä viittaa siihen ,  että Suomeen rakennetaan viides sekä kuudes ydinvoimala ,  minkä jälkeen täältä pyritään myymään ydinsähköä yhä enemmän Keski-Eurooppaan .
+" Uskon ,  että viides ja myös kuudes ydinvoimala rakennetaan .
+" Noin vuosi sitten hallitus esitti kaksi vaihtoehtoa ilmastostrategialle .
+Mutta sen jälkeen se hylkäsi oman paremman ehdotuksensa ,  joka perustui hajautettuun ,  yhdistetyn lämmön ja sähkön tuotantoon ,  kotimaiseen teknologiaan ja energiaan sekä maakaasun käyttöön .
+Tämä parempi vaihtoehto vaiettiin jatkokäsittelyssä kuoliaaksi ydinvoimabisneksen etujen varjelemiseksi "  ,  Malaska sanoo .
+Uusiutuvia ei kehitetty Malaskan mukaan viidennen ydinvoimalan saaminen on kummitellut luurankona kaapissa jo 20 vuotta .
+" Niin kauan ,  kun se pysyi kaapissa ,  kotimaisia ja uusiutuvia energiamuotoja voitiin kehittää .
+Nyt tilanne on toinen .
+Talousvaliokunnan lausumat ovat hurskastelua ,  jotka eivät sido millään lailla luvan hakijaa ja saajaa ,  vaan niillä hankittiin ääniä .
+" Uusiutuvia energiamuotoja ei ole kehitetty riittävästi .
+Eikä maakaasun käyttöä ole tarmokkaasti edistetty ,  vaikka aikaa kyllä on ollut riittävästi .
+Malaska on lähes vakuuttunut ,  että viidennen ydinvoimalan kanssa kilpailevat vaihtoehtoiset energiamuodot ajetaan alas .
+Kansa vastusti voimalaa Taloustutkimus Oy on tehnyt mielipidemittauksia ydinvoiman vastustuksesta ja kannatuksesta vuodesta 1987 lähtien aina kuluvan vuoden kevääseen asti. Yhteensä 160 mittauksessa kansan selvä enemmistö vastusti ydinvoimaa .
+Saman tuloksen antavat Suomen Gallupin kolmetoista mittausta vähän lyhyemmältä ajanjaksolta .
+Malaskan mielestä kansaa ei kuunneltu ,  eikä aito demokratia toteutunut ydinvoimapäätöstä tehtäessä .
+Kansanäänestyksen mahdollisuutta ei edes nostettu esille .
+Kun ydinvoiman lisärakentamisesta päätettiin Suomessa edellisen kerran ,  nousivat turvallisuuskysymykset vahvasti esille .
+Malaska ihmettelee ,  kuinka nyt ollaan lähes yksimielisiä siitä ,  että viides ydinvoimalamme on täysin turvallinen .
+Yhdysvalloissa ,  jossa ydinvoiman rakentaminen on puhdas bisnesasia ,  ei uusia ydinvoimaloita ole aloitettu pariin vuosikymmeneen .
+1990-luvun alussa valmistunut Shorehamnin 1000 megawatin voimalaitos paketoitiin turvallisuussyistä heti valmistumisensa jälkeen .
+USA : ssa liikemiehet ovat laskeneet ,  että ydinvoimaloihin investoiminen ei kannata .
+" Yhdysvalloissa yritysten korvausvelvollisuus onnettomuuden sattuessa on noin 30 kertaa suurempi kuin Suomessa ,  ja valtion korvausvelvollisuus sen lisäksi periaatteessa rajoittamaton .
+Meillä asiat ovat paljon huonommin .
+Kestävälle kehitykselle uudet mittarit Malaska on Tulevaisuuden tutkimuskeskuksen tutkijana ja neuvonantajana mukana laajassa Euroopan tulevaisuutta käsittelevässä TERRA 2000 -hankkeessa  ,  jossa tutkitaan ,  minkälainen on kestävän kehityksen informaatioyhteiskunta .
+Kolmevuotisessa projektissa on mukana 40 tutkijaa EU : sta ,  Yhdysvalloista ja Venäjältä .
+" Tutkimuksen tarkoituksena on linjata kestävää kehitystä .
+Keskuksen ryhmässä on kehitetty uusia käsitteitä ,  kuten kestävä talouskasvu ,  rebound-vaikutus ,  hyvinvoinnin tuottavuus jne. Suomessa talouden vuotuinen kasvu on ollut kolme prosenttia ,  mutta kestävää kasvua siitä on ollut alle puolet .
+Malaskan mukaan kehitys on kestävää ,  jos hyvinvointi kasvaa ja ympäristöpäästöt vähenevät .
+Tämä on lähtökohtana myös EU-projektin työskentelyssä .
+Keskuksen kehittämän teorian perusteella voidaan tarkastella ja arvioida kestävän kehityksen tarvitsemia toimenpiteitä ja niiden tehokkuutta .
+Kestävän talouskasvun laskentamallin avulla voidaan myös vertailla eri maita keskenään .
+Yksi kestävän talouskasvun periaatteista on siirtyminen palveluihin ,  jolloin hyvinvoinnin aikaansaamiseksi tuotetaan ja kulutetaan vähemmän materiaa .
+Hyvinvointia on mitattu pitkään bruttokansantuotteen  ( BKT )  avulla .
+Nämä uudet mittarit paljastavat ,  että hyvinvointi on laskenut ,  vaikka BKT on kasvanut .
+BKT : n hyvinvoinnintuottavuus on laskenut 1970-luvulta alkaen kaikissa länsimaissa .
+Tekniikan tohtori Pentti Malaska on työskennellyt talous- ja tilastomatematiikan professorina Turun kauppakorkeakoulussa vuodesta 1966 sekä Tulevaisuuden tutkimuskeskuksen johtajana vuosina 1992­1997 .
+Malaskan johdolla toteutettiin Suomen Akatemian rahoittama FUTU-projekti  ( Kansalaisuus ja ekologinen modernisaatio tietoyhteiskunnassa tulevaisuudentutkimuksen näkökulmasta )  ,  jossa valmistui tulevaisuudentutkimukseen perehtyneitä tohtoreita .
+Hänen johdollaan aloitettiin myös tulevaisuudentutkimuksen verkostoakatemia ,  joka on yliopistojen välinen verkostomuotoinen opetustoiminta ,  jota keskus koordinoi .
+Malaska on Tulevaisuuden tutkimuksen seuran perustajajäsen ja ensimmäinen puheenjohtaja 1980­1990 ,  World Futures Studies Federationin  ( WFSF )  pääsihteeri 1990­1993 ja puheenjohtaja 1993­1997 .
+Rooman Klubin jäsen Malaska on ollut vuodesta 1972 .
+Luonnonsuojeluliitto on myöntänyt Pentti Malaskalle tämänvuotisen ympäristöpalkintonsa  " pitkäaikaisesta työstä kestävän energiapolitiikan hyväksi "  .
+Palkinto luovutettiin Maailman ympäristöpäivänä kesäkuun alussa .
+ULLA ORA Kirjoittaja on Luonnonsuojeluliitossa työskentelevä toimittaja .
+DOCEND 1088020716179643594260943184131578224313187 2708
+DOCSTART 1088020716179643594260943184131578224313187 2710
+26.3.2001Nepalin kansalliskukka on lali guras Nepalin kansalliskukaksi on 1962 valittu Rhododendron arboretum  .
+Nepalilaiset tuntevat lajin nimellä lali guras  .
+Lali guras ei kuulu Suomessa kasvatettaviin lajeihin ,  eikä sille ole suomalaista nimeä .
+Kreikan rhodon on ruusu ja dendron on puu ,  Rhododendron -lajeja on maailmassa yli 800 .
+Komeimmat kasvavat jopa 30-metrisiksi puiksi ,  joiden lehdetkin ovat metrin mittaiset .
+Oma ,  alle vaaksan mittaiseksi jäävä lapinalppiruusumme  ( R. lapponicum )  on pienimpiä .
+Rhododendron on laajalle levinnyt kasvisuku .
+Levinneisyys ei rajoitu yksin Himalajalle ,  vaan alue on paljon laajempi :  Tiibet ,  Burma ,  Intian Arunachal Pradesh sekä Kiinan Sechuan ja Yunnan .
+Joitakin lajeja kasvaa muuallakin maailmassa ;  vain Afrikasta ja Etelä-Amerikasta suku puuttuu kokonaan .
+Sekä laji- että yksilömääriltään varsinainen Rhododenron -keskus on Itä-Nepal­Sikkim­Bhutan-alueella .
+Nepalissa Rhododendron -lajeja on noin 30 ,  eniten idässä .
+Länteen päin mentäessä lajimäärä putoaa niin ,  että vain neljää­viittä lajia tavataan koko Nepalissa  ( R. arboretumin lisäksi R. anthropogon ,  R. complanatum ,  R. lepidotum )  .
+Lali guras on nepalilaisten tuntema kasvi .
+Sitä kerätään polttopuuksi ,  ja puuainesta käytetään tarve-esineiden ja astioiden valmistukseen .
+Kukkia käytetään pikkelsin tavoin .
+Tuoreiden kukkien uskotaan irrottavan kalanruodot kurkusta .
+Rhododendroneita kasvatetaan yleisesti koristepensaina .
+Ne viihtyvät hyvin Suomessakin ,  muuallakin kuin Elimäen Mustilassa .
+Rhododendronit vaativat happaman maan .
+Parhaiten ne menestyvät puolivarjossa ja saadessaan runsaasti kosteutta .
+Kukkimista voidaan saadaan näyttävämmäksi nyppimällä kuihtuneet kukat pois ,  jolloin kasvi ei käytä energiaansa siementen tuottamiseen !
+DOCEND 1088020716179643594260943184131578224313187 2710
+DOCSTART 1088020716179643594260943184131578224313187 2712
+12.11.1997Naturan karsiminen vaarantaa suotuisan suojelun tason Piiri huolissaan metsistä ja soista ,  lintuvesistä ,  lehdoista ja kallioista sekä harjuista SUOT JA METSÄT Soidensuojelualueiden rajauksiin tulee sisällyttää kivennäismaata ,  jotta kokonaisuus on ekologisesti perusteltu ja kestävä .
+Soidensuojeluohjelman mukainen rajaus on usein riittämätön ja ekologisesti kestämätön .
+Rehevät suot ,  kuten letot ja korvet ja niiden reunojen biotoopit ,  ovat huonosti edustettuina Natura-ohjelmassa .
+Naturan kannalta mielenkiintoisia suokohteita Varsinais-Suomessa ,  jotka tulisi inventoida ja tutkia mahdollisuuksia niiden ennallistamiseen ovat esimerkiksi Laitilan Kirvessuo ja Välisuo ja Yläneen Isosuo ,  Pikku-Vuohensuo ,  Hauhansuo ,  Ruusinrahka ja Kaakkurlammensuo .
+Kaikki maakunnan alueen vanhat metsät  ( priorisoitu luontotyyppi )  ,  erityisesti inventoidut ,  mutta vanhojen metsien suojeluohjelmasta pois pudotetut kohteet sekä vanhojen metsien suojeluohjelmaan kuuluvat kohteet tulee ottaa mukaan esitykseen .
+Maakunnan hienoimpia ja monipuolisimpia vanhoja metsiä ,  joissa esiintyy mm. liito-orava ,  ovat Laitilan vanhat metsät ja Kivijärven metsät .
+Pyhämaan Kulju on edustava kokonaisuus saaristo- ja metsäluontoa ,  jonka pesimä- ja muuttolinnusto on merkittävä .
+Monet uhanalaiset lintulajit pesivät tai käyttävät aluetta ruokailuun .
+Koska vanhojen metsien kohteet ovat sirpalemaisia kuvioita talousmetsien keskellä ,  niiden ekologinen kestävyys on reunavaikutuksen vuoksi uhattuna .
+Näiden aarniometsäytimien ympärille tulee muodostaa ennallistamisvyöhykkeitä tai muita laajempia ennallistettavia metsäalueita ,  jotta pitkällä aikavälillä Etelä-Suomen luonnonmukaisten vanhojen metsien pinta-ala saataisiin kasvuun .
+Metsähallituksen hallinnassa olevat valtion maat soveltuvat hyvin laajennusalueiksi .
+Etelä-Suomessa metsäluonnon suojelua tulee maantieteellisistä ja ekologisista syistä painottaa myös muille metsäbiotoopeille ,  kuten lehtoihin ,  reheviin suometsiin ,  harju- ja kalliometsiin sekä rantametsiin ja maankohoamisrannikon metsiin .
+Jos valtio jatkossa ostaa maa-aineslailla taikka kaavalla suojeltua metsämaata Natura-alueelta ,  tulee valtion rauhoittaa alueet luonnonsuojelulailla ja tätä kautta lisätä metsien suotuisan suojelun tasoa .
+Karhunperänrahka on yksi merkittävimmistä suurista kokonaisuuksista ,  jossa suojellaan erilaisia ,  toisiaan täydentäviä soita ja vanhoja metsiä .
+Tällaiset kohteet ovat hyvin tärkeitä metsä- ja suoluonnon erilaisten pienympäristöjen ja uhanalaisten lajien suojelun kannalta .
+Jatkossa tulee selvittää mahdollisuuksia kehittää aluetta vapaaehtoisin kaupoin ,  sillä alueelta on mahdollista löytää uusia vanhojen metsien kohteita .
+Turun Pomponrahkan aluetta ei tule supistaa tai se pilataan lopullisesti .
+Supistettu rajaus tuhoaisi suon ja sen kasvillisuuden sekä lukuisat uhanalaiset hyönteiset .
+Lintudirektiivin lajeista alueella esiintyvät harmaapäätikka ,  idänuunilintu ,  kangaskiuru ,  kehrääjä ,  palokärki ja pyy .
+Alueella esintyy keidassoita ,  lettoja ,  kasvipeitteisiä silikaattikallioita ,  vanhoja kuusivaltaisia metsiä ,  mäntyvaltaisia puustoisia soita ja boreaalisia lehtoja .
+Suo tulee rajata mukaan kokonaisuudessaan toteutettavaksi luonnonsuojelulailla lukuunottamatta Rotanvuoren aluetta ,  jossa suojelukeinona on maa-aineslaki .
+Ehdotettu rajaus ja luonnonsuojelulaki ovat myös pohjavesien ja maiseman kannalta edullista .
+Turun kaupungin ympäristövirasto on tehnyt vuonna 1996 Pomponrahkan hoito- ,  käyttö- ja suojelusuunnitelman ,  jonka tavoitteena on suon ennallistaminen .
+Ennallistamiseen tuleekin ohjata nopeasti riittävät varat ja resurssit .
+On hyvin harvinaista ,  että näin lähellä suurta kaupunkia on hyvin tutkittu ja opetuskäytössä oleva edustava saaristo-Suomen keidassuo .
+Kurjenrahkalla suolajiston suotuisan suojelun tason saavuttaminen ja tulevan kansallipuiston toiminnnot vaativat kestävää ekologista rajausta ,  johon kuuluu metsiä soiden lisäksi .
+Alue tulee rajata niin ,  että puolustusvoimille kuuluva Lammenrahka ,  jossa on vielä jäljellä edustavia metsiä ja rikas suolinnusto sekä Savojärvi tulee kokonaisuudessaan mukaan .
+Lammenrahkan pohjoispuolella puolustusvoimien alueella Raasinkorvessa on arvokkaita suo- ja metsäalueita ja pienvesiä ,  joiden ennallistamisella tuettaisiin Kurjenrahkan monimuotoisuuden säilyttämisen tavoitteita .
+Myös Valkiaissaarenrahkalla elää Varsinais-Suomessa harvinainen riekko ,  jonka suojelemiseksi koko kohteen rajaus tulee olla riittävän laaja .
+Alue muodostaa erämaisen ,  monipuolisen luontokohteen ,  joka on myös suosittu retkeily- ja opetuskohde .
+Alueella tavataan useita uhanalaisia eläin- ja kasvilajeja sekä luontotyyppejä .
+Vaskijärven rajaukseen on liitettävä Vaskijärven vesialue sekä nyt rajauksen ulkopuolella olevat metsähallituksen omistamat maa-alueet Vaskijärven pohjois- ja luoteispuolella .
+Kolkansuon ja Vaskijärven väliset ,  pääosin UPM : n omistamat maat  ( vrt. vanha luonnonpuiston laajennusehdotuksen rajaus )  ja alueen eteläosassa sijaitseva Pahnassuo tulee liittää Naturaan ,  jolloin saadaan laajempi ,  ekologisesti kestävä kokonaisuus .
+LINTUVEDET Erityisesti kansainvälisesti tärkeisiin lintuvesikohteisiin ,  joilla on euroopanlaajuinen merkitys ,  tulee rajata mukaan arvokkaimmat rantaniityt ja -metsät sekä lintujen levähdys- ja ruokailualueina käyttämiä peltoja .
+Esimerkkeinä maakunnan arvokkaimmat lintuvedet Mietoisten Mynälahti ,  Paimion Paimionlahti ja Kemiön Sjölax sekä Uudenkaupungin Lautvesi .
+Lintulahtien ja niitä ympäröivien peltojen ja rantaniittyjen välillä on vuorovaikutussuhde ;  linnut käyttävät niitä ruokailuun ja lepäilyyn ,  ilman niitä lintulahden arvo romahtaisi .
+Nimenomaan pellot korvaavat Varsinais-Suomesta lähes kokonaan kadonneita rantaniittyjä .
+Samoista syistä on tärkeätä rajata mukaan riittävästi rantametsiä ,  ja Varsinais-Suomessa myös tammimetsiä ja tammihakoja ,  joissa luonnon monimuotoisuus on maamme korkeimpia .
+Useat alueet vaativat lisäksi inventointeja hoidon suunnittelun pohjaksi .
+KALLIOT JA LEHDOT Kalliot ja lehdot esiintyvät usein yhdessä ,  erottamattomana ekologisena kokonaisuuteena ,  jonka mukaisesti tulee myös rajaukset tehdä .
+Lehdot ovat avainasemassa maamme metsäluonnon monimuotoisuuden säilyttämisessä.Varsinais-Suomessa Natura -kohteista hienoja kallioiden ja lehtojen kokonaisuuksia ovat Lemulanrinne  ( Kisko ,  Suomusjärvi )  ,  Korkeaniemenkallio  ( Kisko )  ,  Perniön lehdot  ( Perniö )  ,  Vaisakko  ( Halikko )  ,  joka tulee rajata Naturaan kallioselvityksen esityksen mukaisesti ,  Laukkakallio  ( Suomusjärvi )  ja Ruissalo  ( Turku )  .
+Arvokkaiden kallioalueiden ,  joihin sisältyy uhanalaista ja vaateliasta sammallajistoa ,  luonnontilaisia korpia ja rämeitä ,  lehtoja sekä puustoltaan luonnontilaisen kaltaisia metsiä ,  suojelukeinoina maa-aineslaki on riittämätön .
+Tällaisissa tapauksissa suojelu tulee toteuttaa pääasiassa luonnonsuojelulailla ja hoito- ja käyttösuunnitelmaan perustuvalla ,  luonnonarvot turvaavalla metsäsuunnittelulla .
+Kalkkikalliot ovat kallioalueistamme arvokkaimpia ,  joita uhkaa kuitenkin erikoisen kivilaatunsa vuoksi kaivostoiminta .
+Mahdollisen tulevan kaivostoiminnan takia jonkin kohteen pois karsiminen Natura-esityksestä on luontodirektiivin vastaista .
+Maakunnan arvokkaimpia kohteita ovat Naturaan esitetyt Kemiönsaaren kalliot ,  Särkisalon kalliot ja Suomusjärven Laukkakallio .
+Näillä alueilla esiintyvät myös monet harvinaiset kalkinsuosijakasvit .
+Kallioalueilla on myös huomattava maisemallinen merkitys .
+HARJUT Hyyppärän harjualue ,  maakunnan yksi arvokkaimmista harjuista muodostaa hyvin merkittävän ,  ekologisesti kestävästi rajatun kokonaisuuden ,  jossa on monipuolisesti erilaisia arvokkaita luontotyyppejä ;  harjumetsiä ,  soita ,  vanhoja metsiä ,  kallioita ,  lähteitä ja harjujärviä .
+Rajaukseen tulisi sisällyttää vielä vesiluonnon kannalta merkittävä Iso-Ätämö-järvi .
+Särämäen arvokas kallioalue tulee suojella luonnonsuojelulailla .
+Hyyppärän harjualue on hyvin tärkeä uusi kohde ,  jolla on merkitystä myös pohjavesien suojelun kannalta .
+Tästä alueesta ei tule rajata mitään pois ,  muutoin kokonaisuus kärsii korvaamattomasti .
+Kohteen edustamien luontotyyppien suotuisan suojelun taso putoaisi ratkaisevasti ,  jos kohde jäisi pois Naturasta .
+Harjumetsien suojelu on toteutettava riittävässä määrin luonnonsuojelulailla ,  maa-aineslaki yksin ei riitä harjumetsien suojelemiseen .
+DOCEND 1088020716179643594260943184131578224313187 2712
+DOCSTART 1088020716179643594260943184131578224313187 2714
+20.3.2000Lausunto Merimaskun kunnan tekniselle lautakunnalle Maa-ainesten ottolupahakemuksesta Merimaskun Rihtelän kylässä Varsinais-Suomen luonnonsuojelupiiri r.y : n hallitus on tutustunut urakoitsija Veijo Laineen maa-ainesten ottolupahakemukseen ja asiaan liittyvään muuhun materiaaliin ja esittää lupaharkinnassa otettavaksi huomioon seuraavat seikat :  1 )  suunniteltu louhinta-alue on kahden suojelualueen ,  Villivuoren luonnonsuojelulailla suojellun kalliomäen ja Rihtelän kantatilan rakennushistoriallisesti ja maisemallisesti arvokkaan kokonaisuuden puolivälissä .
+Kyseisten suojeltujen alueiden etäisyys toisistaan on vain noin yksi kilometri .
+Suunniteltu 6 m leveä tie kulkisi jälkimmäiseen liittyvän arvokkaaksi todetun pelto- ja hakamaan laitaa lähimmillään vain muutaman kymmenen metrin päässä alueen rakennuksista .
+2 )  Villivuoren laajasta ,  103 ha : n maisemakokonaisuudesta on suojeltu vain sen korkein huippu eli n.4,6 ha .
+Suunniteltu louhosalue rikkoisi tämän kokonaisuuden .
+Hakemuksessa suojelualue määritellään kitukasvuiseksi kallioalueeksi ,  joka on metsätaloudellisesti merkityksetön .
+Hakemuksessa alueen maiseman luonto- ja maisema-arvoja ei tuoda esille ,  vaikka matkailuelinkeino on kunnassa voimakkaassa kasvussa .
+Merimaskun kunnan yleiskaavassa painotetaan alueen luontoarvoja ja virkistyskäyttöä .
+3 )  Ympäristöministeriön käynnistämän ja myös Turun ja Porin lääninhallituksen ohjauksessa suoritetun luonnon- ja maisemansuojelun kannalta arvokkaiden kallioalueiden kartoituksessa  ( 1994 )  saa Villivuori arvosanan  " luonnonarvoiltaan kohtalaisen arvokas kallioalue "  .
+Selvityksessä suositellaan ettei alueelle myönnettäisi maa-ainesten ottolupia .
+Arviointi perustuu mm. geologisiin ,  biologisiin ,  maisemallisiin ja historiallisiin tekijöihin .
+4 )  Alueen linnustosta on yksittäistietoja eri vuosilta sekä luontokohteiden kartoitus v : lta 1996 .
+Niistä ilmenee ,  että yleisen lajiston lisäksi alueella joko pesii ,  tai on pesinyt ,  ainakin seitseman EU : n lintudirektiiviin kuuluvaa lajia ,  joilla on luonnonsuojelulain suoja .
+Näiden lajien esiintyminen alueella on selvitettävä ennen luvan myöntämistä .
+Direktiivilajit ovat kangaskiuru ,  harmaapäätikka ,  kehrääjä ,  huuhkaja ,  metso ,  pyy ja palokärki .
+Lisäksi alueella esintyy ainakin kolme uudessa uhanalaisuusluokituksessa mainittua lintulajia :  tiltaltti ,  käki ja teeri .
+5 )  Suomesta puuttuu valtakunnallinen maa-ainesten ottopaikkojen määrää ja sijaintia koskeva ohjeisto ja siksi mm. kalliomurskaamoja syntyy sattumanvaraisia kaikkialle .
+Niillä on kuitenkin maisemaa rikkova ,  asukkaita häiritsevä ja luontoa muuttava vaikutus .
+Luonnonsuojelupiiri esittääkin ,  että maa-ainesten ottoalueet  ( kalliomurskaus ,  soranotto )  tulisi kytkeä osaksi kuntien yleiskaava- ja maakuntaliittojen maakuntakaavaselvityksiä .
+Kaavoituksella tulisi osoittaa ottamiseen sopivat ja toisaalta ottamiseen esim. virkistyksen ,  luontoarvojen ja asumisen vuoksi huonosti soveltuvat alueet .
+6 )  asiaan liittyvät ,  myös myöhemmässä vaiheessa tarvittavat luvat pitää hakea samanaikaisesti .
+Lupahakemukseen on liitettävä yksityiskohtainen ja toteuttamiskelpoinen maisemointisuunnitelma .
+Varsinais-Suomen luonnonsuojelupiiri r.y .
+Virpi Lemmetyinen ,  puheenjohtaja Seppo Häkkilä ,  varapuheenjohtaja LISÄTIEDOT :  Varsinais-Suomen luonnonsuojelupiiri ry.  ,  Martinkatu 5 ,  20810 Turku Puh. 02
+-
+2355255
+,  fax 02
+-
+2355244
+.
+DOCEND 1088020716179643594260943184131578224313187 2714
+DOCSTART 1088020716179643594260943184131578224313187 2716
+21.12.2000Paimion Seudun Ympäristöyhdistys vuoden luonnonsuojeluyhdistys 2000 Varsinais-Suomen luonnonsuojelupiirin hallitus valitsi joulukuun kokouksessaan Paimion Seudun Ympäristöyhdistyksen vuoden luonnonsuojeluyhdistykseksi .
+Yhdistys on palkittu aiemmin vuonna 1995 .
+Vuoden luonnonsuojeluyhdistys valittiin piirin alueella nyt kuudetta kertaa .
+Varsinais-Suomen luonnonsuojelupiiriin kuuluu 17 paikallisyhdistystä ,  joissa on jäseniä yhteensä 3500 .
+Paimion Seudun Ympäristöyhdistys toimii Paimion ja Sauvon kuntien alueella .
+Yhdistyksen näkyvimpiä hankkeita on ollut monivuotinen Askala-projekti ,  valtakunnallisesti arvokkaan maisema-alueen hoito Paimionjokivarressa .
+Jokivarren ketoja on hoidettu leireillä ja niittotempauksilla .
+Vanhaa kulttuuriympäristöä on kunnostettu yhdessä yhteistyötahojen kanssa talkoilla lähes 10 vuoden ajan .
+Yhdistys julkaisi myös kiitosta keränneen värikkään Askala -esitteen .
+Kansalaisvaikuttaminen Paimioon suunnitellun jäähallin ympäristövaikutuksista herätti kaupunkilaisia lähiluonnon vaalimiseen .
+Yhdistys on puolustanut Paimionlahden lintuvesiarvoja ja osallistunut paikallisagendaan ja kaupungin kestävän kehityksen ohjelman laatimiseen .
+Se järjestää myös mm. retkiä ja tempauksia .
+Yhdistyksen puheenjohtajana toimii Viri Teppo-Pärnä  .
+Jäseniä yhdistyksellä on 110 .
+DOCEND 1088020716179643594260943184131578224313187 2716
+DOCSTART 1088020716179643594260943184131578224313187 2717
+13.12.2001Turun luonnonsuojeluyhdistyksestä vuoden luonnonsuojeluyhdistys Varsinais-Suomen luonnonsuojelupiirin hallitus valitsi kokouksessaan 11.12.2001 Turun luonnonsuojeluyhdistyksen vuoden luonnonsuojeluyhdistykseksi .
+Vuoden luonnonsuojeluyhdistys valittiin piirin alueella seitsemättä kertaa .
+Varsinais-Suomen luonnonsuojelupiiriin kuuluu 17 paikallisyhdistystä ,  joissa on jäseniä yhteensä 3500 .
+Turun luonnonsuojeluyhdistys palkittiin vuoden luonnonsuojeluyhdistyksenä myös vuonna 1997 .
+Turun luonnonsuojeluyhdistys toimii Turun kaupungin alueella .
+Yhdistyksellä on jäseniä 1500 .
+Kuluvana vuonna yhdistys on tehnyt tunnetuksi ekosähköä ,  perustanut luomuruokapiirin ,  puhdistanut kaupungin linnunpöntöt sekä ottanut kantaa aktiivisesti ajankohtaisiin ympäristöasioihin ,  mm. Turun kaupungin metsien hoitoon sekä ydinvoimaan .
+Yhdistys on myös puolustanut Hirvensalon Arolan kaava-alueen luontoarvoja ,  joukkoliikennettä sekä Tuomiokirkon naakkojen pesäkolojen avaamista .
+Se järjestänyt jäseniltoja ,  energia-aiheisen seminaarin ,  Ruissalon Marjaniemen ketotalkoot ja luontoretkiä .
+Lisäksi yhdistys on osallistunut Autottoman päivän ,  Hiljaisuuden päivän ja Lasten ja Nuorten ympäristöviikon tempauksiin .
+Yhdistys toimii Luonnonsuojelukeskuksessa ,  osoitteessa Martinkatu 5 .
+Puheenjohtajana toimii Panu Kunttu .
+DOCEND 1088020716179643594260943184131578224313187 2717
+DOCSTART 1088020716179643594260943184131578224313187 2719
+Ahvenon kansalliskalamme Suomi sai kansalliskalan vuonna 1994 Kalatalouden keskusliiton järjestämässä äänestyksessä .
+Kansalliskalaksi ahvenen nosti 836 ääntä ;  toiseksi sijoittunut hauki keräsi 751 ääntä .
+Äänestykseen osallistui runsaat 3 200 kansalaista .
+Ahven on perisuomalainen :  kyrmyniskainen ,  hitaahko ,  piikikäs .
+Varsinkin nuorena se on seurallinen ,  mutta erakoituu vanhemmiten omiin oloihinsa jöröttämään .
+Ahven on jokapaikankala ,  jonka saa pyydykseen yhtä varmasti tummavetisistä mutalammista kuin järvistä ,  joista ja Itämerestäkin .
+Kansalliskalamme ei ole suomalaisten  " oma "  kala ,  sillä sitä tavataan sisävesistä Atlantin rannoilta kautta Euraasian - Venäjällä okun-nimisenä -Tyynen valtameren rannoilla saakka .
+Lisäksi ahventa on Pohjois-Amerikassa .
+Varsinkin pienikokoista ahventa pidetään särjen ,  kiisken ja salakan lailla vähäarvoisena kalana tai suorastaan roskakalana .
+Niiden tehopyynniillä on ryhdytty hoitamaan ylirehevöityneitä järviä .
+Tällaisen suurimittaisen biomassan poiston on toivottu antavan paremmat mahdollisuudet taloudellisesti merkittävien kalojen kasvulle .
+Niin mato-onkijat ja pilkkijät kuin ammattikalastajatkin osaavat toki arvostaakin ahventa .
+Kansalliskalan käyttömahdollisuudet ovat monipuoliset .
+Isot kalat ovat tietenkin halutuinta saalista ,  mutta pienetkin ahvenet käyvät täytteeksi kalakukkoon tai antamaan aidon maun kalakeittoon .
+Sitä paitsi pienistäkin ahvenista saa ihan oikeita kalafileitä .
+Maakuntakaloja maistelemaan !
+Kansalliskalan valinnan yhteydessä historialliset maakuntamme saivat nimikkokalansa .
+Kala-Harri ,  maa- ja metsätalousministeriön kala- ja riistaosaston ylitarkastaja Harri Dahlström  ,  esitteli maakuntakalat heti tuoreeltaan luontoväelle Suomen Luonnon kesänumerossa  ( 6­7 / 94 )  .
+Kalat on uusiutuva luonnonvara ,  jonka järkevä hyödyntäminen ihmisravinnoksi on ihan paikallaan .
+Kansallis- ja maakuntakalojen nimet eri kielillä on taulukoitu .
+Nimistö on Lauri Koli n Suomen kalat -suurteoksessaan käyttämä .
+Jostakin uusnimestä ei tule syyttää Kolia .
+Nyt esittelemään ja miksei suosittelemaankin kansallis- ja maakuntakalojamme ulkomaalaisille ystäville ja tuttaville !
+Ranskasta voi olla hyötyä myös ruokalistojen tulkinnassa .
+DOCEND 1088020716179643594260943184131578224313187 2719
+DOCSTART 1088020716179643594260943184131578224313187 2721
+Näin kirjoitti Helsingin Sanomien kuukausiliite elokuussa 1985 ,  jolloin kukaan ei vielä ollut kuullut Ruokolahden leijonasta .
+Suomelle haettiin kansalliseläintä .
+Suomen luonnonsuojeluliiton  ( SLL )  hallitus oli 27.4.1985 päättänyt järjestää kansalliseläinäänestyksen .
+Aloite oli liittohallituksen jäsen Antti Karlin in .
+HS : n kuukausiliite lähti mukaan ,  hoiti äänestyksen järjestämisen käytännössä ,  esitteli ehdokkaat ,  lupasi äänestäjille rahapalkinnotkin .
+Äänestyksen voitti ylivoimaisesti karhu .
+Annetusta 22 870 äänestä se keräsi 5 948 .
+Kansalliseläintoimikunta vahvisti 23.9. kansanäänestyksen tuloksen ,  nimesi yksimielisesti karhun kansalliseläimeksemme ja toivotti sille menestystä ja rauhaa metsissämme .
+HS : n kuukausiliite ,  joka oli aloittanut kansalliseläinjuttunsa vaakunaleijonasta ,  saattoi äänestystuloksesta uutisoidessaan kertoa ,  kuinka kansalliseläin karhukin oli ollut vähällä päästä valtakunnanvaakunaan .
+Vuonna 1936 vaakunakomitea lisäsi 1500-luvulta peräsin olevaan leijonavaakunaamme kaksi karhua kilvenkantajiksi .
+Komitea ehdotus jäi kuitenkin vahvistamatta .
+- Kansalliseläimeksi nimittämisen jälkeen karhu hyväksyttiin nopeasti kansalliseksi luontotunnukseksi ;  se on jo saanut kuvansa mm. kolikkoon ja postimerkkiin .
+SLL : n tavoitteena oli saada kansalliseläinäänestyksellä ja itse kansalliseläimellä myönteistä julkisuutta kotimaiselle nisäkäseläimelle ,  suomalaiselle luonnolle ja sen suojelulle .
+Itse äänestyksessä SLL : lla ei ollut omaa ehdokasta .
+Kansalliseläintoimikunnan jäsen ,  Helsingin yliopiston eläintieteen professori ,  nyt jo edesmennyt Olli Järvinen tähdensi ,  että Suomen luonnolle ominaisinta on - eivät tuhannet järvet vaan - metsä .
+Siksi kansalliseläimen on oltava metsän asukki .
+Siksi karhu sopi ja sopii mainiosti kansalliseläimeksemme .
+Kansalliseläimeksi nimittäminen todennäköisesti auttaa karhua selviytymään ihmisen mieleisikseen muuttamissa metsissä .
+Karhuja oli Suomessa 1960-luvun lopulla noin 150 ,  kansalliseläinäänestyksen aikaan noin 500 ja nykyisin  [ keväällä 1996 ]  ehkä 800 .
+Suomalaiset haluavat säilyttää kontionsa ,  otsonsa ,  mesikämmenensä .
+Ei siihen EU : n apua tarvita .
+Jo ennen kansanäänestystä joku saattoi aavistaa ,  kuinka siinä kävisi .
+Maisteri Teppo Korhonen Helsingin yliopiston Kansatieteen laitokselta kertoi ,  että Suomen kansan uskomuksissa ja kansanrunoudessa kaksi eläintä nousee ylitse muiden :  karhu ja hirvi .
+Muinaissuomalaiset on jopa voitu jakaa karhu- ja hirvi-ihmisiin sen mukaan kumman nimeen he ovat vannoneet - raja on kulkenut siinä ,  missä vihdan ja vastan raja vielä paljon myöhemminkin .
+Karhuun ja hirveen liittyvät tarinat ovat kotoisia tai ainakin pohjoisen havumetsävyöhykkeen kansojen omia ,  kun taas esim. kettutarinat ovat muiden keksimiä ,  tavallisimmin kulkutarinoita antiikista .
+Suomen Gallup oli kysynyt viiden maakuntalehden toimeksiannosta vuoden 1985 alussa 992 suomalaiselta ,  mikä kävisi kansalliseläimeksemme .
+Joka neljäs haastatelluista - miehistä 27 ,  naisista 26 prosenttia - piti karhua sopivimpana kansalliseläimenä Suomelle .
+Karhun kanssa kilpailivat menestyksekkäimmin hirvi  ( 15 prosenttia haastatelluista )  ja ilves  ( 10 )  ihan niin kuin varsinaisessa äänestyksessäkin .
+Siinä tosin norppa kiipesi niukasti näiden edelle ,  mihin lienee ollut syynä äänestyksen yhdistäminen sen järjestäjän tunnuseläimeen .
+Karhuja maailmalla Karhun tultua valituksi kansalliseläimeksemme poliittiset pilapiirtäjät heräsivät :  meillähän on ennestään iso karhu naapurissa !
+Venäjän karhu ,  josta runsas vuosikymmen sitten tehtiin vielä Neuvostoliitonkin tunnusta ,  symboloi valtaa ,  voimaa ja parhaimmillaan rohkeutta - tai alistamista ,  sanoisi joku .
+Aivan samassa tehtävässä ovat Suomen leijona ja lukemattomat muut leijonat Euroopan valtioiden lipuissa ,  vaakunoissa ja sineteissä .
+Tällaiset kansallistunnuksiksikin muotoutuneet eläinhahmot ovat melkein poikkeuksetta peräisin vanhojen hallitsijasukujen vaakunoista tai muista samankaltaisista tunnuksista .
+Useinkaan niillä ei ole mitään tekemistä maan luonnonvaraisen eläimistön kanssa .
+Eikä siinä mitään mieltä olisikaan ,  jos joka toisen maan kansalliseläin olisi leijona .
+Mikäli karhu on Venäjällä kansalliseläimen asemassa ,  sen jäljet todennäköisesti johtavat sukulaiskansoihimme ,  jotka ovat pitäneet peijaisiaan havumetsien kätköissä pitkin laajaa Venäjän maata .
+Karhulla ja hirvellä on merkittävä rooli kaikkien pohjoisten kansojen elämässä ,  vaikka lajit eivät Uuden manteren puolella olekaan samat kuin meillä :  Grönlannissa on oikein virallisessa kansalliseläimen asemassa jääkarhu ,  Newfoundlandissa puolestaan kanadanhirvi .
+Karhu on myös Berliinin tunnus ja esiintyy mm. Bernin kantonin ja kaupungin lipussa .
+Niillä on nimiyhteys karhuun .
+Kalifornian komea karhulippu on tasavallan ajalta ,  joten eläin saattaa siinä edustaa itseään ja luontoa eikä olla yksinomaan vallan merkkinä .
+Vaikka maakunnillemme on valittu erilaisia luontotunnuksia ,  nisäkkäät puuttuvat yhä joukosta .
+Ehkä siihen ei ole ollut tarvettakaan ;  historiallisten maakuntien vaakunaeläinten on katsottu riittävän :  Hämeen ilves ,  Pohjanmaan kärppä ,  Karjalan - varsinkin kun itärajan takainen Karjala otetaan mukaan - karhu ,  Ahvenanmaan saksanhirvi .
+Mutta miten olisi metsäpeuran nimittäminen Kainuun maakuntaeläimeksi tai saimaannorpan Etelä-Savon tunnukseksi ?
+Kunpa jokin maakunta ottaisi vielä omakseen suden tai ahman .
+Niillä ei ole riittävästi ystäviä Suomessa .
+DOCEND 1088020716179643594260943184131578224313187 2721
+DOCSTART 1088020716179643594260943184131578224313187 2722
+Kieloon Suomen kansalliskukka Suomi sai kansalliskukan vuonna 1967 täyttäessään 50 vuotta .
+Suomen itsenäisyyden juhlavuoden neuvottelukunta tosin tyytyi vain suositteleman sitä .
+Neuvottelukunnan asettama kansalliskukkatoimikunta olisi halunnut kansalliskukaksemme pihlajan !
+Kansalliskukkatoimikunta oli valinnut kuusi mahdollista kansalliskukkaa .
+Näistä äänestivät radionkuuntelijat omaa ehdokastaan .
+Äänestykseen osallistui 8 657 henkilöä ,  mikä ei tänä päivänä tunnu kovin suurelta luvulta .
+Joka tapauksessa selvä enemmistö eli 58 prosenttia heistä äänesti kieloa .
+Kansalliskukkatoimikunnan nuiva suhtautuminen kieloon johtui mm. siitä ,  että kieloa ei tavata koko maassa ,  Kainuussa se on jo harvinainen ja puuttuu Enontekiön ja Inarin Lapista kokonaan .
+Talvella kielo ,  toisin kuin pihlaja ,  on näkymättömissä hangen alla .
+Kansalliskukkaa oli haettu hakemalla jo ennen vuotta 1967 .
+Sellaiseksi oli ehdotettu aivan vakavissaan mm. Suomen vaakunan valkoista ruusua - samaan tapaan kuin leijonaa kansalliseläimeksemme .
+Kun Kansan Kuvalehti järjesti kansalliskukan löytämiseksi 1934 lukijaäänestyksen ,  sen voitti ruiskaunokki ja toiseksi tuli päivänkakkara .
+Palkintolautakunta pyysi unohtamaan kummankin - rikkaruohoina !
+Puutarhaliitto esitti vuonna 1964 valtioneuvostolle kielon valitsemista kansalliskukaksemme .
+Puutarhaväkeä kielo luonnollisesti kovasti miellytti .
+Se on suosittu koristekasvi sekä luonnosta poimittuna että viljeltynä leikkokukkana .
+Se on monivuotinen ja helposti juurakosta lisättävissä .
+Kielon hyötäminen onnistuu vuoden pimeimpäänkin aikaan ,  joten kukkivia kansalliskukkia saa kukkakaupasta vaikka itsenäisyyspäivänä .
+- Kielon kaupallisuus saattoi arveluttaa ,  vaikka Puutarhaliitto tuskin kertoi ,  että kansalliskukan tuoksuakin saa pullotettuna .
+Joka tapauksessa valtioneuvosto jätti asian päättämättä .
+Kielossa on samaa tyylikkyyttä kuin valkoisessa kaartuvakaulaisessa laulujoutsenessa ,  Suomen kansallislinnussa ,  "  dosentti Juha Suominen kirjoitti .
+Kielo kukkii muutaman viikon nimipäivänsä aikoihin  ( 14.6. )  .
+Ei se ole .
+Maakuntakukat valittiin 1982 Ajatus maakuntakukkien  " virallistamisesta "  syntyi Suomen Kotien Kukkasrahastossa .
+Valtakunnallinen maakuntakukkatoimikunta nimettiin puheenjohtajanaan Toivo Rautavaara .
+Järjestetyssä yleisöäänestyksessä auttoi 58 maakunnallista ja paikallislehteä .
+Äänestyslippuja tuli yhteensä 8547 ,  mikä ei tänä päivänä tunnu kovin suurelta .
+- Naapurimaassa Ruotsissa maakunnat olivat saaneet nimikkokukkansa jo 1908 .
+Maakuntien lukumäärä ja rajaus oli ongelma puolitoista vuosikymmentä sitten .
+Eri vaiheiden jälkeen kansalliskukkatoimikunta päätyi 16 : een maakuntaan .
+Hämäläiset halusivat yleishämäläisen maakuntakukan lisäksi valita omat nimikkokukkansa myös maakuntansa eri talousalueille .
+Maakuntakukkatoimikunta nimesi Suomen maakunnille nimikkokukat 30.9.1982 .
+Ne otettiin varsin innostuneesti vastaan .
+Vain kymenlaaksolaiset panivat hanttiin ;  heille ei kelvannut voikukka .
+Parempina pidettiin suovehkaa ,  luhtalemmikkiä ja kurjenmiekkaa ,  joista Kymenlaakson maakuntaliitto vielä saman vuoden marraskuussa valitsi maakunnan nimikkokukaksi kurjenmiekan .
+Etelä-Savo ei liene vielä päättänyt ,  onko sen nimikkokukka iso- ,  pohjan- vai suomenlumme .
+Kaikki kasvavat maakunnassa ,  eikä mikään niistä ole harvinainenkaan .
+Joka tapauksessa jokin lumme on kuva-aiheena seuraavassa maakuntakukkasarjan postimerkissämme .
+Kymmenen lummemerkin tarra-arkki ilmestyy 3.6. ja sen ensipäivänleimaus tapahtuu paikan päällä Mikkelissä .
+DOCEND 1088020716179643594260943184131578224313187 2722
+DOCSTART 1088020716179643594260943184131578224313187 2725
+Suomenmaakuntalinnut Nykyisen BirdLife Suomen edeltäjä ,  Lintutieteellisten Yhdistysten Liitto  ( LYL )  ,  järjesti vuonna 1985 yleisöäänestyksen ,  jossa etsittiin maakunnillemme nimikkolintuja .
+Noin 5 500 suomalaista ilmaisi mielipiteensä lehdistön avustuksella toteutetussa kyselyssä .
+Kansallislinnuksi nimitetty joutsen oli suljettu pois äänestyksestä .
+Myöhemmin luetteloon on lisätty Pohjanmaa .
+DOCEND 1088020716179643594260943184131578224313187 2725
+DOCSTART 1088020716179643594260943184131578224313187 2726
+SUOMENLUONNONSUOJELULIITTO ry Pääsivulle  <  Tämän sivun loppuun Hannusjärvi Hannusjärvi Espoon Kaitaalla on ainoa Länsiväylän eteläpuolella sijaitseva järvi .
+Se on Kansalliset vesistötalkoot -kampanjan pilottihankkeena .
+Hannusjärvellä tehdään Suomen luonnonsuojeluliiton toimesta parhaillaan rakennetun ympäristön aiheuttamien vaikutusten selvitystä ja ohjeistusta vastaisia maankäyttösuunnitelmia varten .
+Hannusjärvellä toiminta tapahtuu Hannusjärven Suojelu r.y. : n eli HanSun puitteissa .
+  Valuma-alueselvitys ja ehdotukset järven suojelutoimenpiteiksi  ( myös .pdf - ja Word 97 -muodossa )  .
+ Mitä sedimentti kertoo järven tilasta ja menneisyydestä ?
+Sedimenttitutkimus keväällä 1999  .
+ Rakennetun ympäristön vaikutukset Hannusjärven tilaan ja vesien suojelun ohjeisto maankäytön suunnitteluun .
+Kunnostustoimenpiteet Hannusjärvellä kokeillaan vesikasvien poistoa talkoovoimin .
+Kasvillisuutta poistettiin vuonna 1999 heinäkuun lopussa ja syyskuun alussa .
+Kuvia niittotalkoista :    Järvi kesällä 1999 ennen niittoa .
+Kuva E.Nuortie .
+  Niittotoimikunnan vetäjä Tom Malmström käyttää niittokonetta  .
+Kuva E. Nuortie .
+  'Kauhomistekniikka' kasvien keruussa .
+Kauhomassa Pertti Tilli ,  airoissa Mika Tilli .
+Kuva E.Nuortie .

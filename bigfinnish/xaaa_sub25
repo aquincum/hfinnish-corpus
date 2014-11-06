@@ -1,0 +1,1000 @@
+Hän oli pyrkinyt sinne toiseen kertaan reputettuaan ensimmäisellä yrityksellään .
+Albert Einstein syntyi Ulmissa 14 .
+3. 1879 juutalaisen Hermann Einsteinin perheeseen .
+Vuonna 1905 Albert Einstein julkaisi Annalen der Physikissä kolme tärkeäksi osoittautunutta artikkelia .
+Eräässä niistä hän oli ratkaissut hiukkas- ja aaltovaloteorioiden kiistan kuin katkaisten Gordionin solmun :  hän ei sanonut valon olevan hiukkasia tai aaltoja ,  vaan hän sanoi sen olevan ikään kuin molempia .
+Selittäessään valosähköistä ilmiötä hän otti käyttöön mallin ,  jossa valo koostuu aaltokvanteista eli fotoneista .
+Einstein esitti artikkelissaan Liikkuvien kappaleiden dynamiikasta suppeamman suhteellisuusteoriansa periaatteet ,  teorian ,  joka muutti täysin ihmisten käsityksen ajasta ja avaruudesta .
+Vuonna 1905 Einstein otti ehkä suurimman yksittäinen askeleen yllä mainituilla artikkeleillaan fysiikan maailmankuvan muuttamisessa ,  minkä perusteella esitän klassisen ja modernin fysiikan rajapyykiksi juuri vuotta 1905 .
+Makromaailma Erityinen suhteellisuusteoria Erityisessä eli suppeassa suhteellisuusteoriassa Einstein yleisti mekaniikan suhteellisuusperiaatteen koskemaan kaikkia fysiikan lakeja .
+Tämän yleistetyn periaatteen ,  jota sanotaan vaatimattomasti suppeaksi suhteellisuuden periaatteeksi ,  hän otti teoriansa ensimmäiseksi kulmakiveksi muodossa :  Kaikki luonnonlait ovat esitettävissä samassa matemaattisessa muodossa kaikissa inertiaalivertailujärjestelmissä .
+Tässä inertiaalivertailujärjestelmä tarkoittaa kaikkien niiden kappaleiden muodostamaa järjetelmää ,  jotka ovat toistensa suhteen paikallaan ja jotka eivät ole kiihtyvässä liikkeessä .
+Tämä yleistys on yksinkertainen ,  mutta valitettavasti se ei vastaa fysikaalista todellisuutta .
+Newtonin mekaniikka kyllä käyttäytyy tämän lain mukaan ,  mutta ,  kuten aiemmin mainittiin ,  Maxwellin sähkömagneettiset aallot eivät .
+Nehän vaativat eetterin ,  muista inertiaalivertailujärjestelmistä poikkeavasti käyttäytyvän inertiaalivertailujärjestelmän .
+Einstein esitti toisen kulmakiven saadakseen suppean suhteellisuuden periaatteen vastaamaan fysikaalista todellisuutta :  Valon nopeus tyhjiössä on sama kaikille inertiaalivertailujärjestelmille .
+Tämän väitteen todenperäisyys oli jo tuolloin vahvistettu kokein ,  joista on jo mainittu kuuluisa Michelsonin - Morleyn koe .
+Näiden kahden kulmakiven eli suppean suhteellisuusteorian postulaatin perusteella voidaan johtaa suppean suhteellisuusteorian matematiikka  ( vrt. esim .
+Gettys ,  Keller ja Skove 1989 ,  luku 38  )  .
+Ensiksi johdetaan koordinaatistonmuunnoskaavat ,  joilla minkä tahansa tapauksen koordinaatit jonkin inertiaalivertailujärjestelmän lepokoordinaatistossa voidaan muuntaa jonkin toisen inertiaalivertailujärjestelmän lepokoordinaatiston mukaisiksi koordinaateiksi .
+Yksinkertaisuuden vuoksi tarkastellaan tässä kuvitteellista yksiulotteista avaruutta .
+Liikkukoon havaitsija H' havaitsijan H suhteen H : n lepokoordinaatiston x-akselia pitkin nopeudella v  .
+Tällöin pisteen ,  jonka avaruuskoordinaatti on x havaitsijan H lepokoordinaatistossa ,  koordinaatti H' : n lepokoordinaatistossa on x'  =  k  (  x - v t  )  ,  missä k on pisteen koordinaateista riippumaton .
+Vastaava muunnos H' : n koordinaatistosta H : n koordinaatistoon ,  kun v ilmoittaa edelleen H' : n nopeutta H : n suhteen ,  on x  =  k  (  x'    v t'  )  .
+Saman pisteen ajanhetki H' : n näkökulmasta ,  joka H : n näkökulmasta on t  ,  saadaan ratkaisemalla yllä mainittujen yhtälöiden muodostama yhtälöpari t'  : n suhteen .
+Tulokseksi saadaan :  2 k - 1 t'  =  k  (  t - -------- x  )  2 k v Muunnoskaavat ovat k  : ta vaille valmiit. k  : n tulee olla muuttujista x  ,  t ja v  ( ja siten funktioista x' ja t'  )  riippumaton .
+Sen määrittämiseksi tarkastellaan seuraavanlaista tilannetta :  hetkellä t  =  t'  =  0 yllämainitut kahden inertiaalijärjestelmän lepokoordinaatistot kohtaavat .
+Samalla koordinaatistojen yhteisessä origossa välähtää valo .
+Valopulssi havaitaan pisteessä ,  jonka koordinaatti on H : n lepokoordinaatistossa x ja H' : n lepokoordinaatistossa x'  ,  H : n näkökulmasta hetkellä t ja H' : n näkökulmasta hetkellä t'  .
+Koska valo liikkuu molempien havaitsijoiden mielestä samalla vakionopeudella c  ,  on x t  : n funktio ja x' t'  : n funktio siten ,  että x  =  c t ja x'  =  c t'  .
+Kun sijoitamme nämä yllä oleviin muunnoskaavoihin ,  saamme :  c t'  =  k  (  c t - v t  )  ja t'  =  k  [  t - c t  (  k 2 - 1  )   /   (  k 2 v  )   ]  .
+Jaettaessa edellinen yhtälö jälkimmäisellä sekä t että t' saadaan supistettua pois ,  jolloin saatu tulos voidaan ratkaista k  : n suhteen  ( positiivinen juuri otetaan ,  jotta aika ei kääntyisi koordinaatiston muunnoksessa nurinpäin )  :  1 k  =  ---------------  _  _  _  _  _  _  _  _  _   /  2  /  v  /  1 -  (  ---  )   \  /  c Näin saadaan suppean suhteellisuusteorian mukainen koordinaatistonmuunnoskaava muotoiltua ,  kun todetaan ,  että  (  k 2 - 1  )   /   (  k 2 v  )   =  v  /  c 2  :  x - v t x'  =  -----------  _  _  _  _  _  _  _  _  _   /  2  /  v  /  1 -  (  ---  )   \  /  c 2 v t -  (  ---  )  c t'  =  ----------  _  _  _  _  _  _  _  _  _   /  2  /  v  /  1 -  (  ---  )   \  /  c Näissä kaavoissa kiinnittää heti huomiota se ,  ettei aika ole havaitsijasta riippumaton ,  absoluuttinen käsite .
+Puolalais-saksalainen Hermann Minkowski  ( 1864 - 1909 )  tarttui tähän koukkuun ja totesi maailmankaikkeuden olevan luonteeltaan neliulotteinen aika-avaruus ,  jonka piste ,  maailmanpiste  ,  on niiden tapausten joukko ,  jotka tapahtuvat tai ovat tapahtuneet tietyssä avaruuden pisteessä tiettynä ajanhetkenä .
+Aika-avaruus eli maailmanavaruus on neliulotteinen ,  sillä sen jokaisen pisteen yksiselitteiseen määrittämiseen riittää kaikissa tapauksissa neljä koordinaattia annetussa koordinaatistossa .
+Maailmanavaruudelle antaa geometrian se ,  että sillä on Lorenz-muunnoksen suhteen invariantti ominaisuus maailmanpisteiden etäisyys ,  ts. se ,  että maailmanpisteiden etäisyys on riippumaton koordinaatiston valinnasta .
+Määritellään maailmanpisteiden etäisyys d yleistetyn Pythagoraan lauseen mukaisesti :  d 2  =  x 2    y 2    z 2    u 2  ,  missä x  ,  y ja z ovat kyseessä olevien maailmanpisteiden avaruuskoordinaattien erotukset ,  mutta u ei ole maailmanpisteiden aikaero. u ei voi olla aikasuure ,  sillä silloin yksiköitä ei voida laskea yhteen .
+Aika tulee muuntaa matkaksi jonkin nopeuden avulla .
+Kyseinen nopeus on c  ,  valon nopeus ,  joten voimme kirjoittaa :  u  =  K c t  ,  missä K on jokin t  : stä riippumaton vakio .
+Jos sijoitamme K  : ksi imaginaariyksikön i  : n ,  ja merkitsemme maailmanpisteiden avaruudellista etäisyyttä s  : llä ,  saamme :  d 2  =  s 2 - c 2 t 2  .
+Näin määriteltynä maailmanpisteiden etäisyys on Lorenz-muunnoksen suhteen invariantti .
+Yllä määritellyn kaltaisella maailmanpisteiden etäisyydellä on hyvin tärkeä fysikaalinen merkitys. d voi saada kolmenlaisia arvoja :  se voi olla positiivinen reaaliluku ,  nolla tai imaginaariluku .
+Tarkastellaan tilannetta ,  jossa maailmanpisteessä A välähtää valo ,  joka leviää pallomaisesti rintamana kaikkialle avaruuteen ja pisteessä B on valonnopeutta hitaammin liikkuva havaitsija ja A on ajassa ennen B : tä .
+Ensimmäisessä tapauksessa s  <  c t  ,  eli maailmanpisteiden avaruudellinen etäisyys on pienempi kuin pisteiden aikaeron aikana valon kulkema matka ,  joten d on imaginaarinen ,  ja valorintama on jo ohittanut maailmanpisteen B. Tässä tapauksessa B : ssä oleva havaitsija ei voi koskaan suorittamatta taikatemppuja havaita valorintamaa .
+Mikäli s  =  c t  ,  eli maailmanpisteiden avaruudellinen etäisyys on yhtäsuuri kuin valon maailmanpisteiden aikaeron aikana kulkema matka ,  d on myös nolla ,  ja B : ssä oleva havaitsija havaitsee valorintaman ollessaan B : ssä .
+Kolmannessa tapauksessa s  >  c t  ,  d on positiivinen reaaliluku ,  ja B : ssä oleva havaitsija ei voi taikatempuitta välttyä valorintaman havaitsemisesta joskus tulevaisuudessa .
+Maailmanavaruudesta piirretään usein malli ,  josta on esimerkki kuvassa 1 .
+Piirroksen xyt-koordinaatisto on kolmiulotteisen maailmanavaruuden koordinaatisto ,  jonka origosta O lähtee valorintama .
+Ylöspäin aukeavan kartion ,  ns. tulevaisuuden valokartion  ,  vaippa kuvaa kyseistä valorintamaa ja poikkileikkaus sitä avaruuden aluetta ,  jolle valorintama on osunut ennen poikkileikkauksen ajanhetkeä .
+Kolme pistettä B1 ,  B2 ja B3 kuvaavat yllämainittujen kolmen tapauksen maailmanpistettä B. Niistä lähtevä  " häntä "  on nimeltään kyseisessä pisteessä olevan havaitsijan maailmanviiva  ,  joka puolestaan kuvaa kyseisen havaitsijan liikettä avaruudessa ajan kuluessa samaan tapaan ,  kuin klassisessa fysiikassa saatettiin kuvata st-koordinaatiston paraabelilla ylöspäin heitetyn pallon liikettä .
+Kaikissa maailmanpisteissä ,  myös B1 : ssä ,  jotka ovat tulevaisuuden valokartion sisällä ,  joita nimitetään ajanluontoisiksi maailmanpisteiksi  ,  olevat havaitsijat ovat joskus menneisyydessä havainneet valorintaman ,  joten ko. maailmanpisteiden tapahtumiin origon tapahtuma on teoriassa voinut vaikuttaa .
+Vastaavasti valokartion ulkopuolella olevassa maailmanpisteessä ,  kuten B3 ,  jota nimitetään paikanluontoiseksi maailmanpisteeksi  ,  oleva havaitsija tulee havaitsemaan valorintaman joskus tulevaisuudessa ,  joten näissä pisteissä tapahtuviin tapahtumiin eivät origon tapahtumat ole voineet vaikuttaa .
+B2 : ssa ,  ja muissa valonluonteisissa eli valokartion vaipalla olevissa maailmanpisteissä oleva havaitsija havaitsee valorintaman ollessaan kyseisessä maailman ,  joten niihinkin origo on voinut vaikuttaa .
+Alaspäin aukeava kartio ,  ns. menneisyyden valokartio  ,  sisältää puolestaan kaikki ne maailmanpisteet ,  jotka ovat teoriassa voineet vaikuttaa origon tapahtumaan .
+( Vrt. esim .
+Jos tutkitaan Lorenz-muunnoskaavoja - nimi viittaa Hendrik Lorenziin ,  joka oli kaavat löytänyt paikkaillessaan klassista fysiikkaa - havaitaan ,  että ,  kun v  =  c  ,  k  =  0 ,  eivätkä avaruus- ja aikakoordinaatit ole muunnettavissa valonnopeudella liikkuvan koordinaatiston mukaisiksi .
+Niinpä voitaneen sanoa ,  ettei kuvitellulle valohiukkaselle muuta maailmaa ole olemassa .
+Jos v  >  c  ,  sekä avaruus- että aikakoordinaatit saavat koordinaatistomuunnoksessa imaginaarisia arvoja .
+Koska jokainen imaginaariluku voidaan käsittää kaksiulotteisen kompleksitason pisteen koordinaattiparina ,  voidaan tämä tulkita esimerkiksi siten ,  että valonnopeutta nopeammin kulkeva havaitsija elää maailmanavaruudessa ,  jolla on 2n avaruusulottuvuutta ja kaksi aikaulottuvuutta ,  mikäli valonnopeutta hitaammin kulkeva elää n-avaruusulotteisessa ,  1-aikaulotteisessa maailmanavaruudessa .
+Tällaisen tulkinnan pohjalta lienee syntynyt Science Fiction -alakulttuurissa elävä ajatus hyperavaruudessa matkustamisesta  ( ks. esim .
+Asimov 1989 ,  40  ;  käännöksessä puhutaan huippuetäisyydestä hyperavaruuden synonyyminä )  .
+Erityisen suhteellisuusteorian seurauksia Tarkastellaan kahta inertiaalivertailujärjestelmää S ja S' ,  missä S' liikkuu S : n suhteen nopeudella v  .
+S' : n lepokoordinaatiston origossa tapahtuu kaksi tapahtumaa ,  joiden aikaero on S' : n näkökulmasta t'  .
+Koska t  =  k  (  t'    v x'  /  c 2  )  ,  ja x'  =  0 ,  niin t  =  k t'  .
+Nähdään ,  että S ja S' havaitsevat eri aikaeron ko. tapahtumille .
+Ero on sitä suurempi ,  mitä nopeammin S' liikkuu S : ään nähden ,  ts. nopeuden kasvaessa erotus t - t' kasvaa .
+Tätä ajan hidastumista sanotaan aikadilaatioksi  .
+Suhteellisuusteorian mukaan aikadiaatio ei ole näköharha eikä muukaan harha ,  vaan totisinta totta .
+Lisäksi se on todistettu kokeellisesti  ( ks. esim .
+Rindler 1977 ,  44 - 45  )  .
+Suhteellisuusteoriaa on monesti yritetty kumota ns. kaksosparadoksin avulla .
+Oletetaan ,  että kaksoset Visa ja Vesa haluavat kokeilla ajan hidastumista käytännössä .
+Vesa lähtee avaruusaluksella pitkälle matkalle .
+Jossakin vaiheessa hän kääntyy takaisin .
+Porhallettuaan veljensä luo hän toteaa olevansa nyt tätä nuorempi .
+Visa tulee kateelliseksi ja väittää ,  että hänhän se matkusti eikä Vesa - kaikki liikehän on suhteellista - joten hänenhän pitäisi olla nuorempi !
+Kysymys ratkeaa ,  kun ajattelemme ,  että sen ,  joka liikkui ,  tuli hidastaa kääntyäkseen matkan puolessavälissä takaisin ,  joten tilanne ei ollut symmetrinen  ( vrt Rindler 1977 ,  46  )  .
+Koska Vesa matkusti ja kääntyi ,  hän tunsi hidastamisen ja kiihdyttämisen luissaan ,  joten hän se on nuorempi .
+Toinen suhteellisuusteorian erikoinen seuraus on pituuden kutistuminen  .
+Tarkastellaan edelleen kahta inertiaalivertailujärjestelmää S ja S' .
+S' liikkuu S : n suhteen nopeudella v x-akselinsa suuntaisesti .
+S' : n x-akselilla tapahtuu samanaikaisesti kaksi tapahtumaa ,  joiden etäisyys on S' : n mielestä x'  .
+Koska x  =  k  (  x'    v t'  )  ,  ja t'  =  0 ,  niin x  =  k x'  .
+Todetaan ,  että nopeuden kasvaessa S : n havaitsema tapahtumien etäisyys pienenee .
+Tämäkään ei ole suhteellisuusteorian mukaan näköharha tai muukaan harha .
+( Vrt. esim .
+Lisäksi voidaan todeta ilman todistusta pari muutakin erityisen suhteellisuusteorian seurausta :  kappaleen vertailukoordinaatistosta mitattu massa on sitä suurempi ,  mitä suuremmalla nopeudella kappale kulkee vertailukoordinaatistoon verrattuna ;  ja energia ja massa vastaavat toisiaan kaavan  " energia on yhtäsuuri kuin massan ja valon nopeuden neliön tulo "   (  E  =  m c 2  )  mukaisesti .
+Yleinen suhteellisuusteoria Erityinen suhteellisuusteoria tarkasteli nimensä mukaisesti erästä erikoistapausta ,  nimittäin se jättää painovoiman huomiotta  .
+Tärkein syy tällaisen erikoisteorian olemassaololle lienee se ,  että laskut ovat siinä huomattavasti helpommat kuin yleisteoriassa .
+Maailmankaikkeuden luonteen selvittämiseksi olisi hyvä kuitenkin tuntea kyseinen yleisteoria .
+Einstein esitti vuonna 1918 yleisen suhteellisuusteoriansa ,  joka perustui yleiselle suhteellisuuden periaatteelle  ,  jonka mukaan kaikki fysiikan lait ovat ilmaistavissa samassa matemaattisessa muodossa kaikissa vertailujärjestelmissä  .
+Tässä siis poistetaan inertiaalivertailujärjestelmän erikoisasema .
+Yleisen suhteellisuusteorian matematiikka on hyvin monimutkaista ,  eikä siitä ole onnistuttu ratkaisemaan kuin pieni osa .
+. Tärkeässä asemassa ovat tensorit ,  eräänlaiset vektorien yleistykset .
+Yleisen suhteellisuusteorian matematiikka on johdettu esim. teoksessa Rindler 1977  .
+Tärkein yleisen suhteellisuusteorian lopputulos lienee painovoiman selittäminen .
+Avaruus ei ole enää laakea .
+Se käyristelee ja taipuu ja sulkeutuu itseensä .
+Tällaisen geometrian mahdollisuutta tai mahdottomuutta en tässä käsittele ,  vaan kiinnostuneita ohjataan tutustumaan tutkielmaani Geometriat :  kehitys ja periaatteet  ( Kaijanaho A. - J. 1994 )   .
+Jokainen kappale taivuttaa avaruuden geometriaa paikallisesti ,  enemmän massaa omaava kappale enemmän ja pienemmän massan omaava vähemmän .
+Jokainen kappale kulkee eteenpäin vapaasti ,  mutta kaareutunut avaruus kaartaa kappaleen liikerataa .
+Näin syntyvä  " painovoima "  on vain likimääräisesti kääntäen verrannollinen etäisyyden neliöön ,  kuten Newton ajatteli .
+Tästä syystä planeetat eivät kierrä Aurinkoa elliptisesti ,  vaan sen radan kauimmainen piste apheli kiertyy koko ajan hieman pois edelliseltä paikaltaan .
+Toinen geometrisen painovoiman seuraus on se ,  että myös valo kääntyy massiivisen kappaleen läheisyydessä .
+Jo Newtonin painovoimateoriassa oli mahdollista luoda hyvin pieni kappale ,  jonka pinnalta ei edes valo pääse karkuun ,  koska painovoima on liian suuri .
+Tällainen ns. musta aukko vetää ainetta sisäänsä ,  muttei päästä sitä enää pois .
+Kun mustia aukkoja tarkastellaan suhteellisuusteoreettisesti ,  sille löydetään uusia ominaisuuksia :  mustan aukon lähellä aika hidastuu muuhun maailmankaikkeuteen verrattuna ,  valo voi alkaa kiertää aukkoa ,  avaruus itsekin voi alkaa kiertää aukkoa ,  musta aukko voi jopa säteillä .
+Yleisen suhteellisuusteorian mukaisessa geometrian kaarevuudessa voi tapahtua pieniä ,  hetkellisiä muutoksia .
+Nämä muutokset etenevät valon nopeudella ,  ja niitä nimitetään gravitaatioaalloiksi  .
+Gravitaatioaallot eivät siis välitä painovoimaa ,  vaan ovat paikallisessa gravitaatiossa tapahtuvia muutoksia ,  jotka etenevät aaltomaisesti valon nopeudella .
+Makromaailman rakenne Me asumme Maa-nimisellä planeetalla .
+Planeetta Maa on kahdeksan muun planeetan joukossa Auringoksi kutsutun tähden kiertolainen .
+Aurinko sijaitsee Linnunradaksi kutsutun galaksin reunalla ,  kiertäen galaksin keskustaa .
+Linnunrata on tyypiltään kierregalaksi ,  joka sijaitsee eräässä galaksijoukossa .
+Tämä galaksijoukko taas kuuluu ns. superjoukkoon .
+Kaikki galaksit liikkuvat toisistaan poispäin ,  sitä suuremmalla nopeudella ,  mitä kauempana mittaaja on liikkuvasta galaksista .
+Suhteellisuusperiaatteen mukaisesti missään ei ole keskipistettä - kaikki kaikkoavat kaikkien luota .
+Koska maailmankaikkeus laajenee ,  on maailmankaikkeudella täytynyt olla alku .
+Kaiken alkua on yleisesti alettu kutsua alkuräjähdykseksi tai suureksi pamaukseksi  (  Big Bang  )  .
+Alussa oli mustan aukon sukulainen - singulariteetti - joka sisälsi koko maailmankaikkeuden .
+Se alkoi jostain syystä laajentua .
+Ensimmäisen sekunnin aikana oli syntynyt maailmamme mikrorakenne ,  makrorakenne vei vielä vuosimiljoonia .
+Mitä maailmankaikkeudelle tapahtuu tulevaisuudessa ?
+Näitä malleja kutsutaan Friedmannin malleiksi Aleksandr Friedmannin mukaan .
+Kysymys ratkeaa vasta ,  kun on onnistuttu selvittämään maailmankaikkeuden massan suuruusluokka .
+Stephen Hawking on esittänyt uudenlaista maailmankaikkeuden mallia ,  jossa maailmankaikkeudella ei ole alkua eikä loppua .
+Se vain on .
+Hän jää kysymään ,  mihin silloin Luojaa tarvitaan .
+Mikromaailma 1900-luvun alkuun mennessä oltiin päästy tulokseen ,  jonka mukaan aine koostuu atomeista ,  joka puolestaan on jakautunut negatiivisesti varautuneisiin elektroneihin sekä positiivisesti varautuneeseen taikinaan ,  jossa elektronit killuvat kuin rusina pullassa .
+Ernest Rutherford  ( 1871 - 1937 )  totesi kokeellisesti vuonna 1909 ,  etteivät atomit ole tällaisia rusinapullia  .
+Hänen työtoverinsa Hans Geiger  ( 1882 - 1945 )  ja Ernest Mardsen  ( 1889 - 1970 )  pommittivat kultalevyä alfahiukkasilla - joiden myöhemmin todettiin olevan 1-vedyn ytimiä - ja totesivat osan kimpoavan takaisinpäin .
+Tilanne oli yhtä hullu kuin jos talouspaperia ammuttaisiin tykinkuulilla ,  ja ne kimpoaisivat takaisin .
+Pian Rutherford selitti ilmiön siten ,  että atomi on suurimmaksi osaksi tyhjää täynnä ,  ja sen keskellä on pieni ,  mutta suurimman osan atomin massasta omaava ,  positiivisesti varautunut ydin ,  jota kevyet elektronit kiertävät hyvän päässä kuin planeetat aurinkoa .
+Mustan kappaleen säteily puolestaan askarrutti Max Planckia  ( 1858 - 1947 )  .
+Mustalla kappaleella tarkoitetaan kappaletta ,  joka ei heijasta tippaakaan .
+Tiedettiin ,  että musta kappale säteilee voimakkaimmin tiettyä aallonpituutta ja tämän aalonpituuden viereisiä aallonpituuksia säteilyn voimakkuuden pienetessä aallonpituuden edetessä kauemmaksi maksimiaallonpituudesta .
+Planck arveli vuonna 1900 atomien säteilevän energiaa annoksina .
+Yksi annos saattaa lähteä ,  kaksi annosta ,  kolme ,  neljä ,  mutta ei annoksen osia .
+Yhden annoksen energia on verrannollinen säteilyn taajuuteen ,  annoksen energia  =  Planckin vakio x taajuus .
+Einsteinin valosähköisen ilmiön selitys ,  yksi kolmesta hänen vuonna 1905 julkaisemastaan artikkeleista ,  jatkoi siitä ,  mihin Planck jäi .
+Hän sanoi ,  että valo koostuu aaltokvanteista ,  fotoneista .
+Niinpä sillä on sekä aaltoliikkeen että hiukkasliikkeen ominaisuudet .
+Raskalainen prinssi ja fyysikko Louis de Broglie  ( 1892 - 1987 )  meni vuonna 1927 vielä pidemmälle :  hän sanoi myös elektronin olevan luonteeltaan sekä aalto että hiukkanen .
+Tanskalainen Niels Bohr  ( 1885 - 1962 )  loi 1910-luvulla atomimallin ,  joka on edelleenkin kutakuinkin käyttökelpoinen kemiassa .
+Hän oletti ,  että elektronit kiertävät atomin ydintä ympyräradoilla ,  joista vain osa on sallittuja .
+Jokaiseen sallittuun rataan liittyy tietty energiataso ,  joka on sitä suurempi ,  mitä kauemmasta radasta puhutaan .
+Niin kauan ,  kun käyttää sallittua rataa ,  se ei säteile ,  mutta elektronin vaihtaessa sallitulta radalta sallitulle se säteilee fotonin ,  jonka energia vastaa ratojen energiatasojen erotusta .
+Vastaavasti elektroni voi absorboida fotonin ,  jolloin se siirtyy sopivalle ylemmälle kiertoradalle .
+Bohr onnistui näin selittämään spektriviivat ja muita ongelmia .
+Teorian ongelma oli se ,  ettei se perustu mihinkään fysiikan perusteoriaan ,  vaan loi aivan omat .
+Kvanttimekaniikka Elektronin atomikäyttäytymistä tutki teoreettisesti Max Bornin  ( 1882 - 1970 )  johtama tutkimusryhmä ,  johon kuului mm. Werner Heisenberg  ( 1901 - 1976 )  .
+Tarkoituksena oli löytää toinen malli ,  joka selittää elektronin epäjohdonmukaisen käyttäytymisen atomissa .
+Heisenberg löysi tällaisen mallin ja antoi sen tutkittavaksi Bornille ja ystävälleen Wolfgang Paulille  ( 1900 - 1958 )  .
+Born toimitti Heisenbergin toimittaman artikkelin julkaistavaksi ja alkoi teoriaa matriisien kielelle .
+Bornin ryhmän aloittamaa fysiikan haaraa kutsutaan kvanttimekaniikaksi  .
+Sille on tunnusomaista indeterminismi eli tarkkojen ennustusten mahdottomuus ;  fysikaalisten suureiden tarkkojen arvojen sijasta täytyy puhua niiden todennäköisyysjakaumasta .
+Koko kvanttimekaniikkaa kuvaa hyvin Heisenbergin epätarkkuusperiaate  ,  jonka mukaan hiukkasen paikkaa ei voida mitata mielivaltaisen tarkasti ,  vaikka unohtaisimme mittatarkkuuden asettamat käytännön rajat .
+Kvanttimekaniikassa hiukkanen on ikäänkuin levinnyt ympäristöönsä sitä enemmän ,  mitä pienempi massa sillä on ,  ollen toisaalla enemmän tai todennäköisemmin läsnä kuin toisaalla .
+Hiukkasen leviäminen aiheuttaa ilmiön nimeltä tunneloituminen  .
+Kysymyksessä on tapaus ,  jossa hiukkasen ,  esim. alfahiukkasen ,  pieni todennäköisyys olla jossakin ,  esim. ytimen ulkopuolella ,  toteutuu .
+Näin selitetään mm. se ,  että radioaktiivinen aine lähettää alfa- ja beetasäteilyä ,  ja se ,  miten vetyatomit fuusioituvat heliumatomeiksi .
+Erwin Schrödinger  ( 1887 - 1961 )  sovelsi kvanttifysiikkaa vuonna 1926 parannellen Bohrin atomimallia .
+Hän käsitteli elektroneja aaltoina eikä hiukkasina .
+Hän huomasi ,  että Bohrin  " lailliset "  elektronien kiertoradat voitiin selittää siten ,  että aallot eivät ole stabiileja kuin näillä radoilla .
+Hän alkoi kutsua kyseisiä ratoja elektronikuoriksi .
+Jokaisella kuorella voi olla tietty määrä elektroneja ja kuorien täyttäminen aloitetaan sisimmästä lähtien .
+Uloimman täyttöaste kertoo alkuaineen reaktiivisuuden :  mikäli kuori on täynnä ,  aine on jalokaasu eikä siis kovin reaktiivinen .
+Saadakseen uloimmalle kuorelleen täyden määrän elektroneja atomit joko lainaavat muilta atomeilta tai lainaavat muille atomeille elektroneja .
+Atomista on näin muodostunut sähköisesti varautunut ioni ,  joka pyrkii muodostamaan yhdisteen sen aineen kanssa ,  jolta tai jolle se on elektroneja lainannut .
+Syyn sille ,  että kuorelle mahtuu vain tietty määrä elektroneja ,  selvitti Pauli vuonna 1925 .
+Hän muotoili Paulin kieltosääntönä tunnetun säännön :  Saman atomin elektroneista mitkään kaksi eivät saa olla samassa tilassa .
+Elektronin tiloja ovat Bohrin radat ,  ja näiden alaradat ,  sekä spin ,  jota voidaan harhaanjohtavasti kuvata hiukkas-elektronin akselinsa ympäri pyörimisen kiertosuunnaksi .
+Kieltosäännön takia atomin ympärille muodostuu tiheä elektronipilvi ,  jossa kaikki elektronit ovat epätarkkuusperiaatteen mukaan kaikkialla läsnä .
+Maailman mikrorakenne Maailman makrorakennetta tarkasteltaessa lähdettiin liikenteeseen Maasta ja kasvettiin kohti suurempaa .
+Nyt aloitamme lasillisesta vettä .
+Veden voidaan todeta koostuvan pienenpienistä atomeista .
+Atomi rakentuu todennäköisesti  ( epätarkkuusperiaate !  )  atomin keskellä olevasta ytimestä ja sitä ympäröivästä elektronipilvestä ,  jossa olevat elektronit ovat yhtä aikaa kaikkialla ,  tosin todennäköisemmin omalla kuorellaan kuin muualla .
+Atomin ydin on puolestaan voitu todeta koostuvan protoneista ja neutroneista  ,  joiden olinpaikka on edelleen epätarkkuusperiaatteen alainen .
+Nämä hiukkaset on puolestaan hajoitettu kvarkeiksi  ,  joita löytyy jos jonkinmoista laatua .
+Tänä vuonna  ( 1996 )  hiukkasfysiikan laboratorio Fermilab ilmoitti havainneensa mahdollisen alarakenteen kvarkissa ,  joten etsintä jatkuunee edelleen  ( Fermilab 1995 )   .
+Kööpenhaminalaisesta tulkinnasta ja sen filosofisista implikaatioista Kvanttifysiikka kumoaa Laplacelaisen taivaallisen kellokoneiston tuomalla fysiikkaan indeterminismin .
+Enää ei voida sanoa ,  että  ( mikrofysikaalinen )  tapahtuma A on aiheuttanut  ( mikrofysikaalisen )  tapahtuman B ,  vaan täytyy turvautua tilastolliseen kausaliteettiin  :  tapahtumajoukko A on aiheuttanut muutoksen tapahtumajoukossa B. Koska kausaliteetti on kuitenkin olemassa tilastollisenakin ,  makrofysiikan lainalaisuudet ovat johdettavissa kvanttimekaniikasta .
+Esimerkiksi tennispallo ei käytännössä koskaan tunneloidu seinän läpi ,  koska se on massansa suuruuden takia lähes varmasti siinä ,  missä ajattelemme sen olevan ,  ja on vain äärimmäisen häviävän pieni todennäköisyys ,  että se on muualla ,  kuten seinän takana .
+Niinpä tunneloituminen tapahtuu tennispallolla kerran hyvin hyvin pitkässä ajassa .
+Kvanttifysiikkaa on totuttu katsomaan kööpenhaminalaisen tulkinnan antamien silmälasien läpi .
+Nimensä tämä koulukunta on saanut siitä ,  että sen perustajat Bohr ,  Heisenberg ja Pauli toimivat Kööpenhaminassa ,  Bohrin instituutissa .
+Laurikainen  ( 1985 ,  176 - 177 )  tiivistää kööpenhaminalaisen tulkinnan kymmeneen teesiin .
+Tärkeätä niissä on erottaa makrofysikaalinen ja mikrofysikaalinen .
+Makrofysiikkaa voidaan kuvata klassisen fysiikan keinoin ,  mutta mikrofysiikkaan tarvitaan omat teoriansa ,  joihin makrofysiikan teoriat sisältyvät rajatapauksina .
+Mikrofysiikan havainnointiin tarvitaan makrofysikaalisia välineitä ,  jotka toimivat ikään kuin havaitsijan aistien jatkeena .
+Havaittaessa mikrofysikaalisia ilmiöitä havaintovälineistöön tulee peruuttamattomia muutoksia .
+Empiiriset havainnot luetaan näistä makrofysikaalisista muutoksista ,  itse mikrofysikaalista tapahtumaa on mahdotonta suoraan havaita .
+Havaitsijaa ja havaittavaa ei voida erottaa ilmiössä toisistaan .
+Mikrofysiikan empiirisiä tuloksia teoreettisesti tulkittaessa on otettava huomioon kausaliteetin tilastollinen luonne .
+Kööpenhaminalaisen tulkinnan Paulin versiossa tärkein opetus on se ,  että fysiikan maailmankuvan tulee sisältää havaitsija .
+Tämä puolestaan aiheuttaa ongelmia perinteiselle objektiiviselle todellisuuskäsitykselle ,  sillä objektiivisuus vaatii riippumattomuutta havaitsijasta .
+Einstein yritti kumota kvanttifysiikan kuuluisalla lausahduksellaan :   " Jumala ei heitä arpaa "  .
+Hänelle ,  kuten monelle muullekin vanhan polven fyysikolle ,  kvanttifysiikan indeterminismi yksittäistapauksissa oli liikaa .
+Taivaallinen kellokoneisto oli vallannut heidän mielensä .
+Mutta jos tarkastelemme asiaa tarkemmin ,  niin kvanttifysiikan indeterminismi antaa aivan toisenlaisen vapauden jumaluudelle kuin klassinen kellokoneisto .
+Tulevaisuus Mitä tulevaisuus tuo tullessaan ?
+Hyvin todennäköisesti se tuo uusia näkemyksiä ,  uusia teorioita .
+Vanhoja paikkaillaan koko ajan ,  mutta uusiakin syntyy .
+Yksi mahdollinen suuntaus voi johtaa fysiikan todellisuuskäsitteen laajenemiseen .
+Eräs nykyisen todellisuussuhteen pohjalta toimiva uusi näkemys on autodynamiikka  ,  jonka tohtori Ricardo Carezani johti 1940-luvulla korvaamaan Einsteinin suhteellisuusteoriat .
+Hayen  ( kirje 29.3.1996 )  mukaan autodynamiikka on seuraava standarditeoria suhteellisuusteorian jälkeen .
+Toisaalta tapa ,  jolla teoriaa tuodaan esiin ,  tuo Kahanpään  ( kirje 25.3.1996 )  mukaan esille epäilyksen ,  ettei teoria mahdollisesti kestä lähempää tarkastelua 1  .
+Autodynamiikan paremmuuden suhteellisuuteoriaan verrattuna todistaa de Hilsterin  ( 1996 )  mukaan mm. se ,  että autodynamiikka ennustaa hänen mukaansa tarkemmin muutamat gravitaatioilmiöt kuin yleinen suhteellisuusteoria .
+Toinen suuntaus on etsiä Hawkingin  ( 1994 )  peräänkuuluttamaa suurta yhtenäisteoriaa  ,  jonka tarkoituksena on yhdistää suhteellisuusteoria ja kvanttifysiikka yhdeksi teoriaksi ,  joka selittää kaiken .
+Tässä siis pyritään takaisin Laplacen taivaalliseen kellokoneistoon .
+Ongelmaksi muodostuu kuitenkin kvanttifysiikan indeterminismi .
+1 Kuluneen vuoden aikana on autodynamiikkaa käsitelty laajasti Usenetin uutisryhmissä kuten sci.pysics.relativity .
+Vastaanotto on yleisesti ollut tyrmäävää .
+Itse olen nyttemmin kallistunut autodynamiikkaa vastaan .
+Teoriaa lanseerataan turhan innokkaasti käyttäen uskonnollisesta lähetystyöstä ja kansalaisaktivismista tuttuja toimintatapoja ,  mikä vie teorian kannattajilta tieteellistä uskottavuutta .
+- Huomautus seittilaitokseen huhtikuussa 1997 .
+<  <  Klassisen fysiikan aikakausi  >  >  Kirjallisuusviitteet ja kirjeet Copyright © 1996 Antti-Juhani Kaijanaho .
+All rights reserved .
+DOCEND 1088020716179643594260943184131578224313187 2049
+DOCSTART 1088020716179643594260943184131578224313187 2050
+G.Verdi Opera in quattro atti di Antti-Juhani Kaijanaho Musiikin tutkielma .
+Tampereen Rudolf Steiner -koulun 12. luokka .
+Copyright © 1996 Antti-Juhani Kaijanaho .
+All rights reserved .
+Tätä tutkielmaa saa levittää vapaasti muuttamattomassa muodossa .
+Tätä tutkielmaa saa käyttää osittain ja kokonaan muiden teosten osana ,  kunhan tutkielman tekijä mainitaan ja kunhan tutkielman tekijän nimeä ei käytetä lainaavan teoksen mainostustarkoituksessa .
+Tutkielman muuttaminen on sallittua ,  kunhan muutettu versio on selvästi merkitty niin ,  ettei sitä voi sekoittaa alkuperäiseen .
+Seittilaitoksen virallinen URL on http :  /  / www.iki.fi / gaia / tekstit / verdi.html  .
+Suosittelen ,  että linkit ja kirjanmerkit suunnataan tuohon osoitteeseen .
+Vaikka tutkielma muuttaisikin johonkin muuhun palvelimeen ,  ikiosoite toimii .
+Preludio Kansantarinan mukaan vuonna 1814 venäläinen sotajoukko marssi pienen Le Roncolen kylän läpi raiskaten ja murhaten .
+Kansa pakeni kylän kirkkoon toivoen pyhän paikan estävän sotilaita .
+Yksi naisista kiipesi yksivuotiasta lastaan sylissään pitäen kirkon torniin .
+Sieltä hän näki ,  kuinka suojaton paikka kirkko oli :  sotilaat tekivät pahojaan myös kirkkoon paenneelle väelle .
+Tornia kukaan ei kuitenkaan tutkinut .
+Kun äiti oli synnyttämässä poikaansa ,  ikkunan alle ilmestyi kiertävä muusikkoseurue ,  joka soitti synnyttävälle äidille aubade n. Tämä oli pojan ensimmäinen musiikillinen kokemus ja kylvi tulevaisuuden säveltäjän mieleen harmonian siemenet .
+Pieni poika auttoi jumalanpalveluksessa .
+Hän kuitenkin unohtui kuuntelemaan kaunista urkumusiikkia eikä muistanut antaa ehtoollisviiniä ja -vettä papille .
+Tämä potkaisi poikaa niin suurella voimalla ,  että tämä putosi alttarin portaita alas .
+Atto Primo Introduzione e Scena Tarinoissa ,  joista vain viimeisen on todettu olevan totta  ( muista ei vielä tiedä )  ,  esiintynyt lapsi - 10. lokakuu ta 1813 syntynyt Giuseppe Fortunino Francesco Verdi ,  ranskalaisen syntymätodistuksen mukaan Joseph Fortunin François Verdi - sai vasta 63-vuotiaana tietää ,  ettei ollut syntynyt niihin aikoihin ,  kun venäläisjoukot tunkeutuivat Le Roncoleen ,  kuten hänen äitinsä oli kertonut .
+Elämänsä loppuun asti G. Verdi vietti syntymäpäiväänsä 9. lokakuuta kuin olisi syntynyt vuonna 1814 .
+Verdiä ei koskaan kutsuttu etunimeltä .
+Jopa läheiset ystävät käyttivät sukunimeä .
+Verdi itse kirjoitti nimensä lähes poikkeuksetta G. Verdi .
+Lempinimiä hänellä silti oli :  pikkupoikana häntä kutsuttiin Beppinoksi ,  ja hänen jälkimmäinen vaimonsa Giuseppina Strepponi kutsui häntä joskus Pasticcioksi  ( eräs ruokalaji )  .
+Le Roncole  ( nykyisin Roncole Verdi ,  tietenkin !  )  on Busseton kylä .
+Busseton tärkein kauppias oli Antonio Barezzi ,  joka oli perustanut Busseton filharmonisen seuran ,  joka harjoitteli hänen kotonaan .
+Itse hän soitti huilua .
+Hän löysi kaupungista uuden musiikillisen lahjakkuuden ,  G. Verdin .
+Hän lähetti kymmenvuotiaan pojan kaupungin huomattavimman muusikon ja filharmonisen seuran kapellimestarin ,  Ferdinando Provesin oppiin .
+Provesi opetti Verdin soittamaan huilua ,  bassoklarinettia ,  käyrätorvea ja pianoa .
+Hän ohjasi poikaa myös soinnutuksessa ja kontrapunktissa - tonaalisen musiikin säveltäjän tärkeimmissä teknisissä taidoissa .
+Coro Tämä nuori oli nopea oppimaan .
+Hänen työnsä oli ahkeraa :  Nuottien kopiointeja ,  Säveltämistä ,  opettamista ,  Kirjanpitoakin Barezzin kaupassa !
+Ja monia sinfonioita .
+Scena Verdi muutti 18-vuotiaana Barezzin luokse .
+Hän ei voinut asua siellä kauaa ,  sillä hän rakastui isäntänsä tyttäreen Margheritaan .
+Barezzilla ei ollut mitään nuorta kihlaparia vastaan ,  mutta ajan tapa vaati Verdiä muuttamaan pois .
+Samalla Barezzi järjesti Verdille stipendin ,  jotta tämä voisi opiskella kuuluisassa Milanon konservatoriossa .
+Milanon konservatorio ei hyväksynyt G. Verdiä oppilaaksi .
+Vasta runsaat puoli vuosisataa sitten on onnistuttu selvittämään hylkäämisen syyt :  konservatorio oli tupaten täynnä oppilaita ,  Verdi oli ulkomaalainen - Italia oli jaettu monen valtion kesken ,  joten Milano ja Busseto olivat eri maissa - liian vanha ja soitti pianoa väärällä tavalla .
+Barezzi kuultuaan hylkäämisestä lupasi rahoittaa Verdin yksityiset opinnot .
+Verdi opiskeli professori Vincento Lavignan johdolla lähinnä kontrapunktia ,  jossa tämä oli erityisen tarkka .
+Verdi kirjoitti omien sanojensa mukaan Lavignan opissa  " pelkkiä kaanoneita ja fuugia ,  kaikenlaisia fuugia ja kaanoneita "  .
+Verdin edellinen opettaja ,  Provesi ,  kuoli .
+Bussetoon syntyi siten vapaa urkurin paikka .
+Monet halusivat Verdin siihen työhön ,  toiset eivät .
+Pitkän kädenväännön tuloksena Verdi lopulta päätyi Bussetoon töihin .
+Finale Primo Margherita Barezzi ja G. Verdi menivät naimisiin 4. toukokuuta 1836 .
+He saivat avioliiton aikana kaksi lasta .
+Liitostaan vahvistuneena Verdi teki töitä :  sävelsi ,  opetti ,  johti .
+Hän oli saanut valmiiksi ensimmäisen oopperansa ,  Rocester in ,  josta ei ole nykyään jäljellä yhtään tuon nimistä kopiota .
+Emme tiedä ,  muuttuiko Rocester Oberto ksi ,  joka oli Verdin ensimmäinen esitetty ooppera ,  vai onko Oberto itsenäinen teos .
+Verdin opettaja Lavigna ehti kuolla ,  ennen kuin Verdi olisi saanut tämän avulla Oberto n esitetyksi La Scalassa Milanossa .
+Samaan aikaan Verdien vanhempi lapsi kuoli .
+Verdit päättivät matkustaa Barezzin lainarahojen turvin huoliensa luota Milanoon ,  jossa G. Verdi järjesti Oberto lle esityksen La Scalaan .
+Tämän prosessin aikana Verdien toinenkin lapsi kuoli .
+Verdi alkoi kirjoittaa toista oopperaa ,  Un Giorno di Regno  ( Päivä kuninkaana )  .
+Se oli opera buffa ,  joka ei sopinut Verdin senhetkiseen mielialaan - hänhän suri lapsensa kuolemaa .
+Työ keskeytyi Verdin sairastuessa .
+Kun hän parani ,  Margherita sairastui pahasti .
+Verdi pyysi Barezzia tulemaan Milanoon ,  hän saapuikin tuntia ennen tyttärensä Margheritan kuolemaa .
+Vaimon kuolema teki Verdin vielä alakuloisemmaksi .
+Tässä tilassa hän kirjoitti Un Giorno di Regno n loppuun ja harjoitutti ja esitytti sen .
+Ooppera epäonnistui täydellisesti ,  ja Verdi päätti olla säveltämättä enää koskaan .
+Atto Secondo Introduzione e Duetto Myöhemmin Verdi tapasi Merellin ,  La Scalan impresarion ,  matkalla teatteriin .
+Merelli vei Verdin La Scalaan ,  jossa antoi tälle uuden libreton luettavaksi .
+Turhautuneena Verdi vei libreton kotiinsa ja heitti sen pöydälle ,  ja se avautui niin ,  että Verdi näki sanat Va ,  pensiero ,  sull'ali dorate  ( Lennä ,  ajatus ,  kultasiivin )  .
+Verdi ei saanut yöllä unta .
+Hän luki libreton ,  luki sen toistamiseen ,  luki sen kolmannen kerran .
+Aamulla hän osasi sen jo ulkoa .
+Silti hän vei sen Merellille takaisin .
+Merelli Eikö olekin kaunista ?
+Verdi Erittäin kaunista .
+Merelli No ,  säveltäkää se sitten !
+Verdi En koskaan .
+En halua olla siihen osallisena .
+Merelli Säveltäkää se ,  säveltäkää se ,  Maestro ,  Pyydän sitä teiltä .
+Verdi Ei ,  en halua säveltää sitä .
+Merelli Maestro Giuseppe Verdi ,  Ette voi sitä minulta kieltää ;  -- Verdi Ette voi sitä minulta pyytää ,  Impresario Merelli ;  Sillä olen luvannut itselleni Vaimoni kuoltua Etten enää nuottiakaan piirrä .
+Merelli Jos ei hyvällä ,  niin pahalla :  Libretto on tässä .
+Pitäkää hyvänänne ,  En sitä takaisin ota partituuritta !
+Ja Merelli työnsi libreton Verdin taskuun ,  ohjasi tämän ulos ja löi oven kiinni .
+Jonakin päivänä Verdi sävelsi säkeistön ,  joskus toisen ,  joskus nuotin ,  joskus säkeen .
+. . Lopulta ooppera Nabucco valmistui .
+Musica di G. Verdi :  Va pensiero Scena e Finale Secondo Nabucco n kantaesityksen jälkeen Verdi oli kuuluisa .
+Juuri oopperan kirjoittamiseen kutsunut kuoro Va pensiero oli iskenyt sorretun kansan sydämeen .
+Myöhemmin siitä tuli Italian Risorgimento n ,  itsenäisyystaistelun tunnus ja Italian valtion epävirallinen kansallislaulu .
+Väitetään ,  että Nabucco n kantaesityksessä Abigaillen roolin laulaneen ,  uransa ehtoopuolella olleen sopraanon Giuseppina Strepponin ja G. Verdin pitkäikäinen suhde olisi alkanut näihin aikoihin .
+Verdi piti yksityiselämänsä hyvin salassa ,  joten totuutta emme tiedä .
+Myöhemmin nämä kaksi G : tä asuivat yhdessä ,  ja he menivät naimisiin vuonna 1859 .
+Verdin seuraava ooppera ,  I Lombardi alla prima crociata  ,  pyrki seuraamaan Nabucco n jalanjälkiä .
+Se oli tietoisesti isänmaallinen ,  siinä oli Va pensiero a vastaava kuoro O Signore ,  dal tetto natio  .
+Tämän oopperan myötä Verdi sai tutustua ensimmäistä - mutta ei viimeistä - kertaa sensuurin kiemuroihin ;  esimerkiksi erään aarian alku  " Ave Maria "  piti muuttaa muotoon  " Salve Maria "  .
+Atto Terzo Introduzione ,  Recitativo e Aria Victor Hugon Hernani in perustui Verdin seuraava ooppera ,  Ernani  .
+Se nosti säveltäjänsä kansainväliseksi kuuluisuudeksi .
+Hugo itse ei pitänyt ajatuksesta ,  että hänen teoksensa alennettaisiin oopperaksi ,  mutta vuosia myöhemmin tutustuttuaan Ernani in ja myöhemmin hänen tekstiinsä sävellettyyn Rigoletto on perui puheensa ja kehui ,  kuinka Verdi oli onnistunut hänen teostensa oopperaistamisessa .
+Ernani aloitti Verdin elämässä jakson ,  jota on totuttu sanomaan kaleeriorjuuden vuosiksi -  " Anni di galera "  ,  kuten Verdi itse sanoi .
+Näiden yhdeksän vuoden  ( 1842 - 1851 )  aikana hän kirjoitti 14 oopperaa ,  joista vain harvat ovat saaneet mestariteoksen aseman .
+Huomattavimmat lienevät Shakespeareen perustuva Macbeth sekä Luisa Miller  ,  joissa Verdi ensimmäistä kertaa käytti sävellystekniikoita ,  jotka hän kehittäisi huippuunsa kolmessa viimeisessä oopperassaan Aida  ,  Otello ja Falstaff  .
+Huomion arvoinen on myös isänmaallinen Attila  .
+Italialaiset haluavat oopperaa ,  monia uusia oopperoita huippusäveltäjiltä ,  sillä  " nehän ovat rutiinityötä "  !
+Bellini kuoli ollessaan 34 ,  Donzinetti kuoli mielisairaalassa .
+Rossini lähti eläkkeelle 37-vuotiaana .
+Mutta minä ,  Verdi ,  painan .
+Kilpailutan impresarioita ,  Vaikkei raha ole kaikki ,  sillä saa paljon .
+Ja vaimon kuolema - Ei sitä muista kaikelta tältä työltä .
+Ja Muzio - bussetolainen kuten minäkin Ja lähes-isäni Barezzin tukema ,  kuten minä aikoinani - On uskollinen oppilaani ja apulaiseni .
+Verdi olisi halunnut osallistua Milanon kapinaan vuonna 1848 .
+Valitettavasti hän oli omalta kannaltaan väärään aikaan väärässä paikassa .
+Gran Finale Terzo Victor Hugon tarinaan perustui myös Verdin ns. trilogian ensimmäinen ooppera ,  Rigoletto  .
+Trilogian kaikki oopperat lienevät soitetuimmat ja oopperamaailman tunnetuimpiin kuuluvat Verdin oopperat .
+Rigolettossa Verdi kehitteli eteenpäin tekniikoita ,  jotka oli kehittänyt Macbeth issa ja Luisa Miller issä .
+Ooppera ei ollut pelkkä aarioiden ,  resitatiivien ,  kuorokohtausten ja meluisien finaalien kokoelma .
+Musiikki alkoi saada uusia muotoja :  Rigoletton ja Sparafucilen keskustelevat murhasta kuin puhuen ,  parlando ,  melodian kulkiessa orkesterissa .
+Kuuluisa ,  muodoltaan vanhahtava aaria La donna è mobile on täydellinen kuvaus kyynisestä viettelijästä .
+Viimeisen näytöksen mahtava kvartetto on paras Verdin kirjoittama ensemble .
+Rigoletto on mestariteos ,  ja se kiersi seuraavina vuosina ympäri maailman .
+Vuonna 1852 ,  39-vuotiaana Verdi kirjoitti kaksi oopperaa limittäin .
+Ensimmäisenä valmistui ontuvaan librettoon sävelletty Il Trovatore  (  Trubaduuri  )  .
+Vaikka kriitikot eivät siitä pitäneet ,  Trubaduuri on Verdin suosituimpia ja ehkä esitetyin ooppera ,  mestariteos sekin .
+La Traviata a Verdi kirjoitti harjoittaessaan Trubaduuri a ,  ja hänen sanotaan soitintaneen oopperan 13 päivän aikana Trubaduuri n harjoitusten ohessa .
+La Traviata n kantaesitys epäonnistui ,  pääosin huonon esiintyjäkaartin ja lavastuksen johdosta .
+Vasta parin vuoden kuluttua se esitettiin uudestaan ,  tällä kertaa kunnollisin edellytyksin .
+Oopperasta tuli Verdin suosituin .
+Atto Quarto Introduzione e scena Verdi alkoi kyllästyä  " kirottuihin oopperoihin "  .
+Hän kuitenkin kirjoitti Pariisin oopperalle oopperan Les Vêpres Siciliennes  .
+Hän teki säveltäessään Suurelle putiikille  (  " Le Grande Boutique "  ,  kuten hän Pariisin oopperaa kutsui )  monia myönnytyksiä :  hän suostui muun muassa säveltämään baletin ,  joka sijoitetaan oopperassa myöhään ,  jotta tietyt Putiikin rahoittajat ehtisivät paikalle harrastuksiltaan näkemään sen .
+Ooppera menestyi hyvin Verdin barometrillä :  jos sali on täysi neljännessä esityksessä ,  on ooppera onnistunut .
+Hänen seuraava oopperansa ,  Simone Boccanegra  ,  oli puolestaan epäonnistunut ,  mistä nimitys  " kirotut oopperat "  tulee .
+Verdi oli isänmaanystävä .
+Hänen panoksensa Italian itsenäistymistaistelussa oli isänmaallinen musiikki :  Va pensiero  ,  Patria oppressa  ( oopperasta Macbeth  )  ,  Attila ja monet muut olivat liikuttaneet kansan syviä rivejä .
+Verdin nimeä alettiin käyttää lyhenteenä sanoista  " Vittorio Emmanuele Re d'Italia "   ( Vittorio Emmanuele ,  Italian kuningas )  ,  kun haluttiin varmistaa kansallisaatteen leviäminen sensuurin estämättä .
+Verdistä tuli myös Italian ensimmäisen parlamentin jäsen .
+1860-luvulla Verdi sävelsi epäonnistuneet oopperat La Forza del Destino ja Don Carlos  .
+Tässä vaiheessa Verdiä pidettiin yleisesti jo parhaansa antaneena säveltäjänä ,  jonka ura on laskusuunnassa .
+Häntä alettiin syyttää Richard Wagnerin imitoimisesta ,  vaikka ,  kuten Verdi itse totesi ,  hän oli käyttänyt kyseessä olleita keinovaroja  (  johtoteemat  )  kauan ennen Wagneria .
+Rossinin kuoltua 13. marraskuuta 1868 Verdi esitti ,  että italialaiset säveltäjät säveltäisivät yhdessä Rossinin muistoksi Requiemin  ,  johon Verdi itse tarjoutui säveltämään viimeisen osan ,  Libera me n. Erinäisistä syistä johtuen Rossini-messua ei koskaan esitetty ,  ja se on edelleen tallessa nuottikustantaja Ricordilla .
+Scena Verdiltä tilattiin ooppera Suezin kanavan avajaisiin .
+Oopperan aiheeksi annettiin vanha egyptiläinen tarina ,  josta Verdi libretisti Antonio Ghislanzonin avulla muokkasi oopperalle libreton .
+Oopperan nimeksi tuli Aïda  .
+Pariisin valtaus esti kuitenkin pukujen toimittamisen ajoissa Kairoon ,  joten kantaesitys siirtyi .
+Kairon esitys oli vähäinen tapaus ,  sillä koko Euroopan kulttuuriväki tiesi todellisen kantaesityksen olevan ajan hieman kuluttua Milanon La Scalassa .
+Aïda on La Scalan suosituin ooppera .
+Verdiä syytettiin taas Wagnerin imitoimisesta .
+Hän totesi ,  että on todella mukavaa kuulla 35 työvuoden kuluttua olevansa imitoija !
+Wechsberg  [ We ,  150 - 151 ]  kirjoittaa ,  että Verdin ja Wagnerin välinen ero on siinä ,  että Verdi kirjoitti lauluäänille ,  kun Wagner kirjoitti orkesterille .
+Ennen Aïdan Italian-kantaesitystä La Scalassa sopraano Teresa Stolz sairastui .
+Odotellessaan Aïdansa parantumista Verdi kulutti aikaansa kirjoittamalla jousikvarteton .
+Verdin Jousikvartetto e-mollissa on alallaan vähäinen mestariteos .
+Verdi itse sanoi :   " En tiedä ,  onko se hyvä vai huono .
+Jonkin ajan kuluttua kansallisrunoilija Manzoni kuoli .
+Verdi kirjoitti hänen muistolleen Messa da Requiem in ,  joka kantaesitettiin Manzonin kuoleman yksivuotispäivänä .
+Sen sanotaan olevan Verdin paras ooppera .
+Sen draamallisuus johti siihen ,  että se joutui Katolisen kirkon mustalle listalle .
+Requiem in viimeinen osa ,  Libera me  ,  oli valmis jo entuudestaan kiitos Rossini-messun .
+Requiem in parhaiten tunnettu musiikki lienee Dies irae n alusta :  se esiintyy monissa kauhuleffoissa ja erään päänsärkylääkkeen TV-mainoksissa .
+Finale ultimo Lähes 15 vuoteen Verdi ei kirjoittanut yhtään oopperaa ,  vaikka hänen ystävänsä monesti häntä siihen suostuttelivat .
+Kuitenkin hänen nuottikustantajansa Ricordin esiteltyä hänelle Arrigo Boito n ,  säveltäjän ja libretistin ,  alkoi Verdin päässä tapahtua .
+Työ kesti vuosia ,  Verdi ei luvannut mitään ja piti kaiken salassa .
+Vähitellen  " suklaaprojekti "  alkoi saada muotoaan ,  ja niin syntyi ooppera Otello Shakespearen pohjalta .
+Verdin viimeinen ooppera ,  Falstaff  ,  oli myös Boiton Shakespeare-librettoon sävelletty .
+Libretto perustui näytelmiin The Merry Wives of Winsdor  ,  Henry IV ja Henry V  .
+Falstaff oli Verdin ainoa onnistunut opera buffa ,  koominen ooppera .
+Otello ssa ja Falstaff issa Verdi vei huippuunsa italialaisen oopperan .
+Ne eivät ole kuitenkaan erityisen suosittuja ,  sillä ne vaativat yleisöltään paljon .
+Niiden jälkeen Verdi aikoi lopulta toteuttaa pitkäikäisen unelmansa ,  säveltää Shakespearen King Lear  ,  mutta hänen ikänsä ja terveytensä ei sitä sallinut .
+Verdi perusti muusikkojen vanhainkodin ,  Casa Verdi n ,  joka avattiin vasta vuosi hänen kuolemansa jälkeen .
+Giuseppina Strepponi Verdi ,  G. Verdin vaimo ,  kuoli 1897 .
+Verdi itse kuoli 27.1.1901 .
+Hänen hautajaisensa oli vaatimaton :  yksi pappi ,  yksi risti ,  yksi kynttilä ,  ei musiikkia .
+Hän kuoli uljaasti ,  kuin taistelija ,  äänettömästi .
+[ We ,  246 ]   "  ,  kirjoitti Arrigo Boito ystävälleen .
+Lähdeluettelo  [ Bu ]  Julian Budden :  Verdi  .
+Lontoo :  Dent ,  cop .
+1985 .
+The Master Musicians Series .
+[ Pe ]  Pierre Petit :  Verdi  .
+Lontoo :  Calder ,  1962 .
+[ Tö ]  Folke H. Törnblom :  Verdi  .
+Tukholma :  Bonniers ,  1948 .
+[ We ]  Joseph Wechsberg :  Verdi  .
+Lontoo :  Weidenfeld and Nicholson ,  1974 .
+Otteita Verdin musiikillisesta tuotannosta  [ Bu ,  362 - 366 ]  Oopperoita Oberto ,  Conte di San Bonifacio  .
+T. Solera mahdollisesti Piazzan Rocester in pohjalta .
+Milano ,  Scala 17.11.1839 .
+Un giorno di regno  ( myöhemmin Il finto Stanislao  )  .
+F. Romani A. V. Pineu-Duval'n Le faux Stanislas 'n pohjalta .
+Milano ,  Scala 3.9.1840 .
+Nabucodonosor  ( myöhemmin Nabucco  )  .
+T. Solera A.-B. ja F. Cornue'n samannimisen näytelmän pohjalta .
+Milano ,  Scala 9.3.1842 .
+Ernani  .
+F. M. Piave V. Hugon näytemän Hernani pohjalta .
+Venetsia ,  Fenice 9.3.1844 .
+Attila  .
+T. Solera Z. Wernerin Attila ,  König der Hunnen in pohjalta ,  lisäyksiä tehnyt F. M. Piave .
+Venetsia ,  Fenice 17.3.1846 .
+Macbeth  .
+F. M. Piave W. Shakespearen samannimisen näytelmän pohjalta ,  lisäyksiä tehnyt A. Maffei .
+Firenze ,  Pergola 14.3.1847 .
+Uudistettu versio :  Pariisi ,  Théâthre Lyrique 19.4.1865 .
+Luisa Miller  .
+S. Cammarano F. Schillerin Kabale und Liebe n pohjalta .
+Napoli ,  San Carlo 8.12.1949 .
+Rigoletto  .
+F. M. Piave V. Hugon Le roi s'amuse 'n pohjalta .
+Venetsia ,  Fenice 11.3.1851 .
+Il trovatore  .
+S. Cammarano A. Garcia Gutiérrez'n El trovador in pohjalta .
+Rooma ,  Apollo 19.1.1853 .
+La traviata  .
+F. M. Piave A. Dumas ,  fils'n La dame aux camélias 'n pohjalta .
+Venetsia ,  Fenice 6.3.1853 .
+Aïda  .
+A. Ghislanzoni A. Marietten pohjalta .
+Cairo ,  Opera House 24.12.1871 .
+Otello  .
+A. Boito W. Shakespearen Othello n pohjalta .
+Milano ,  Scala ,  5.2.1887 .
+Falstaff  .
+A. Boito W. Shakespearen näytemien The Merry Wives of Winsdor  ,  Henry IV ja Henry V pohjalta .
+Milano ,  Scala 9.2.1893 .
+Kuoroteoksia ja uskonnollisia teoksia Tantum Ergo tenorille ja orkesterille .
+Sävelletty 1836 L .
+Machiavellille .
+Suona la tromba kolmiääniselle mieskuorolle ja orkesterille .
+Sävelletty kesällä 1849 ;  teksti G. Mameli .
+Inno delle nazioni tenorille ,  kuorolle ja orkesterille ,  sävelletty 1862 Lontoon maailmannäyttelyä varten ,  teksti A. Boito .
+Libera me sopraanolle ,  kuorolle ja orkesterille .
+Sävelletty 1869 Rossinin muistolle sävelletyyin yhteisrequiemiin .
+Messa da Requiem SATB-solisteille ,  kuorolle ja orkesterille .
+Sävelletty 1873
+-
+1874
+A .
+Manzonin kuoleman 1-vuotispäivän juhlistamiseksi .
+Ave Maria sopraanolle ja jousiorkesterille .
+Sävelletty 1879
+-
+1880
+hyväntekeväisyyskonserttia varten .
+Teksti mahdollisesti Danten käsialaa .
+Pater Noster  ,  viisiääniselle kuorolle a cappella .
+Sävelletty 1879 - 1880 hyväntekeväisyyskonserttia varten .
+Teksti mahdollisesti Danten käsialaa .
+PietГ  ,  Signore tenorille ja pianolle .
+Sävelletty 1894 ja julkaistu kausijulkaisussa Fata Morgana Sisilian ja Calabrian maanjäristysten uhrien hyväksi .
+Teksti A. Boiton De profundis in pohjalta .
+Quattro pezzi sacri  .
+Neljä kappaletta ,  julkaistu 1898 :  Ave Maria sulla scala enigmatica neliääniselle kuorolle a cappella .
+Sävelletty 1889 .
+Stabat Mater kuorolle ja orkesterille .
+Sävelletty 1896
+-
+1897
+(  ?  )  .
+Laudi alla Vergine Maria neliääniselle naiskuorolle .
+Sävelletty 1887
+-
+1888
+.
+Teksti Danten Paradiso n viimeisestä laulusta .
+Te Deum kaksoiskuorolle ja orkesterille .
+Sävelletty 1895
+-
+1896
+.
+Kamarimusiikkia Sei romanze  ( julk .
+1838 )  ,  7 laulua .
+Sei romanze  ( julk .
+1845 )  ,  7 laulua .
+Jousikvartetto e-mollissa .
+Sävelletty 1873 ,  julkaistu 1876 .
+DOCEND 1088020716179643594260943184131578224313187 2050
+DOCSTART 1088020716179643594260943184131578224313187 2056
+ANTTILANMÄKI-KITTELÄNASUKASYHDISTYS Tervetuloa tutustumaan Puutalojen idyllissä ,  vaahteroiden katveessa ,  kävelymatkan päässä Lahden kaupungin keskustasta sijaitsee vanha ,  mutta uusi Anttilanmäki .
+ANTTILANMÄKI-KITTELÄN ASUKASYHDISTYS RY Yhdistyksen säännöt Yhdistyksen toiminta vuonna 2011 Yhdistyksen johtokunta 2011 LIITY JÄSENEKSI Jäsenmaksu on 7.50 euroa  /  vuosi .
+Ilmoita maksamisen yhteydessä nimesi ja yhteystietosi jäsenluetteloa varten .
+Maksun saaja :  Anttilanmäki-Kittelän asukasyhdistys ry Tilinumero  :  FI98 8115 0710 4324 23 Pankki on Sampo .
+Käytä aina yllä mainittua IBAN-tilinumeroa .
+POSTILAATIKKO I L M O I T U S T A U L U JOHTOKUNTA vaihtuu vuosikokouksessa .
+Ensimmäisestä kokoontumisesta päätetään myöhemmin .
+VUOSIKOKOUS pidettiin ti 27.3.2012 klo 18 koulun ruokalassa .
+Käsiteltiin sääntömääräiset asiat .
+Puheenjohtajana jatkaa Hanna Vanhanen .
+Kokouksen jälkeen DNA : n edustaja kertoi tulevaisuuden digipalveluista .
+SAUVAKÄVELYPORUKKA pitää pakkaspaussia .
+Palataan liikkumaan ,  kunhan päästään rospuuttokaudesta .
+YHDISTYKSEN JÄSEN  ,  voit laittaa sähköpostilla terveisiä puheenjohtaja Hanna Vanhaselle ,  mikäli jokin asia sinua askarruttaa .
+Voit myös soittaa 040
+-
+5827815
+.
+ANTTILANMÄEN MILJÖÖ JA HISTORIA Ilmakuva Muistoja Anttilanmäen vaiheita Anttilanmäki kaavojen ja karttojen valossa Anttilanmäen miljöön erityispiirteitä Valokuvia Anttilanmäen miljööstä Vanhoja valokuvia ja muisteloita Artikkeli Rakennettu ympäristö -lehdessä 1 / 2009 Asukasyhdistyksen kannanotto kouluverkkoselvitykseen Asukasyhdistyksen lausunto Moisionkadun Robottiparkin kaavasta Asukasyhdistyksen esitys kaupunginhallitukselle Lotilan koulun laajennushankkeen pysäyttämiseks i Kouluverkkotyöryhmän vastine vanhempainyhdistykselle Asukasyhdistyksen lausunto rataympäristön melusuojaussuunnitelmasta Lahden kaupungin vastine asukasyhdistyksen kannanottoon laaditusta meluselvityksestä Asukasyhdistyksen muistutus Moisionkadun Robottiparkin kaavasta ANTTILANMÄKI ON VUODEN 2008 KAUPUNGINOSA SUOMESSA Anttilanmäki tänään Lehdistötiedote Uutinen ess.fi Puheenjohtajan radiohaastattelu Uusi Lahti 13
+-
+8
+-2008 HOLLOLAN-LAHTI 1
+-
+2
+/ 200 8 KASVIPANKKI Asukasyhdistys ylläpitää kasvipankkia Lutukkakujan varrella .
+DOCEND 1088020716179643594260943184131578224313187 2056
+DOCSTART 1088020716179643594260943184131578224313187 2057
+ANTTILANMÄKI-KITTELÄNASUKASYHDISTYKSEN KASVIPANKKI Anttilanmäki-Kittelän asukasyhdistyksen kasvipankki sijaitsee Lutukkakujan varrella ,  koulun yläpuolella olevalla puistoalueella .
+Toimintaideana on kasvien kierrätys .
+Vaihtamalla puutarhakasveja saadaan hyviä lajeja kiertoon ja vieläpä ilmaiseksi .
+Alueen asukkaat voivat tuoda kasvimaahan ylimääräisiä taimiaan .
+Asukkaat voivat myös halutessaan siirtää kukkia tai ottaa pistokkaita omaan pihaan .
+Anttilanmäen ja Kittelän asukkaat ,  käyttäkää ahkerasti kasvipankkia koska se on teitä varten .
+Kasvipankin säännöt ovat yksinkertaiset :  Kun tuot ,  niin merkitse istuttamasi alue tikulla .
+Kun nostat pankista ,  jätä aina jäljelle alkuja jotta ne voivat lisääntyä ja levitä .
+1 TARHATYRÄKKI ,  KETONEILIKKA 2 KONNANTATAR ,  PÄIVÄNKAKKARA ,  IISOPPI 3 4 KUUNLILJA ,  HARJANEILIKKA 5 HARJANEILIKKA 6 RUISKAUNOKKI ,  VUOHENKELLO ,  UKONKELLO ,  SUOPAYRTTI ,  HARMAAMALVIKKI 7 ILMASIPULI 8 SYYSASTERI ,  PÄIVÄNLILJA ,  LEHTOSINILATVA 9 KULTAPALLO ,  PÄIVÄNHATTU ,  UKKOMANSIKKA 10 RUSOPAJUANGERVO 11 LIPSTIKKA 12 MINTTU 13 MAAHUMALA 14 NIITTYKASVEJA Asukasyhdistyksen johtokunnan jäsenet löytyvät kotisivultamme .
+Voit ottaa heihin yhteyttä myös kasvipankkia koskevissa asioissa .
+DOCEND 1088020716179643594260943184131578224313187 2057
+DOCSTART 1088020716179643594260943184131578224313187 2060
+A & O-OPPIMISYMPÄRISTÖ Kohti saavutettavaa ja mobiilia verkko-opiskelua .
+A & O on suunniteltu tukemaan saavutettavaa ja mobiilia opiskelua .
+A & O on selkeä ,  monipuolinen ja helppokäyttöinen toimintaympäristö verkko-oppimiseen .
+A & O soveltuu käytettäväksi niin itsenäisessä etäopiskelussa kuin lähiopetuksen tukenakin yritysten toimintaympäristöksi informaation jäsentämiseen ,  suunnitteluun ja rakentamiseen kansainväliseen käyttöön :  A & O : sta on useita kieliversioita :  suomi ja englanti .
+A & O on suunniteltu suomalaiseen opetuskäyttöön ,  mutta soveltuu kieliversioiden ansiosta myös kansainvälisiin verkkokoulutustarpeisiin .
+Kokeile A & On käyttöä !
+Demo-ympäristöön Käyttöohjeet © 2007 TTY / Hypermedialaboratorio .
+DOCEND 1088020716179643594260943184131578224313187 2060
+DOCSTART 1088020716179643594260943184131578224313187 2067
+8b39Eksegetiikka  ApologetiikkaWiki Loikkaa :  valikkoon  ,  hakuun Eksegetiikka  ( muinaiskreikaksi ἐξηγέομαι eksēgeomai johdattaa ,  selittää ,  kuvata yksityiskohtaisesti  )  on teologian osa-alue ,  joka tutkii ja tulkitsee  ( erityisesti uskontojen pyhiä )  kirjoituksia kriittisesti .
+Yleensä sillä viitataan raamatunselitysoppiin ,  joka tutkii Raamatun alkutekstejä ja muita varhaisia juutalais-kristillisiä kirjoituksia .
+Nämä kirjoitukset on useimmiten kirjoitettu joko heprean  ,  aramean  ,  koinee-kreikan  ,  syyrian  ,  koptin tai latinan kielillä .
+Eksegetiikka voi tutkia myös muun muassa Talmudia  ,  Midrashia  ,  Koraania  ,  jne. Erityisen tärkeää roolia eksegetiikassa näyttelee erilaisten säilyneiden tekstiversioiden tutkimus sekä pyrkimys löytää kustakin tekstistä sen mahdollisimman alkuperäinen versio .
+Lisäksi tekstejä pyritään tulkitsemaan niiden historiallista ,  yhteiskunnallista ja kulttuurista taustaa vasten .
+Eksegetiikkaan liittyy läheisesti Raamattuun liittyvä arkeologia  .
+Lisäksi eksegetiikassa käytetään muun muassa kielitieteen  ,  yleisen uskontohistorian ja uskontopsykologian metodeja .
+Termi eksegeesi  ( muinaiskreikaksi ἐξήγησις eksēgēsis )  tarkoittaa kirjaimellisesti tulkintaa ,  tekstin merkityksen löytämistä .
+Käytännössä eksegeesi tarkoittaa teoriaa tekstin merkityksestä ,  tai laajempaa teosta jonkin tekstikokonaisuuden merkityksestä syntykontekstissaan  .
+Eksegeesiin kuuluu oleellisesti tekstin tutkiminen objektiivisesti .
+Eksegetiikan harjoittajaa kutsutaan eksegeetiksi  .
+Eksegeesin vastakohtana voidaan nähdä eisegeesi  ,   ( muinaiskreikaksi εἰσήγησις eisēgēsis  " sisään tuominen "  )  ,  joka tarkoittaa subjektiivista oman tulkinnan lukemista mukaan tekstiin .
+Sisällysluettelo 1 Historiallis-kriittinen raamatuntutkimus 2 Historiallis-kriittisiä tutkimustapoja 3 Uudet tutkimustavat 4 Menetelmällinen murros  [  muokkaa  ]  Historiallis-kriittinen raamatuntutkimus Eksegeettistä tutkimusta on viimeiset pari sataa vuotta hallinnut historiallis-kriittinen raamatuntutkimus eli raamatunkritiikki .
+Historiallis-kriittistä raamantutkimusta voidaan toteuttaa joko supranaturalistisessa tai naturalistisessa viitekehyksessä .
+Naturalismista puolestaan on olemassa heikko ja vahva versio .
+Raamatun eksegetiikka jakaantuu Vanhan ja Uuden testamentin eksegetiikkaan .
+Kirkon perinteiden kautta muodostuneessa kanonisessa lukutavassa Raamattu nähdään yleensä kokonaisuutena ,  pyhien kirjoitusten kaanonina ,  jonka kaikki osat selittävät toisiaan — Vanhan testamentin katsotaan selittävän Uutta testamenttia ,  ja Uuden testamentin toimivan Vanhan testamentin avaimena .
+Raamatun ilmoitusluonteen tunnustava supranaturalistinen historiallis-kriittinen tutkimus pyrkii tekemään oikeutta tälle yhteydelle .
+Naturalistisesti orientoitunut historiallis-kriittinen tutkimus puolestaan kieltää mahdollisuuden saada tietoa Jumalan ilmoituksesta ja pyrkii ymmärtämään kunkin kirjoituksen siten ,  että sen historiallinen tausta tulkitaan naturalistisessa viitekehyksessä .
+Näin ollen naturalistinen eksegetiikka ei tulkitse Vanhaa testamenttia Uuden testamentin valossa .
+[  muokkaa  ]  Historiallis-kriittisiä tutkimustapoja Tekstikriittinen eli tekstihistoriallinen lukutapa – tutkii alkutekstien oikeaperäisyyttä ja käännösten tarkkuutta .
+Päämääränä selvittää tekstin alkuperäinen muoto .
+Redaktiokriittinen eli redaktiohistoriallinen lukutapa – tutkii miten teksti on päätynyt lopulliseen muotoon .
+Tutkii Raamatun kirjoittajien omia korostuksia eli mitä kirjoittaja haluaa tuoda esille ,  miten käyttää lähdeaineistoa ja millaisia kirjallisia tekniikoita kirjoittaja on käyttänyt .
+Kirjallisuushistoriallinen lukutapa – tutkii tekstien lähteitä ja teksteihin myöhemmin tehtyjä lisäyksiä .
+Muotokriittinen eli muotohistoriallinen lukutapa – tutkii tekstien esteettistä muotoa ja yhteyttä arkielämään tekstien historiallisessa tilanteessa .
+Traditiokriittinen eli traditiohistoriallinen lukutapa – tutkii tekijöitä jotka vaikuttavat perimätiedon välittymiseen ja sen muutoksiin .
+[  muokkaa  ]  Uudet tutkimustavat Viimeisen vuosikymmenten aikana eksegeettisessä tutkimukesssa on tapahtunut murros ,  jossa on siirrytty historiallis-kriittisistä menetelmistä yhä enemmän kirjallisuuskriittisiin menetelmiin kuten narraatiotutkimukseen ,  struktuurianalyysiin ja retoriseen tutkimukseen ,  ja toisaalta käyttäytymistieteellisiin ,  yhteiskuntatieteellisiin ja kulttuuriantropologisiin menetelmiin kuten esimerkiksi sosiologiseen kritiikkiin  .
+( Hens-Piazza 2002 :  2 )  Mielenkiinnon kohteena ovat tekstit kirjallisina tuotteina riippumatta niiden historiallisesta totuudesta .
+Kirjallisuuskritiittisiä lähestymistapoja :  Narraatiokritiikki Retorinen kritiikki Kanoninen kritiikki Lukijalähtöinen tutkimus Strukturalismi Dekonstruktio Yhteiskuntakriittisiä lähestymistapoja  :  Sosiologinen kritiikki  [  muokkaa  ]  Menetelmällinen murros Historiallis-kriittisen menetelmän edustajat olivat erityisesti suuntautuneet pääsemään selville historiallisesta totuudesta ,  vaikka naturalistinen tutkimusorientaatio tekikin vaikeaksi tai mahdottomaksi tehdä oikeutta Jumalan toiminnalle historiassa .
+Uudemmat kirjallisuuskriittiset menetelmät usein tarkastelevat Raamatun tekstejä kokonaan irrallaan historiasta .
+Eksegeettinen tutkimus on siis tällä hetkellä murrosvaiheessa .
+Viimeisen parin vuosikymmenen aikana tieteellisessä maailmassa on käynnistynyt laajamittainen pohdinta naturalistisen tutkimusohjelman pohjalta toteutetun historiallis-kriittisen lähestymistavan ongelmista .
+Naturalistisessa viitekehyksessä sovellettu historiallis-kriittinen lähestymistapa on joutumassa sivuosaan eksegeettisessä tutkimuksessa ja sen puutteista on tullut yleinen keskustelun ja kritiikin aihe .
+Kyseinen lähestymistapa on parin vuosisadan aikana tuottanut niin monia keskenään ristiriitaisia tuloksia ,  että sen tieteellinen uskottavuus on kärsinyt .
+Se on menettänyt uskottavuuttaan ,  vaikka sen kannattajilla oli hallussaan useimmat merkittävät teologian alan yliopistolliset oppituolit ja sen edustajat hallitsivat teologisia aikakauslehtiä .
+v   •   d   •   e Raamatuntutkimus - Eksegetiikka Tutkijoita :  Andreas J. Köstenberger‎  · Craig Blomberg  · Craig A. Evans  · Craig Keener  · Darrell Bock  · Donald A. Carson  · Eleonore Stump  · Gary Habermas  · Timo Laato  · Heikki Räisänen  · N. T. Wright‎  · Richard Bauckham  · Tom Holmén Tutkimusmenetelmät :  Historiallis-kriittinen  :  Kirjallisuushistoriallinen menetelmä  · Muotokritiikki  · Redaktiokritiikki  · Traditiokritiikki Kirjallisuuskriittinen :  Dekonstruktio  · Kanoninen kritiikki  · Lukijalähtöinen tutkimus  · Narraatiokritiikki  · Retorinen kritiikki‎  · Strukturalismi  · Yhteiskuntakriittinen :  Sosiologinen kritiikki Raamatun kirjojen luotettavuus :  Vanha testamentti :  Joosuan kirja  · 1 .
+Samuelin kirja  · 1 .
+Kuningasten kirja  · Jesajan kirja  · Danielin kirja Uusi testamentti  :  Evankeliumit  :  Luukas  · Johannes Apostolien teot  · 2 .
+Korinttilaiskirje Katso myös :  Aitouskriteerit  · Dokumentaarihypoteesi  · Evankeliumien ajoitus  · Heettiläiset  · Historiallinen luotettavuus  · Pseudonimien käyttö  · Synoptinen ongelma  · Jeesus-seminaari Haettu osoitteesta http :  /  / apologetiikkawiki.fi / Eksegetiikka Luokka  :  Eksegetiikka Henkilökohtaiset työkalut Kirjaudu sisään tai luo tunnus Nimiavaruudet Sivu Keskustelu Muuttujat Näkymät Lue Muokkaa Näytä historia Toiminnot Haku Valikko Etusivu Kahvihuone Ilmoitustaulu Lukusuositukset Tuoreet muutokset Luokkahakemisto Avustukset Kiitokset Linkit Ohje Työkalut Tänne viittaavat sivut Linkitettyjen sivujen muutokset Toimintosivut Tulostettava versio Ikilinkki Sivua on viimeksi muutettu 15. heinäkuuta 2010 kello 12.16 .
+Tämä sivu on näytetty 3 186 kertaa .
+Sisältö on käytettävissä lisenssillä GNU Free Documentation License 1.2  .
+DOCEND 1088020716179643594260943184131578224313187 2067
+DOCSTART 1088020716179643594260943184131578224313187 2072
+litykseksitarvittaessa hyväksytään älyllisen toimijan vaikutus ,  tämän toimijan kyvyt riittävät selittämään tarkoituksettomien prosessien tuottamina syntyneiksi järjettömän epätodennäköiset ja sellaisina tosiasiallisesti  ( metodologisenkin )  naturalismin puitteissa selittämättömiksi jäävät havaitut kohteet ja ilmiöt.  ^  The Design Inference :  Eliminating Chance Through Small Probabilities ,  William A. Dembski ,  Julkaisija Cambridge University Press ,  1998 ,  ISBN 0521623871  , 243 sivua ,  http :  /  / books.google.fi / books ? id = R7otNWMrgcwC  ^  No Free Lunch :  Why Specified Complexity Cannot Be Purchased without Intelligence ,  William A. Dembski ,  2001 ,  johdanto luettavissa osoitteesta http :  /  / www.arn.org / docs / dembski / wd _ nfl _ intro.htm  ^  Tiede ja suunnittelu ,  suomennos W. Dembski artikkelista Science and Design ,  http :  /  / www.intelligentdesign.fi / sivut / perusteet / suunnittelun-havaitsemisesta /   ^  Kojonen ,  Rope :   Kertooko luonnon järjestys suunnittelusta ?   ,  s. 6 .
+Michael Behe älykkään suunnittelun ajatuksen puolustajana .
+Helsingin Yliopisto ,  2008 .
+(  Intelligent Design samaistuu kritiikissä usein - - kreationisteihin.  )   ^  Kojonen ,  Rope :   " Eri kertomuksia Intelligent Designista "  ,   Kertooko luonnon järjestys suunnittelusta ?   ,  s. 20 .
+Michael Behe älykkään suunnittelun ajatuksen puolustajana .
+Helsingin Yliopisto ,  2008 .
+(  Intelligent Design -liikkeen ja kreationismin suhteen määrittely riippuu tarkoista määritelmistä.  )   ^  Kojonen ,  Rope :   " Michael Behen ajattelu "  ,   Kertooko luonnon järjestys suunnittelusta ?   ,  s. 19 .
+Michael Behe älykkään suunnittelun ajatuksen puolustajana .
+Helsingin Yliopisto ,  2008 .
+(  Pelkällä suunnitteluargumentilla ei kuitenkaan voi osoittaa - - että Luoja olisi kristinuskon kolmiyhteinen Jumala ,  vaikka suuri osa Intelligent Design -liikkeen kannattajista näin uskookin.  )   ^  Kojonen ,  Rope :   " Michael Behen ajattelu "  ,   Kertooko luonnon järjestys suunnittelusta ?   ,  s. 10 .
+Michael Behe älykkään suunnittelun ajatuksen puolustajana .
+Helsingin Yliopisto ,  2008.  ^  Nathan Frankowski :   Expelled :  No Intelligent Allowed  .
+Premise Media Corporation ,  2007.  >  27,0 27,1 William A. Dembski  :   " Liite ,  vastaväitteitä - A.3 Tieteellinen kreationismi "  ,   Älykkään suunnitelman idea  ,  s. 195 .
+Datakirjat  ,  2002.  ^  Top 10 Darwin and Design News Stories for 2008   ( 2 .
+22.12.2008 .
+Access Research Network  .
+19.12.2008 .
+American Association for the Advancement of Science ..
+Viitattu 31.12.2008.  ^  Casey Luskin :  Top 10 Intelligent Design News Stories of 2008 23.12.2008 .
+Discovery Institute .
+Viitattu 31.12.2008 ..
+Artikkelin tägit :  suunnitteluteoria ,  id-teoria ,  älykkään suunnittelun teoria ,  älykkään suunnitelman teoria ,  älyllisen suunnittelun teoria ,  älykäs suunnitelma ,  älykäs suunnittelu ,  älyllinen suunnittelu ,  optimaalinen suunnittelu ,  aito suunnittelu ,  näennäissuunnittelu ,  tarkoituksellisuuspäättely ,  id-tutkimus ,  id-tutkimusohjelma ,  id ,  intelligent design ,  intelligent design theory ,  id-theory ,  suunnittelusuodatin ,  suunnittelusignaali ,  kiilastrategia ,  kiila-strategia ,  wedge-strategia ,  wedge-paperi Haettu osoitteesta http :  /  / apologetiikkawiki.fi / Suunnitteluteoria Luokka  :  Suunnitteluteoria Henkilökohtaiset työkalut Kirjaudu sisään tai luo tunnus Nimiavaruudet Sivu Keskustelu Muuttujat Näkymät Lue Näytä lähdekoodi Näytä historia Toiminnot Haku Valikko Etusivu Kahvihuone Ilmoitustaulu Lukusuositukset Tuoreet muutokset Luokkahakemisto Avustukset Kiitokset Linkit Ohje Työkalut Tänne viittaavat sivut Linkitettyjen sivujen muutokset Toimintosivut Tulostettava versio Ikilinkki Sivua on viimeksi muutettu 31. maaliskuuta 2011 kello 11.28 .
+Tämä sivu on näytetty 17 127 kertaa .
+Sisältö on käytettävissä lisenssillä GNU Free Documentation License 1.2  .
+DOCEND 1088020716179643594260943184131578224313187 2072
+DOCSTART 1088020716179643594260943184131578224313187 2074
+SelkoPå svenska In English Hakemisto   Etusivu Ajankohtaista Usko ja arvot Apua ja tukea Pyhät toimitukset Tule mukaan Ev.lut. kirkko Suomen evankelis-luterilainen kirkko Suosittuja sivuja Rippikoulu Häät Kaste ja kummit Hautajaiset Kirkolliset juhlapyhät Uutiset Avoimet työpaikat Sanasto Usko elämässä Raamattu Virsikirja Rukous Jumalanpalvelus Kysy papilta Mihin uskomme Hiljenny Kappelissa Asiointi ja yhteystietoja Medialle Perheneuvonta Palveleva puhelin Kirkkoon liittyminen Kirkon työntekijöille Asiointi seurakunnissa Tietoa kirkosta Päättäjät Kannanottoja Seurakuntavaalit Seurakuntaliitokset Tehtävät ja strategia Kirkollisvero ja talous Kirkon suhde valtioon Kirkko verkossa 0 )  location.href  =  this.options [ this.selectedIndex ] .value "   >  Valitse Rakkauden ammattilaiset suomi24.fi :  Kirkko kuulolla IRC-Galleria :  Kirkko kuulolla Kirkko lähelläsi Palveleva netti Nettipappi Suurella sydämellä Fleim Jeesuksen lähipiiri Riparivisa Pyhä Jysäys Lastenkirkko Lasten kotikirkko Aikamatka Lastenmaa Vinkki Kappeli Verkkokirkko Virtuaalikirkko Raamattu Katekismus Virsikirja Yhteys armolliseen Jumalaan antaa elämään kestävän perustan Päivän sana Jeesus sanoo :   " Minä olen hyvä paimen .
+Joh .
+10 : 14 Osallistu keskusteluun Lue verkkolehdestä Kenen kanssa Jeesus on samaa mieltä ?
+-blogi Katsele ,  kuuntele ,  ole kärsivällinen Hiljaista elämää -blogi Lisää blogeja ja keskusteluja Riko rajasi – ne eivät välttämättä ole omasi Kirkko  &  kaupunki Isät pohtivat isyyttä Esse Lue lisää verkkolehtiä Uutiset 26.4 .
+Partioelämyksiä Turun Tuomiokirkontorilla 25.4 .
+Hartautta ja hilpeyttä - Kirkon Nuorisopäivät Tampereella 4.-6.5.2012 24.4 .
+Vuoden 2013 Yhteisvastuun teemana jatkaa Välittävä yhteisö ‒ Gemenskap och omsorg Kaikki uutiset Raamattuvisan voitto Seinäjoelle Marttilan koulun joukkue tunsi Raamatun parhaiten .
+Raamattuvisan tuloksista Kirkkovuosi 2. sunnuntai pääsiäisestä :  Hyvä paimen välittää jokaisesta lampaastaan .
+Sana sinulle -hartaus Kirkkovuoden tekstit Kirkkovuosikalenteri Yhteisvastuu 2012 Kuka tahansa voi pudota velkakuiluun .
+Auta lähimmäistä ,  lahjoita laina .
+DOCEND 1088020716179643594260943184131578224313187 2074
+DOCSTART 1088020716179643594260943184131578224313187 2079
+KIRKKOHALLITUKSENJULKAISUT JA MUU MATERIAALI Nimi Vanhurskauttaminen kirkon elämässä Alaotsikko / luonnehdinta Ruotsin ja Suomen luterilais-katolisen dialogiryhmän raportti Kieli suomi ISBN ISBN 978
+-
+951
+-789
+-
+315
+-2  ( nid )  ISBN 978
+-
+951
+-789
+-
+316
+-9  ( PDF )  Tekijä / tekijät Yksikkö Ulkoasiain osasto Muoto ,  tilaus painotuote ,  tilaus KH Julkaisuvuosi 2010 Asianumero  ( muotoa 2007
+-
+00511
+)  2010
+-
+00191
+Sivumäärä 176 Hinta 10 Alv alv 8  %  Julkaisusarja Kirkkohallituksen julkaisuja Numero ko. sarjassa 3 ISSN 1237
+-
+279
+X Luokka ekumenia ,  kansainvälinen työ ,  usko ja oppi Ei julkisuuteen Tarkastettu Kyllä Tarkastettu pvm 04 / 21 / 2010 Esittely Vanhurskauttaminen kirkon elämässä on vuonna 2002 alkaneen suomalais-ruotsalaisen luterilais-katolisen oppikeskustelun loppuraportti .
+Kirkkojensa nimeämät luterilaiset ja katoliset teologit pohtivat tässä kirjassa sitä ,  mitä vanhurskauttaminen kirkon elämässä voi merkitä .
+Yhteisten oppikeskustelujen lähtökohtana on reformaation muistopäivänä 31.10.1999 Augsburgissa allekirjoitettu historiallinen asiakirja ”Yhteinen julistus vanhurskauttamisopista” .
+Siinä kirkot olivat saavuttaneet yhteisymmärryksen vanhurskauttamisopin perustotuuksista .
+Ruotsissa ja Suomessa on monia hengellisen ja kirkollisen elämän piirteitä ,  jotka mahdollistavat hedelmällisen vuoropuhelun katolilaisten ja luterilaisten välillä .
+Raportin pääaiheita ovat Kristus vanhurskauttamisen perustana ,  kirkon elämän sakramentaalisuus ,  yhteinen käsitys kasteen ja ehtoollisen  ( eukaristian )  sakramenteista sekä kirkon ja piispan virka vanhurskauttamisen palveluksessa .
+Dialogiryhmän toiveena on ,  että siinä saavutettu kastetta ja ehtoollista koskeva yksimielisyys ja virkaa koskeva lähentyminen voisivat olla askel kohti laajenevaa ehtoollisvieraanvaraisuutta ja kirkkojen läheisempää yhteyttä .
+DOCEND 1088020716179643594260943184131578224313187 2079
+DOCSTART 1088020716179643594260943184131578224313187 2091
+978
+-
+951
+-789
+-
+377
+-0  ( PDF )  Tekijä / tekijät Työryhmä ,  pj. Kai Vahtola ,  siht .
+Johannes Alaranta Yksikkö Toiminnallinen osasto Muoto ,  tilaus painotuote ,  tilaus KH Julkaisuvuosi 2011 Asianumero  ( muotoa 2007
+-
+00511
+)  2008
+-
+00947
+Sivumäärä 95 Hinta 6 Alv alv 9  %  Julkaisusarja Kirkkohallituksen julkaisuja Numero ko. sarjassa 2 ISSN 1237
+-
+279
+X Luokka hallinto ,  jumalanpalveluselämä ,  koulutus ,  lainsäädäntö ,  perheasiat ,  sairaalasielunhoito Ei julkisuuteen Tarkastettu Kyllä Tarkastettu pvm 02 / 09 / 2011 www-osoite Esittely Vuonna 2002 julkaistun Kirkon työntekijän vaitiolovelvollisuus päivitetty versio .
+Lainsäädännön muutokset ovat vaikuttaneet siihen ,  että kirjan päivittäminen tuli ajankohtaiseksi .
+Julkaisussa esitetään vaitiolovelvollisuus sellaisena kuin se Suomen nykyisen lainsäädännön mukaan on .
+Samalla mukaan on otettu sellaisia erityiskysymyksiä ,  jotka ovat heränneet erityisesti joidenkin työmuotojen parissa tai olleet esillä julkisuudessa .
+Keväällä 2010 on julkiseen keskusteluun noussut erityisesti lapsiin kohdistuva seksuaalinen väkivalta .
+Julkaisussa käsitellään niitä käsitteitä ,  jotka määrittelevät vaitiolon kirkossa .
+Rippisalaisuus tarkoittaa sitä vaitiolon muotoa ,  joka on papilla ja virassa olevalla lehtorilla ,  kun he ovat saaneet tietonsa ripissä tai sielunhoidossa .
+DOCEND 1088020716179643594260943184131578224313187 2091
+DOCSTART 1088020716179643594260943184131578224313187 2099
+< Tietokone Emolevy  >  Tietokone Prosessori Välimuisti Prosessorin väylät Jännite Jäähdytys Kanta Pakkaustiheys Ylikellotus Prosessoriperheet CISC ,  RISC ja VLIW Intel AMD  ( Advanced Micro Devices )  Prosessorien vertailua Suoritin eli mikroprosessori  ( CPU ,  Central Processing Unit )  on tietokoneen ydin ,  joka koordinoi tiedonsiirron tietokoneen eri osien välillä ja suorittaa tiedon käsittelyn ja laskennan .
+Prosessori määrää suurelta osin koneen tehokkuuden .
+Prosessori sisältää laskentayksikön eli aritmeettis-loogisen yksikön  ( ALU  =  Arithmetic Logical Unit )  ,  valvontayksikön sekä joukon yhden sanan  ( 8 ,  16 ,  32 bittiä )  tallentavia muistipaikkoja eli rekistereitä .
+Prosessorin  " bittisyydestä "  puhuttaessa tarkoitetaan yleensä prosessorin käyttämän sanan pituutta  ( bittien lukumäärää )  .
+Ohjelman suoritukseen liittyy kaksi tärkeää rekisteriä :  ohjelmalaskuri ,  joka sisältää seuraavaksi toteutettavan käskyn muistiosoitteen ,  ja käskyrekisteri  ( väylän ohjausosassa )  ,  johon tallennetaan keskusmuistista etsityn käskyn koodi .
+Yleisiin rekistereihin tallennetaan mm. laskennan alkuarvot ja lopputulokset .
+Käskydekooderi  ( suoritusyksikön valvontaosassa )  tulkitsee käskyn koodin ja muodostaa kvartsikidekellon tahdittamana käskyn toteuttavan elektronisen impulssisarjan .
+Konekieli on prosessorin ymmärtämä kieli .
+Assembler on ihmisen ymmärtämä symbolinen versio konekielestä .
+Esimerkki assembler-ohjelmasta :  0008 8D 1E 0000 R LEA BX , ARR 000C B4 01 MOV AH , 01H 000E CD 21 TOP :  INT 21H 0010 88 07 MOV  [ BX ]  , AL 0012 3C 1B CMP AL , 01BH 0014 74 03 JZ DONE 0016 43 INC BX 0017 E2 F5 LOOP TOP Käyttäjän havaitsemaan nopeuteen vaikuttaa myös prosessorin kellotaajuus  ( clock rate )  .
+Kellotaajuus ilmoittaa ,  montako kertaa sekunnissa koneen suoritin vaihtaa sisäistä tilaansa .
+Sisäisellä muutoksella tarkoitetaan jotain prosessorin suorittamaa toimenpidettä ;  ottaa vastaan uuden tiedon ,  suorittaa laskutoimituksen tai siirtää tietoa .
+Prosessori pyörii usein sisäisesti eri kellotaajuudella ,  kuin millä se keskustelee emolevyn kanssa .
+Kellotaajuus yksinään ei vielä kerro kaikkea prosessorin tehokkuudesta vaan tähän vaikuttavat yhtä oleellisesti myös prosessorin tarkempi sisäinen toteutus ja sisäisen välimuistin  ( Level 1 ,  primary cache )  määrä .
+Tällä hetkellä uusien prosessorien sisäiset kellotaajuudet vaihtelevat 500 ja 2000 MHz  ( Mega Hertz  =  miljoonaa vaihdosta sekunnissa )  välillä .
+Välimuisti Prosessorit sisältävät aina jonkin määrän ns. sisäistä välimuistia .
+Aina prosessorin hakiessa muistista uutta käskyä tai dataa se aina ensimmäiseksi tarkistaa löytyykö tarvittava tieto jo välimuistista .
+Yli 90 %  todennäköisyydellä tarvittava tieto on jo välimuistissa ja prosessori saakin sen käyttöönsä huomattavasti nopeammin ,  kuin varsinaisesta muistista .
+Jokaisella kerralla ,  kun prosessori joutuu tekemään haun varsinaiseen muistiin ,  haetaan samalla kertaa valmiiksi välimuistiin sellaista dataa ,  jota prosessori seuraavaksi todennäköisesti tarvitsee .
+Välimuistia on yleensä monella eri tasolla .
+Ykköstason  ( Level 1 )  välimuisti löytyy suoraan prosessorin sisältä ja sitä on yleensä 8 - 128 kilotavua .
+Kakkostason  ( Level 2 )  välimuisti saattaa löytyä edelleen prosessorin kanssa samalta piiriltä mutta ei ole varsinaisesti enää suoraan prosessorin sisällä .
+Kakkostason välimuistin määrä on yleensä 128 - 512 kilotavua .
+Edelleen voi löytyä vielä 256 - 2048 kilotavua kolmannen  ( Level 3 )  tason välimuistia emolevyltä ennen varsinaista muistia .
+Mitä lähempänä prosessoria olevasta välimuistista tarvittava tieto löytyy ,  sitä nopeammin se saadaan prosessorin käsiteltäväksi .
+Vlimuistin taso Sijainti Koko Level 1 Prosessorin sisll 8 - 128 kilotavua Level 2 Integroitu samaan koteloon prosessorin kanssa 128 - 512 kilotavua Level 3 Emolevyll 256 - 2048 kilotavua Eritasoiset välimuistit :  Prosessorin väylät Prosessorin tehokkuuteen vaikuttaa oleellisesti prosessorin ja varsinaisen muistin välisen väylän  ( ulkoinen väylä ,  muistiväylä )  leveys ja nopeus .
+Väylän leveys on yleensä 8 - 64 bittiä .
+Mitä leveämpi ja nopeampi väylä ,  sitä enemmän tietoa siirtyy kerralla muistista prosessorille ja päinvastoin .
+Esimerkki 16-bittiä leveästä väylästä ,  jonka kellotaajuus on 60 MHz :  Esimerkki 32-bittiä leveästä väylästä ,  jonka kellotaajuus on 100 MHz :  Ulkoisen väylän nopeus on yleensä 100 - 400 MHz  ( 2001 )  .
+Prosessorin sisäinen kellotaajuus määräytyy ulkoisen väylän kellotaajuuden mukaan .
+Sisäinen kellotaajuus on aina ulkoinen kellotaajuus kerrottuna jollakin tietyllä kertoimella .
+Tyypillisiä kertoimia ovat 3 ,  3.5 ,  4 ,  4.5 ,  5 ,  5.5 ,  6 ,  6.5 ja 7 .
+Esim. ulkoinen väylä on 100MHz ja prosessorin nopeudeksi halutaan 400MHz .
+Määritellään kertoimeksi siis neljä  ( 4 )  eli 4  *  100MHz  =  400 MHz .
+Mitä nopeampi ulkoinen väylä ,  sitä enemmän vaaditaan myös muistipiireiltäkin .
+Juuri muistipiirien hitaus on tähän mennessä jarruttanut ulkoisen väylän nopeuden nostamista ,  mutta uudet SDRAM-muistipiirit ovat tuoneet osaltaan helpotusta tähän ongelmaan .
+Ulkoisen väylän ei kuitenkaan tarvitse pyöriä yhtäsuurella kellotaajuudella kuin prosessori sisäisesti ,  koska suurin osa prosessorin toiminnasta tapahtuu kuitenkin prosessorin sisällä ja sen sisäistä välimuistia käyttäen .
+Ulkoisiin yhteyksiin riittää vaatimattomampikin nopeus ilman ,  että koneen nopeus juurikaan kärsii .
+Saman sisäisen kellotaajuuden voi saada aikaan useilla erilaisilla ulkoisen kellotaajuuden ja kertoimien yhdistelmillä .
+Toinen tärkeä väylä on ns. osoiteväylä ,  joka määrittelee kuinka paljon muistia prosessori maksimissaan pystyy osoittamaan .
+Osoiteväylän koko kertoo kuinka montaa kahdeksan  ( 8 )  bitin eli yhden tavun kokoista muistipaikkaa prosessori pystyy käsittelemään .
+32-bittisellä osoiteväylällä varustettu prosessori pystyy käsittelemään maksimissaan 4096 MB muistia .
+Käsiteltävän muistin määrä voidaan siis laskea suoraan kakkosen potensseina  ( 232  =  4096 MB )  .
+Uusimmissa prosessoreissa osoiteväylä on useimmiten vähintään 36-bittiä eli muistia voi olla maksimissaan 64 GB .
+Prosessorin sisällä sijaitsee vielä prosessorin oma sisäinen väylä ,  johon on liitetty kaikki prosessorin osat ja osien välinen tiedonkulku tapahtuu tätä väylää pitkin .
+Sisäinen väylä on erittäin nopea ja joskus myös huomattavan leveä ,  jopa 300 bittiä .
+Jännite Kukin prosessori vaatii toimiakseen tietyn käyttöjännitteen  ( 5V  ;  3,5V ,  3.3V ,  1.5V jne. )  .
+Mitä pienempi jännite sitä pienempi virrankulutus ja vähemmän hukkalämpöä .
+Jäähdytys Varsinkin korkealla kellotaajuudella toimivat prosessorit tuottavat huomattavasti lämpöä ,  joka täytyy johtaa niistä pois .
+Prosessorin toimiessa liian kuumana se saattaa lakata toimimasta kunnolla tai voi kokonaan rikkoutua .
+Jäähdytyksessä käytetään yleensä jäähdytyslevyjä ja / tai tuulettimia .
+Jäähdytyslevy sijoitetaan prosessorin päälle ,  jossa se siirtää lämmön pois prosessorista ja haihduttaa sitä tehokkaammin paremman muotoilunsa ansiosta kuin prosessori .
+Jäähdytyslevyn päälle on myös usein asennettuna pieni tuuletin ,  joka puhaltaa kuumaa ilmaa pois prosessorin läheisyydestä .
+Uusimmissa koteloissa myös kotelon virtalähde on sijoitettu niin ,  että virtalähteen tuuletin puhaltaa sopivasti prosessorin ylitse parantaen edelleen jäähdytystä .
+Kanta Prosessorit liitetään emolevyyn käyttäen erityisesti prosessorien liittämiseen käytettävää kantaa .
+Vuosien kuluessa erilaisia kantoja on markkinoille tullut useita .
+Onkin turha kuvitellä ,  että vanhan 486-emolevyn prosessorikantaan pystyisi liittämään jonkin uuden huippunopean Pentium IV -prosessorin .
+Kannattaakin tarkistaa tietokoneensa emolevyn manuaalista millaisella kannalla varustettuja prosessoreita siihen voidaan liittää ennenkuin painuu suinpäin ostamaan uutta ja tehokkaampaa suoritinta .
+Seuraavassa näkyy taulukoituna yleisimmät käytetyt prosessorikannat ,  niiden tarjoamat jännitteet ja kantoihin sopivat prosessorityypit :  Nimi Jännite Yhteensopivat prosessorit Socket 1 486 Socket 2 486 Socket 3 5V  /  3.3V 486 ,  AMD 5x86 ,  Cyrix 5x86 Socket 4 Pentium 60
+-
+66
+Socket 5 3.3V Pentium 75
+-
+133
+MHz ,  Pentium MMX 125
+-
+166
+Socket 6 3.3V 486 Socket 7 2.5- 3.3V Pentium 75
+-
+200
+MHz ,  Pentium MMX ,  6x86 ,  K5 ,  K6 ,  6x86MX Socket 8 3.1V  /  3.3V Pentium Pro Slot 1 1.8V  /  3.3V Pentium II ,  Pentium III ,  Celeron Slot 2 Celeron ,  Celeron II ,  Pentium III Socket 370 Pentium II Slot A Athlon Socket A Duron ,  Athlon Socket 423 Pentium IV Socket 478 Pentium IV Lisätietoja eri kannoista voi lukea osoitteesta  <  http :  /  / users.erols.com / chare / cpu _ sock.htm  >  Pakkaustiheys Prosessorien pakkaustiheys eli transistorin leveys on esim. 0.25 mikronia  ( millimetrin tuhannesosa )  .
+Mitä suurempi pakkaustiheys on niin sitä suuremmalla kellotaajuudella prosessoreita voidaan käyttää .
+Suurin yleisesti käytetty pakkaustiheys on tällä hetkellä 0.13 mikronia .
+Ylikellotus Tunnetusti tietokoneissa ei koskaan ole tehoa liikaa ja monet tekevätkin kaikkensa saadakseen puristettua jokaisen tehopisaran irti laitteistaan .
+Yksi tämän hetken suosituimpia tapoja muistin kasvattamisen lisäksi koneen tehostamiseksi on ylikellotus .
+Prosessorivalmistajat tuottavat samoja prosessoreita monella eri kellotaajuudella toimivina .
+Prosessorin sisäinen kellotaajuus määräytyy ulkoisen väylän kellotaajuuden ja erillisen kertoimen mukaan .
+Jokaiselle prosessorille on määritelty tarkkaan mikä kertoimen ja kellotaajuuden pitää olla .
+Mikään ei kuitenkaan estä kokeilemasta hieman suurempaa väylänopeutta tai suurempaa kerrointa .
+Jos käy tuuri niin prosessori toimii aivan hyvin korkeammalla kellotaajuudella ja konekin nopeutuu samalla .
+Esimerkiksi koneessa on Pentium 90 prosessori joka toimii 60 MHz : in ulkoisella taajuudella kerrottuna 1.5 : llä .
+Nostetaan ulkoinen kellotaajuus 66 MHz : iin niin meillä onkin käytössä Pentium 100 .
+Jos vielä nostamme kertoimen 2 : ksi niin saamme Pentium 133 : en .
+Tämä saattaa jo olla liikaa eikä prosessori enää toimi kunnolla .
+Kone saattaa vielä käynnistyä mutta hyytyy kesken boottauksen tai muuten vain kaatuilee ja jumittelee ilman näkyvää syytä .
+Tällöin prosessori ei pysty toimimaan halutulla nopeudella eli vauhtia on syytä vähentää .
+Ylikellotettaessa kannattaa erityisesti nostaa ulkoista väylänopeutta ,  koska se voi vaikuttaa myös lisälaitteiden toimintaan .
+Useimmissa vanhemmissa emolevyissä PCI-väylät toimivat puolella prosessorin ulkoisesta kellotaajuudesta eli prosessorin ulkoisen väylän ollessa 60 MHz on PCI-väylien nopeus 30 MHz .
+PCI-väylään liitetty näytönohjain nopeutuu suoraan samassa suhteessa kuin PCI-väylän nopeuskin kasvaa .
+Uusimmissa emolevyissä on mahdollista jopa 200 MHz tai 400 MHz väylä prosessorille ,  mutta PCI-väyliin liitetyt lisälaitteet eivät enää toimi ,  jos niitä ajetaan näin suurella kellotaajuudella vaan niiden nopeus pitää määritellä monta kertaa pienemmäksi .
+Myös ISA-väylien nopeus riippuu usein prosessorin ulkoisen väylän nopeudesta .
+Ylikellottaminen aiheuttaa usein prosessorin ylikuumenemista ,  joten myös jäähdytystä on syytä lisätä .
+Jos aikaisemmin käytössä ei ollut tuuletinta ,  niin ylikellottamisen jälkeen se on jo välttämätön .
+Prosessorit on suunniteltu toimimaan tietyllä nopeudella .
+Jos niitä ajetaan suunniteltua nopeammin ,  niin ne myös kuluvat nopeammin .
+Jos haluat varmistaa ,  että prosessorisi toimii vielä viidenkin vuoden jälkeen ,  niin älä leiki ylikellottamisella .
+Harvaa prosessoria kuitenkaan tulee käytettyä noinkaan kauaa .
+Ylikellotus asettaa myös lisävaatimuksia koneessa olevalle muistille ,  jos käytetään korkeimpia väylänopeuksia .
+Ylikellotuksella saatava nopeushyöty on usein aika mitätön .
+Prosessorin kellotaajuus pitäisi periaatteessa saada vähintään tuplattua ,  jotta siitä on mitään näkyvää hyötyä tavallisessa hyötyohjelmakäytössä .
+Joidenkin tietokonepelien yhteydessä saattaa pienikin nopeuden lisääminen vaikuttaa .
+Tietokoneen nopeuteen vaikuttaa kuitenkin moni muukin asia kuin pelkkä prosessorin kellotaajuus .
+Pelkkä ylikellottaminen ei vielä nopeuta vanhaa hidasta kiintolevyä ,  näytönohjainta tai kasvata koneen muistikapasiteetia ,  jotka kaikki ovat erittäin oleellisia koneen lopullisen nopeuden kannalta .
+Lisätietoa ylikellotuksesta löytyy paljon WWW : stä mm. osoitteista :   < URL :  http :  /  / www4.tomshardware.com / guides / overclocking /   >   < URL :  http :  /  / www.sysopt.com / ocdatabase.html  >  .
+< URL :  http :  /  / www.sysopt.com / sphelp.html  >  .
+Prosessoriperheet PC-koneissa käytetään yleisimmin Intelin prosessoreita ,  mutta myös mm. AMD ja Cyrix valmistavat prosessoreita PC-käyttöön .
+Prosessorit ovat ns. ylöspäin yhteensopivia .
+Tämä tarkoittaa sitä ,  että vanhalle prosessorille tehdyt ohjelmat toimivat myös uusissa prosessoreissa .
+Näitä PC-koneissa käytettäviä prosessoreita kutsutaan x86-perheen prosessoreiksi .
+On olemassa myös muita prosessoriperheitä ,  joiden käskykanta ei ole yhteensopiva x86-perheen kanssa .
+Esimerkiksi Motorola on pitkään valmistanut 68xxx-sarjan prosessoreita ,  joita käytettiin erityisesti Maceissa ja Amigoissa .
+68xxx-sarjan prosessorit puhuvat ruotsia ,  jos kuvitellaan x86-perheen prosessorien puhuvan suomea .
+PC-koneisiin kirjoitettu ohjelma ei voi toimia 68xxx-sarjan prosessoria käyttävässä Macissa tai Amigassa ,  koska prosessorien käskykanta on erilainen .
+Toinen yhtä oleellinen rajoitus tälläisen ohjelman toimivuudella on käytettyjen käyttöjärjestelmien eroavaisuudet .
+Prosessoriperhe Prosessorit Valmistaja ( t )  Käyttökohteet x86 286,386 , 486 , Celeron ,  Pentium , Pentium II ,  Pentium III ,  Pentium IV Intel K5 ,  K6 ,  Duron ,  Athlon AMD PC : t ,  sulautetut järjestelmät 68xxx 68000 ,  68010 ,  68020 ,  68030 ,  68040 Motorola Amiga ,  Mac ,  sulautetut järjestelmät PowerPC 600-sarja ,  700-sarja Motorola / IBM Mac ,  sulautetut järjestelmät Crusoe TM5400 ,  TM5500 ,  TM5600 ,  TM5800 Transmeta Kannettavat PC : t ,  sulautetut järjestelmät Prosessorien kehittymisestä vuosien varrella voi lukea lisää seuraavista osoitteista :  Processor History  <  http :  /  / www.hardwarecentral.com / hardwarecentral / tutorials / 25 / 1 /   >  Processor Hall of Fame  < h ttp :  /  / www.intel.com / intel / intelis / museum / exhibit / hist _ micro / hof / hof _ main.htm  >  CISC ,  RISC ja VLIW Prosessorit voidaan jakaa niiden käskykannan perusteella seuraaviin luokkiin :  CISC  ( Complex Instruction Set Computer )  esim. x86 ja 68xxx .
+CISC-prosessorit sisältävät enemmän ja monimutkaisempia komentoja kuin RISC .
+RISC  ( Reduced Instruction Set Computer )  esim. PowerPC .
+RISC-prosessorit sisältävät pienennetyn käskykannan .
+Vähäisempi käskymäärä voidaan kuitenkin suorittaa huomattavasti nopeammin ,  kuin suurempi käskyvalikoima joten RISC-tekniikalla toteutetut koneet eivät ole yhtään sen hitaampia kuin CISC vaan monesti jopa nopeampia .
+VLIW  ( Very-Long Instruction Word )  esim. Crusoe .
+VLIW-arkkitehtuurissa kääntäjä muokkaa ohjelman komennot erittäin pitkiksi komentosanoiksi ,  jotka prosessori pystyy suorittamaan erittäin tehokkaasti ja mahdollisesti rinnakkain .
+VLIW on periaatteessa seuraava askel eteenpäin RISC-teknologiassa .
+Intel Intel 4004 oli ensimmäinen varsinainen mikroprosessori ,  joka julkaistiin 15.11.1971 .
+Prosessorin nopeus oli huimat 108 KHz !
+Muistia 4004 pystyi käsittelemään maksimissaan 640 tavua .
+Vuonna 1978 Intel julkaisi 8086 prosessorin ,  jonka käskykannan kanssa yhteensopivia ovat vielä edelleen tämän hetkiset huippuprosessorit .
+8086 oli huomattavasti tehokkaampi kuin 4004 ja pystyi käsittelemään muistiakin jo 1 megatavun verran .
+16-bittistä 80286-mallia käytettiin ensi kertaa IBM : n AT-mikroissa vuonna 1984 .
+Prosessorina se on paljon kehittyneempi kuin edeltäjänsä ,  mutta näistä lisäominaisuuksista  ( isompi muistiavaruus ,  virtuaalimuisti ,  muistinsuojaus yms. )  ei ole juuri mitään hyötyä DOS : ia käytettäessä .
+Vasta Windows pystyi käyttämään näitä ominaisuuksia kunnolla .
+DOS : ia käytettäessä 80286 : sta saatava etu rajoittuu suurempaan nopeuteen .
+80286-mikrot olivat noin 3
+-
+6
+kertaa nopeampia kuin tavalliset perus-PC : t .
+Seuraava prosessorimalli sai tyyppinumeron 80386 .
+DOS-sovellusten kannalta 80386-koneet ovat kellotaajuudesta riippuen noin 8
+-
+25
+kertaa nopeampia kuin 8088-koneet .
+80386 on tärkeä prosessorimalli ,  sillä se on ensimmäinen 32-bittinen prosessori .
+Tämä puolestaan mahdollistaa tukun ominaisuuksia ,  joita aiemmissa malleissa ei ollut .
+Intelin lisäksi monet muutkin valmistajat kehittivät versioitaan tästä prosessorista ,  joka entisestään lisäsi sen suosiota ja laski hintoja .
+Tuloksena on ollut kokonainen lauma eri valmistajien 386-prosessoreita ,  jotka ovat toinen toistaan nopeampia .
+Perusmallin  ( koko nimeltään 386DX )  lisäksi on tarjolla 386SX ,  jonka ulkoinen väylä on lyhennetty 16-bittiin ,  sekä 386sx : n terästetty versio 386SLC .
+Prosessorin ulkoisen väylän kaventaminen 32 bitistä 16 bittiin mahdollisti 286-tekniikkaan tehtyjen korttien käytön emolevyllä .
+Seuraava malli oli vuonna 1989 julkistettu 32-bittinen 80486 ,  jota käyttävät koneet ovat 25
+-
+60
+kertaa nopeampia kuin ensimmäiset PC : t .
+486-prosessorissa oli ensi kertaa sisäinen välimuisti  ( 8 kilotavua )  ja matematiikkaprosessori sisäänrakennettuna .
+486-prosessorista on tehty kolme muunnosta ;  SX ,  DX2 ja DX4 .
+486SX on riisuttu malli ,  josta on poistettu matematiikkaprosessori .
+Tämä prosessori oli vastaisku AMD : n halpoja 386-prosessoreita vastaan .
+486DX2 : ssa sisäinen kellotaajuus on kaksinkertainen verrattuna emolevyn kellotaajuuteen ja 486DX4-prosessoreissa kolminkertainen .
+Sisäisen kellotaajuuden nostaminen mahdollisti prosessorin tehon nostamisen ilman ,  että emolevyllä olevia laitteita tarvitsi vaihtaa suurempaa kellotaajuutta käyttäviksi .
+Maaliskuussa 1993 julkistettiin Intelin Pentium  (  " 586 "  )  ,  jossa on kaksi 486-prosessoria rinnakkain .
+Kahden yksikön ansiosta Pentium pystyy suorittamaan kaksi käskyä näennäisesti yhtä aikaa ja on siten teoriassa kaksi kertaa nopeampi kuin vastaavalla kellotaajuudella toimiva 486-prosessori .
+Käytännössä hyöty jää 1.2
+-
+1
+.8-kertaiseksi ,  koska monet käskysarjat on Pentiumissakin pakko suorittaa peräkkäin .
+Jos suoritettavaksi tulee esimerkiksi hyppykäsky ,  niin rinnakkaisuus katoaa ,  sillä seuraavat käskyt on luettava uudesta muistiosoitteesta .
+Pentiumissa on kuitenkin varauduttu hyppyihin hyppykäskyjen ennustuslogiikalla .
+Sisäisesti Pentium on 32-bittinen prosessori .
+Ulkoinen muistidataväylä on 64 bittiä leveä ,  mikä kaksinkertaistaa yhdellä kellokierroksella siirrettävän datamäärän .
+Pentiumin ensimmäiset mallit toimivat 66 Mhz : n kellotaajuudella ,  mutta prosessorin kellotaajuus kasvatettiin myöhemmin yli 200 Mhz : iin .
+Pentiumin käskykanta on täysin sama kuin 486 : ssa .
+486 : ssa olevaa kahdeksan kilotavun välimuistia kasvatettiin Pentiumissa 16 kilotavuun ja jaettiin kahteen erilliseen 8 kilotavun alueeseen ,  josta toinen nopeuttaa koodia ja toinen dataa .
+Välimuisti tukee myös moniprosessorijärjestelmiä .
+Lisäksi liukuluvuilla tapahtuva laskenta on nopeutunut .
+Intel kirjoitti 486 : ssa olleen matematiikkayksikön kokonaan uudelleen ja tuloksena oli Pentiumissa 5
+-
+10
+kertaa nopeammat matemaattiset rutiinit kuin 486-prosessorissa .
+Vuonna 1995 Intel julkisti Pentium Pro -prosessorin ,  jonka suorituskyky on optimoitu erityisesti 32-bittisille ohjelmille .
+Vanhat 16-bittiset ohjelmat eivät toimi Pentium Prossa juurikaan sen nopeammin kuin vastaavassa Pentiumissa ,  mutta 32-bittiset ohjelmat toimivat huomattavasti nopeammin .
+Pentium Prossa on myös valmiiksi integroituna L2-tason välimuisti prosessorin varsinaisen sisäisen välimuistin lisäksi .
+Yleensä L2-tason välimuisti on sijoitettuna emolevylle ,  mutta sen sijoittaminen suoraan prosessorin yhteyteen tuo heti lisää nopeutta .
+Pentium Prota käytettiin lähinnä tehokkaissa moniprosessoripalvelimissa ,  joissa 16-bittisen koodin suorituskyvyllä ei ollut niin paljoa merkitystä kuin tavallisissa vanhoja sovelluksia käyttävissä kotimikroissa .
+Tällä hetkellä Pentium Pro on siirtynyt pois markkinoilta uusien Pentium II / III -prosessorien tieltä .
+Intel paranteli hieman Pentium-prosessoreitaan ja julkisti Pentium MMX -prosessorit .
+MMX on lyhenne sanoista MultiMedia eXtension ,  joka taas tarkoittaa 57 uutta käskyä prosessoriin .
+Uudet käskyt on valittu juuri multimedian vaatimuksia silmällä pitäen .
+MMX-käskyjen lisäksi uudet Pentium MMX-prosessorit osaavat hyödyntää SIMD  ( Single Instruction Multible Data )  tekniikkaa eli prosessori osaa suorittaa saman käskyn useammalle datalle yhdellä komennolla .
+Intel kasvatti myös Pentium-prosessorien sisäisen välimuistin koon 32 kilotavuun .
+Täyden lisätehon saaminen MMX-prosessoreista vaatii ohjelmia ,  jotka on suunniteltu varta vasten hyödyntämään MMX-lisäkomentoja .
+Intel lupaa Pentium MMX-prosessorien olevan n. 10
+-
+20
+%  nopeampia tavallisessa käytössä kuin perinteiset Pentium-prosessorit ja multimedia käytössä jopa 60 %  nopeampia .
+Näin ei kuitenkaan käytännössä ole .
+Normaalikäytössä nopeus ero on MMX : n eduksi vain alle 10 %  ja tämäkin ero tulee lähinnä isomman sisäisen välimuistin tuomasta hyödystä .
+Multimedia käytössä nopeusero voi olla parhaimmillaan tuo 60 %  ,  mutta sekin ilmenee vain juuri sopivissa olosuhteissa .
+Vuonna 1997 julkistettiin Pentium II .
+Pentium II : ssa on yhdistetty Pentium Pron ominaisuudet MMX-laajennuksilla ,  suuremmalla sisäisellä välimuistilla ja entistä korkeammalla kellotaajuudella .
+Pentium II : et tukevat myös 100 MHz : n ulkoista väylänopeutta .
+Tätä ennen Intelin prosessorien suurin ulkoinen väylänopeus oli ollut vain 66 MHz .
+Pian Pentium II -prosessorin julkistamisen jälkeen Intel julkisti myös ns. Celeron-prosessorin .
+Celeronin ensimmäiset versiot olivat riisuttuja halpaversioita Pentium II : sta .
+Pentium II : een sisäänrakennettu 512 kt kakkostason välimuisti on Celeronissa pienennetty 128 kt kokoiseksi tai jätetty kokonaan pois .
+Myös ulkoisen väylän nopeus oli ensimmäisissä Celeroneissa pienempi kuin Pentium II : ssa ,  eli vain 66 MHz .
+Samalla hinta saatiin pienemmäksi pudonneen tehon kustannuksella .
+Uusimmat versiot Celeron-prosessoreista käyttävät jo 100 MHz : n väylää ja sisältävät myös aina toisen tason välimuistin .
+Intel julkisti Pentium II : sta myös ns. Xeon-version .
+Xeon on suunniteltu toimimaan paremmin moniprosessorikäytössä kuin perinteinen Pentium II -prosessori .
+Xeon-prosessoreita löytyykin lähinnä palvelimista ja muista erityisen suurta prosessoritehoa vaativista laitteista .
+Pentium III julkistettiin 1999 .
+Nopeimmat Pentium III -prosessorit toimivat kirjoitushetkellä yli 1000 MHz : n taajuuksilla .
+Pentium III toi mukanaan 70 uutta komentoa ,  jotka nopeuttavat erityisesti audion ,  videon ja grafiikan käsittelyä .
+Pentium IV julkistettiin vuonna 2000 .
+Kirjoitushetkellä kaikista suurimmalla kellotaajuudella toimivat prosessorit ovat Pentium IV -sarjan uusimmat versiot ,  jotka toimivat huimalla 2 GHz : n taajuudella .
+AMD  ( Advanced Micro Devices )  AMD on jo vuosikaudet valmistanut Intel-yhteensopivia prosessoreita kotitietokonemarkkinoille .
+Intel on kuitenkin ollut selkeästi suurin valmistaja ja aina askeleen edellä muita .
+Viime vuonna AMD : n K6 prosessorit anastivat kuitenkin jo ison palan prosessorimarkkinoista itselleen .
+AMD on myös luvannut olevansa aina 25 %  halvempi kuin Intel ,  mikä onkin tähän asti pitänyt paikkansa .
+AMD K5 oli Pentium-kantaan  ( Socket 7 )  sopiva prosessori ,  joka vastasi teholtaan lähinnä Intelin perinteisiä Pentium-prosessoreita .
+K5 : sta AMD kehitti edelleen AMD K6-prosessorin ,  joka sisältää MMX laajennukset ja muita parannuksia K5 : een verrattuna .
+Teholtaan AMD K6 vastaa Intelin MMX -prosessoreita ja paikoitellen jopa ohittaa ne .
+Kesällä 1998 ilmestyi AMD K6
+-
+2
+with 3DNow !
+-prosessori .
+Uusina ominaisuuksina mm. tuki 100 MHz väylälle ja uusia lisäkäskyjä ,  jotka nopeuttavat erityisesti 3D-grafiikan käsittelyä ja muuta multimediaa .
+Uudet lisäkäskyt eivät ole yhteensopivia Intelin MMX2-komentojen kanssa vaan ne vaativat erityisesti niitä käyttäviä ohjelmia .
+AMD on sopinut Cyrixin ja IDT : n kanssa jotta ne ottaisivat samat komennot käyttöön omissa prosessoreissaan .
+K6
+-
+2
+with 3DNow !  ensimmäinen versio toimi 350 MHz nopeudella ja on olemassa myös 400MHz ,  450 MHz ,  500MHz ja 550MHz versiot .
+Loppuvuodesta 1998 AMD julkisti K6
+-
+3
+-prosessorin ,  joka oli edelleen hieman paranneltu versio AMD K6
+-
+2
+: sta .
+Syksyllä 1999 AMD nappasi nopeimman x86-yhteensopivan prosessorin tittelin ensimmäistä kertaa pois Inteliltä julkaisemalla huippunopean Athlon-prosessorin .
+Athlon toi mukanaan omat multimediakäskylaajennuksensa ,  jotka eivät ole suoraan yhteensopivia Intelin vastaavien kanssa .
+Athlon vaatii oman erityisen prosessorikantansa ,  mutta se tukeekin samalla huippunopeaa 200 MHz : n ulkoista väylänopeutta .
+Uusimmat vuonna 2001 julkaistut versiot Ahtlon-prosessorista  ( Athlon MP ja Athlon XP )  toimivat yli 1.5GHz : n taajuudella yhtä tehokkaasti kuin Intelin Pentium IV -prosessorit 2 GHz : n taajuudella .
+Prosessorien vertailua Prosessori Julkaisu vuosi Suurin kellotaajuus  ( MHz )  Sisäinen väylä  ( leveys )  Ulkoinen väylä  ( leveys )  Ulkoinen väylä  ( nopeus )  Osoite väylä Sisäinen välimuisti  ( L1 )  Sisäinen välimuisti  ( L2 )  Jännite Kanta Intel 4004 1971 0.108 4 4   12 -       Intel 8008 1972 0.300 8 8   14 -       Intel 8080 1974 3.125 8 8   16 -       Intel 8086 1978 10 16 16   20 -       Intel 8088 1979 10 16 8   20 -   Intel 80286 1982 20 16 16 24 - Intel 386DX 1985 33 32 32 32 - Intel 386SX 1988 33 32 16 24 - Intel 486DX 1989 50 32 32 32 8 yhdistetty Intel 486SX 1991 33 32 16 32 8 yhdistetty Intel 486DX2 1992 66 32 32 32 8 yhdistetty Intel Pentium 1993 200 32 64 32 8 / 8 AMD Am486DX 1993 40 32 32 32 8 yhdistetty AMD Am486DX2 1993 100 8 yhdistetty Cyrix CX486DX 1993 50 8 yhdistetty Cyrix CX486DX2 1993 80 8 yhdistetty Intel 486DX4 1994 100 16 yhdistetty AMD Am48xDX4 1994 120 8 yhdistetty Cyrix 5x86 1994 120 64 16 yhdistetty Intel Pentium Pro 1995 200 300 64 36 8 / 8 AMD Am5x86 1995 133 16 yhdistetty AMD K5 1995 120 64 16 / 8 Cyrix CX486DX4 1995 100 8 yhdistetty Cyrix 6x86 1995 150 64 64 16 yhdistetty Intel Pentium MMX 1996 266 64 16 / 16 Intel Pentium II 1997 450 300 64 36 16 / 16 Intel Pentium II M 1200 300 64 133 MHz 36 16 / 16 521 1.4 AMD K6 1997 300 64 64 32 / 32 Cyrix 6x86 MX 1997 188 64 64 64 yhdistetty Intel Celeron 1998 1200 300 64 100 MHz 36 16 / 16 256 1.475 Socket 370 Intel Mobile Celeron 933 300 64 100 MHz 36 16 / 16 128 1.7 AMD K6
+-
+2
+1998 550 64 64 100 MHz 32 / 32  ( 1024 )  2.2 / 3.3 Super Socket 7 AMD K6
+-
+3
+1998 450 64 64 32 / 32 Cyrix MII 1998 300 64 64 yhdistetty Cyrix III 700 133 MHz 128 1.9 Socket 370 Cyrix C3E 733 133 MHz 128 1.5 Socket 370 Cyrix C3 866 133 MHz 128 1.5 Socket 370 Intel Pentium III 1999 1266 300 133 MHz 36 16 / 16 512 1.45 Intel Pentium III Xeon 1000 133 MHz 16 / 16 256 2.8 / 5 / 12 Slot 2 AMD Athlon 1999 700 64 / 64 Intel Pentium IV 1999 2000 300 400 MHz 36 8 / 12 ETC 256 1.75 Socket 478 Intel Xeon 2001 2000 400 MHz 8 / 12 ETC 256 1.7 Socket 603 AMD Athlon 1999 1400 266 MHz 64 / 64 256 1.75 Socket A AMD Duron 2000 1100 200 MHz 64 / 64 1.75 Socket A AMD Mobile Duron 900 200 MHz 64 / 64 1.2
+-
+1
+.5 Socket A AMD Ahtlon 4 2000 1100 200 MHz 64 / 64 256 1.2
+-
+1
+.5 Socket A AMD Athlon XP 2001 1550 266 MHz 64 / 64 256 1.75 Socket A AMD Athlon MP 2001 1550 266 MHz 64 / 64 256 1.75 Socket A Crusoe TM3200 2000 Crusoe TM5400 2000 700 128 256 0.9
+-
+1
+.3 Crusoe TM5500 2001 800 133 MHz 128 256 0.9
+-
+1
+.3 Crusoe TM5600 2000 700 128 512 0.9
+-
+1
+.3 Crusoe TM5800 2001 800 133 MHz 128 512 0.9
+-
+1
+.3 Prosessorien suhteellinen nopeus verrattuna Intel 8086 : een .
+Prosessorien suhteellinen nopeus verrattuna Intel Pentium 200 : een .
+DOCEND 1088020716179643594260943184131578224313187 2099
+DOCSTART 1088020716179643594260943184131578224313187 2102
+< Prosessori Väylät  >  Tietokone Emolevy Nykyään kaikissa tietokoneissa on emolevy ;  piirikortti ,  jolle on sijoitettu yleensä vähintään itse suoritin ,  prosessorin ulkoinen välimuisti sekä keskusmuisti ja näppäimistöliitäntä .
+Usein emolevyllä on myös muita oheislaiteohjaimia kuten sarja- ja rinnakkaisliitännät ,  näytönohjain ,  levyke- ja kiintolevyohjaimet sekä hiiriliitäntä .
+Laajennettavuuden aikaansaamiseksi on emolevyllä tai siihen liitetyllä erillisellä väyläkortilla lisäksi joukko väyläliittimiä eli korttipaikkoja ,  joihin voidaan koneen valmistuksen yhteydessä tai myöhemmin asentaa väylään liitettäviä laajennuskortteja .
+Emolevyn tehtävänä on koko mikrotietokoneen ja sen lisälaitteiden ohjaaminen ja liittäminen toisiinsa .
+Tieto kulkee lisälaitteilta väyliä pitkin emolevyllä ,  jossa prosessori käsittelee sen ja suoritetaan muut vaaditut tehtävät .
+Lisälaitteet liitetään emolevyyn joko väylien kautta tai suoraan emolevyn liittimiin tulevilla kaapeleilla .
+Kaikilla emolevyillä on nykyään myös jokin määrä välimuistia .
+Tämä välimuisti toimii prosessorin sisältämän välimuistin lisäksi varsinaisen muistin ja prosessorin välissä nopeuttaen muistihakuja .
+Vanhemmissa emolevyissä välimuistin määrää saattoi rajoittaa emolevylle lisättävän varsinaisen keskusmuistin määrää ,  koska välimuisti ei osannutkaan käsitellä muistia kuin tietyn määrän ,  esim. 64MB .
+Tälläisessä tapauksessa yli 64 MB menevä muisti jäi välimuistin ulkopuolelle ja kaikki sieltä tehtävät muistihaut hidastuivat merkittävästi .
+Emolevyt pohjautuvat aina johonkin tiettyyn piirisarjaan ,  joka määrittelee suurimman osan emolevyn ominaisuuksista .
+Emolevyjen piirisarjoja valmistavat mm. Intel ja SiS .
+Emolevy määrää suuren osan tietokoneen ominaisuuksista esim. prosessorin kellotaajuuden .
+Emolevyn asetuksiin päästään vaikuttamaan joko suoraan emolevyn pinnalla olevilla jumppereilla ,  dip-kytkimillä tai ohjelmallisesti BIOS-setupin kautta .
+Emolevyille on myös standardoitu tietynlaiset mitat ja erilaisten liittimien sijoittelu .
+Uusimmat emolevyt ovat ns. ATX-tyyppiä ,  joka vaatii sitä varten suunnitellun kotelon .
+Vanhemmat koneet  ( 486 / Pentium )  ovat yleensä AT-tyyppiä ,  joka tietenkin vaatii hieman erilaisen koteloratkaisun ympärilleen kuin ATX .
+Keskiverto uusi emolevy sisältää 1
+-
+2
+ISA-väylää ,  3
+-
+5
+PCI-väylää ,  3
+-
+4
+paikkaa 168-pinnisille DIMM-kammoille ,  2 kpl IDE-ohjaimia ,  512
+-
+2048
+kiloa välimuistia ,  tavalliset I / O-liitännät  ( rinnakkaisliitin ja 2 kpl sarjaliittimiä )  ,  USB-liitin ,  levykeasemaohjaimen ,  näppäimistöliittimen ja prosessorikannan .
+Joihinkin emolevyihin voi olla myös valmiiksi integroituina näytönohjain ja / tai äänikortti .
+I went on site for a system that had no display .
+I tried another video card ,  but the system seemed really dead .
+When I asked the user for more details ,  she said that someone had put a password on the CMOS ,  and she wanted to get rid of it .
+She had read in a PC repair book about using a jumper to clear the CMOS ,  which is true for some systems .
+But when she opened the case ,  she found quite a few jumpers on the motherboard .
+Undeterred ,  she began rearranging all of the jumpers  ( with the system turned on )  .
+Hard to say which component fried first .
+Oh well ,  time to upgrade anyhow .
+DOCEND 1088020716179643594260943184131578224313187 2102
+DOCSTART 1088020716179643594260943184131578224313187 2103
+Lainaaminen ja viesteihin vastaaminen Liitä omat kommenttisi lainatun tekstin alapuolelle .
+Lainattu teksti merkitään  > -merkeillä .
+Älä lainaa signatureja Vastausviestin otsikko alkaa Re :  Lisätietoa Allekirjoitus eli signature Yleisiä ohjeita Lisätietoa Sähköpostiin liittyy useita kirjoitettuja ja kirjoittamattomia sääntöjä joita noudattamalla helpotetaan ja selkiytetään kaikkien viestintää .
+Käytä omaa nimeäsi Lähetä sähköpostia rohkeasti omalla nimelläsi .
+Jos sinun tekee mieli lähettää viestejä väärällä nimellä niin moiset viestit kannattaa heti unohtaa .
+Pidä huoli ,  että nimesi löytyy sähköpostiviestistäsi Pidä huoli ,  että nimesi löytyy sähköpostiviestin From :  -kentästä .
+Vältä kuitenkin skandinaavisten merkkien käyttöä From-kentässä  .
+Varmistamalla että nimesi löytyy sähköpostiviestistä helpotat myös tietojesi lisäämistä vastaanottajan osoitekirjaan .
+Vaikka sähköpostiosoitteesi olisi muotoa etunimi.sukunimi @ osoite.example niin siltikin on hyvä lisätä nimensä näkyviin muutenkin koska nimen poimiminen suoraan osoitteesta ei välttämättä sähköpostiohjelmalta onnistu .
+Nimi löytyy oikein  ( oikein )  From :  Tommi Lahtonen  < tommi.j.lahtonen @ jyu.fi >  Nimitiedot ovat puutteelliset  ( väärin )  From :  tommi.j.lahtonen @ jyu.fi Oikean viestin löytyminen vanhojen sähköpostiviestien joukosta on myös helpompaa jos lähettäjästä näkyy muitakin tietoja kuin mystinen käyttäjätunnus tai lempinimi .

@@ -9,7 +9,6 @@ import System.IO
 import System.Environment
 import Control.Applicative
 
-
 -- |As imported from the corpus
 type Token = String
 -- |Words are segmented to phonemes, where diphthongs, long vowels and geminates are treated as one Segment.

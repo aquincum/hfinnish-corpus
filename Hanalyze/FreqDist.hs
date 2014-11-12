@@ -1,6 +1,6 @@
 -- |The module for importing corpora into frequency distributions.
 module Hanalyze.FreqDist
-       (Token, Segment, FreqDist, multiReadCountFreqs, saveCountFreqs)
+       (Token, Segment, FreqDist, multiReadCountFreqs, saveCountFreqs, readCountFreqs)
        where
 
 import qualified Data.Map.Strict as Map
@@ -8,6 +8,7 @@ import qualified Control.Monad as M
 import System.IO
 import System.Environment
 import Control.Applicative
+import Data.Monoid
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 

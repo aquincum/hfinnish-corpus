@@ -5,6 +5,7 @@ module Hanalyze.Vowels (
   ) where
 
 import Hanalyze.FreqDist (Token, Segment)
+import Data.Maybe (isNothing, isJust)
 
 -- |Harmony value of a vowel (Front, Neutral, Back), [i,e] are neutral
 data HarmonyV = Front | Neutral | Back deriving (Show, Eq)
@@ -35,7 +36,7 @@ harmonyV c
 -- >>> fullHarmonic "ela" Neutral
 -- False
 fullHarmonic :: Token -> HarmonyV -> Bool
-fullHarmonic str harm = foldl (\acc x -> if harmonyV x `elem` [Just harm, Nothing] then (acc && True) else False) True str
+fullHarmonic str harm = foldl (\acc x -> if harmonyV x `elem` [Just harm, Nothing] then acc && True else False) True str
 
 -- |Determines the 'HarmonyW' category of a word.
 harmonicity :: Token -> HarmonyW
@@ -67,14 +68,14 @@ suffixIt w = if w `elem` [AllFront, FrontNeutral, AllNeutral] then FrontSuffixes
 digraph :: Segment -> Bool
 digraph "ie" = True
 digraph "ei" = True
-digraph [x,y] = if x==y then True else False
+digraph [x,y] = x==y
 digraph _ = False
 
 -- |Breaks down a token into a list of segments
 segment :: Token -> [Segment]
 segment "" = []
 segment [v] = [[v]]
-segment (h:f:t) = if digraph [h,f] then [[h,f]] ++ segment t else [[h]] ++ segment (f:t)
+segment (h:f:t) = if digraph [h,f] then [h,f] : segment t else [h] : segment (f:t)
 
 -- |In my dissertation, I'll be looking at C[i,e,ie]C[a,ä] forms and more generally C[i,e,ie]CV forms.
 -- First try: C[i,e,ie,ei]C[a,ä] stems are relevant
@@ -89,7 +90,7 @@ relevantStem :: [Segment] -- ^token recursively folded left-to-right
 relevantStem [] [v1,v2] = True
 relevantStem [] _ = False
 relevantStem (h:t) l
-  | harmonyV (h!!0) == Nothing = relevantStem t l
-relevantStem (h:t) [v1,v2] = if harmonyV (h!!0) /= Nothing then False else relevantStem t [v1,v2]
+  | isNothing $ harmonyV $ head h = relevantStem t l
+relevantStem (h:t) [v1,v2] = if isJust $ harmonyV $ head h then False else relevantStem t [v1,v2]
 relevantStem (h:t) [v1] = if h `elem` ["a","aa","ä","ää"] then relevantStem t [v1,h] else False
 relevantStem (h:t) [] = if h `elem` ["e","i","ee","ii","ei","ie"] then relevantStem t [h] else False

@@ -5,6 +5,7 @@ module Hanalyze.FreqDist
 
 import qualified Data.Map.Strict as Map
 import qualified Control.Monad as M
+import qualified Data.ByteString.Lazy as B
 import System.IO
 import System.Environment
 import Control.Applicative
@@ -23,9 +24,9 @@ fdEmpty = Map.empty
 -- |Loads a corpus file into a list of tokens.
 loadFile :: FilePath -> IO [Token]
 loadFile fn = do
-  contents <- readFile fn
-  let tokens = words contents
-  return tokens
+  let contents = fmap show (B.readFile fn)
+      tokens = fmap words contents
+  tokens
 
 -- |Updates a 'FreqDist' with a token: adds +1 if the token exists as a key
 -- or inserts a key with a value of 1 if this is not the case.o

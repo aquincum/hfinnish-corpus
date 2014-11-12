@@ -8,6 +8,8 @@ import qualified Control.Monad as M
 import System.IO
 import System.Environment
 import Control.Applicative
+import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 
 -- |As imported from the corpus
 type Token = String
@@ -23,9 +25,10 @@ fdEmpty = Map.empty
 -- |Loads a corpus file into a list of tokens.
 loadFile :: FilePath -> IO [Token]
 loadFile fn = do
-  contents <- readFile fn
-  let tokens = words contents
-  return tokens
+  let contents = fmap T.toLower $ TIO.readFile fn -- Text
+      tokentxts = fmap T.words contents
+      tokens = fmap (map T.unpack) tokentxts
+  tokens
 
 -- |Updates a 'FreqDist' with a token: adds +1 if the token exists as a key
 -- or inserts a key with a value of 1 if this is not the case.o

@@ -1,0 +1,63 @@
+module Hanalyze.FreqDist
+       ()
+       where
+
+-- |As imported from the corpus
+type Token = String
+-- |Words are segmented to phonemes, where diphthongs, long vowels and geminates are treated as one Segment.
+type Segment = String
+-- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
+type FreqDist = Map.Map Token Integer
+
+-- |The empty FreqDist map.
+fdEmpty :: FreqDist
+fdEmpty = Map.empty
+
+-- |Loads a corpus file into a list of tokens
+loadfile :: FilePath -> IO [Token]
+loadfile fn = do
+  contents <- readFile fn
+  let tokens = words contents
+  return tokens
+
+readCountFreqs :: FilePath -> IO FreqDist
+readCountFreqs fn = fmap countFreqs (loadfile fn)
+
+multiReadCountFreqs :: [FilePath] -> IO FreqDist
+multiReadCountFreqs fns = foldl (\x y -> Map.unionWith (+) <$> x <*> y) (pure Map.empty) (fmap readCountFreqs fns)
+
+-- the whaaat!?
+-- first, we read in the files to separate FreqDists. This is (fmap readCountFreqs fns).
+-- this is a [FreqDist]. Now we make a fold over this. The initial accumulator is pure
+-- Map.empty :: IO FreqDist, and the folding function merges the accumulator with the 
+-- new FreqDist with unionWith: if a key is found in both maps, they are summed over.
+-- Inside the lambda: Map.unionWith (+) takes 2 maps, therefore it is used in an applicative
+-- manner, as x and y are IO monads. Vagy mi.
+
+writeCountFreqs :: FreqDist -> FilePath -> Maybe Handle -> IO ()
+writeCountFreqs fd _ _ 
+  | fd == fdEmpty = return ()
+writeCountFreqs fd fn Nothing = do
+  handle <- openFile fn WriteMode
+  writeCountFreqs fd fn $ Just handle
+  hClose handle
+  return ()
+writeCountFreqs fd fn (Just handle) = let ((mkey,mval),fd2) = Map.deleteFindMax fd in do
+    hPutStrLn handle (mkey ++ "\t" ++ show mval)
+    writeCountFreqs fd2 fn $ Just handle
+
+doWriteCountFreqs :: FilePath -> IO ()
+doWriteCountFreqs fn = readCountFreqs fn >>= (\fd -> writeCountFreqs fd "out.txt" Nothing)
+
+saveCountFreqs :: FreqDist -> FilePath -> IO ()
+saveCountFreqs fd fn = writeCountFreqs fd fn Nothing
+
+
+  
+addPlusToken :: FreqDist -> Token -> FreqDist
+addPlusToken fd tok = Map.insertWith (+) tok 1 fd
+  
+  
+countFreqs :: [Token] -> FreqDist
+countFreqs = foldl addPlusToken fdEmpty
+

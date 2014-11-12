@@ -25,7 +25,7 @@ harmonyV :: Char -> Maybe HarmonyV
 harmonyV c 
   | c `elem` "aou" = Just Back
   | c `elem` "ei" = Just Neutral
-  | c `elem` "äöü" = Just Front
+  | c `elem` "äöy" = Just Front
   | otherwise = Nothing
 
 -- |Tells whether a token contains vowels exclusively in the given 'HarmonyV' category.

@@ -1,6 +1,6 @@
 -- |The module for importing corpora into frequency distributions.
 module Hanalyze.FreqDist
-       (Token, Segment, FreqDist, multiReadCountFreqs, saveCountFreqs, readCountFreqs)
+       (Token, Segment, FreqDist(..), multiReadCountFreqs, saveCountFreqs, readCountFreqs)
        where
 
 import qualified Data.Map.Strict as Map
@@ -17,12 +17,12 @@ type Token = String
 -- |Words are segmented to phonemes, where diphthongs, long vowels and geminates are treated as one Segment.
 type Segment = String
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
-newtype FreqDist = FreqDist {getMap :: (Map.Map Token Integer)} deriving (Eq,Show)
+newtype FreqDist = FreqDist {getMap :: Map.Map Token Integer} deriving (Eq,Show)
 
 instance Monoid FreqDist where
   mempty = fdEmpty
   -- |Appending two 'FreqDist's by adding up the values in keys
-  mappend = \left right -> FreqDist $ Map.unionWith (+) (getMap left) (getMap right)
+  mappend left right = FreqDist $ Map.unionWith (+) (getMap left) (getMap right)
 
 -- |The empty FreqDist map.
 fdEmpty :: FreqDist
@@ -31,7 +31,7 @@ fdEmpty = FreqDist Map.empty
 -- |Loads a corpus file into a list of tokens.
 loadFile :: FilePath -> IO [Token]
 loadFile fn = do
-  let contents = fmap T.toLower $ TIO.readFile fn -- Text
+  let contents = T.toLower <$> TIO.readFile fn -- Text
       tokentxts = fmap T.words contents
       tokens = fmap (map T.unpack) tokentxts
   tokens

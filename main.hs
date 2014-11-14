@@ -18,5 +18,5 @@ main = do
   fns <- getArgs
   fd <- multiReadCountFreqs fns
   let filtered = FreqDist $ Map.filterWithKey (\s _ -> relevantStem (segment s) []) (getMap fd)
-  saveCountFreqs filtered "out.txt"
+  saveFreqDist filtered "out.txt"
   return ()

@@ -1,6 +1,12 @@
 -- |The module for importing corpora into frequency distributions.
 module Hanalyze.FreqDist
-       (Token, Segment, FreqDist(..), multiReadCountFreqs, saveCountFreqs, readCountFreqs)
+       (
+         -- * Types
+         Token, Segment, FreqDist(..),
+
+         -- * Reading and saving FreqDists
+         multiReadCountFreqs, readCountFreqs,
+         saveFreqDist, readFreqDist)
        where
 
 import qualified Data.Map.Strict as Map
@@ -55,7 +61,20 @@ multiReadCountFreqs :: [FilePath] -> IO FreqDist
 multiReadCountFreqs fns = do
   fds <- sequence $ fmap readCountFreqs fns -- [FreqDist] <- IO [FreqDist]
   return $ mconcat fds
-                              
+
+-- |Inside function to read in the first 2 words in a line to a pair
+readFreqDistLine :: String -> (String, String)
+readFreqDistLine line = let w1:w2:t = words line in
+  (w1,w2)
+
+-- |Reads a saved FreqDist file
+readFreqDist :: FilePath -> IO FreqDist
+readFreqDist fp = do
+  ls <- fmap lines (readFile fp)
+  let pairs = map readFreqDistLine ls
+      stringmap = Map.fromList pairs
+      fd = FreqDist $ Map.map (\s -> read s :: Integer) stringmap
+  return fd
 
 
 -- |Recursively write out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
@@ -73,6 +92,6 @@ writeCountFreqs fd fn (Just handle) = let ((mkey,mval),mfd2) = Map.deleteFindMax
     writeCountFreqs (FreqDist mfd2) fn $ Just handle
 
 -- |Saves a 'FreqDist' to a file, using 'writeCountFreqs' inside.
-saveCountFreqs :: FreqDist -> FilePath -> IO ()
-saveCountFreqs fd fn = writeCountFreqs fd fn Nothing
+saveFreqDist :: FreqDist -> FilePath -> IO ()
+saveFreqDist fd fn = writeCountFreqs fd fn Nothing
 

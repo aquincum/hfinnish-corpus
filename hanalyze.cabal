@@ -16,6 +16,10 @@ build-type:          Simple
 cabal-version:       >=1.8
 
 executable hanalyze
-  main-is:           main.hs 
+  main-is:           main.hs
+  ghc-options:	     -threaded -rtsopts -eventlog
   -- other-modules:       
-  build-depends:       base ==4.6.*, containers, text
+  build-depends:       base ==4.6.*,
+                       containers, 
+                       text,
+                       split

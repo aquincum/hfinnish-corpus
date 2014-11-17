@@ -18,6 +18,7 @@ import Data.Monoid
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 
+
 -- |As imported from the corpus
 type Token = String
 -- |Words are segmented to phonemes, where diphthongs, long vowels and geminates are treated as one Segment.

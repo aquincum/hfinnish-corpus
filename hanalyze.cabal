@@ -22,4 +22,6 @@ executable hanalyze
   build-depends:       base ==4.6.*,
                        containers, 
                        text,
-                       split
+                       split,
+                       deepseq
+

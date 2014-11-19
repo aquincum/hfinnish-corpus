@@ -1,3 +1,9 @@
+module Hanalyze.Process (
+  Result, Process(..),
+  startProcess, endProcess,
+  initProcess, copyProcess
+  ) where
+
 import Control.Concurrent
 import Control.Monad
 
@@ -34,8 +40,8 @@ copyProcess pr = do
   return pr2
 
 -- |Sets the result within a process
-setResult :: Process -> Int -> IO Process
-setResult pr i = do
+setResult :: Int -> Process -> IO Process
+setResult i pr = do
   let res = getResult pr
   putMVar res i
   return pr
@@ -58,8 +64,8 @@ loadProcess pr = do
   return pr
 
 -- |Clears up counter, lets blockage go
-unLoadProcess :: Process -> IO Process
-unLoadProcess pr = do
+unloadProcess :: Process -> IO Process
+unloadProcess pr = do
   -- we have to put blocker if things good
   let _ = tryPutMVar (getBlocker pr) () -- put blocker back if it is not there.
   cntval <- takeMVar $ getCounter pr
@@ -68,8 +74,8 @@ unLoadProcess pr = do
 
 
 -- |Starts a process to run and registers that in the process system
-startProcess :: Process -> IO () -> IO Process
-startProcess pr io = do
+startProcess :: IO  () -> Process -> IO Process
+startProcess io pr = do
   loadProcess pr -- WILL BE BLOCKED UNTIL GO
   forkFinally io (\_ -> do
                         let _ = endProcess pr
@@ -78,10 +84,6 @@ startProcess pr io = do
   return pr
 
 -- |Finishes running a process and deals with all the side effects
+endProcess :: Process -> IO Process
 endProcess pr = do
-  setResult pr 1
---  decCounter pr
-
--- |Outside API: runs a new process
-runProcess blocker counter io = do
-  return ()
+  setResult 1 pr >>= unloadProcess

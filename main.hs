@@ -30,7 +30,7 @@ sequentialMain fns = do
   fd <- multiReadCountFreqs fns
   let filtered = FreqDist $ Map.filterWithKey (\s _ -> relevantStem (segment s) []) (getMap fd)
   saveFreqDist filtered "out.txt"
-  
+
 myForkIO :: IO () -> IO (MVar Int)
 myForkIO io = do
   mvar <- newMVar 0 

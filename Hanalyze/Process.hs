@@ -6,6 +6,7 @@ module Hanalyze.Process (
 
 import Control.Concurrent
 import Control.Monad
+import Control.DeepSeq
 
 -- |counting the number of running processes
 type Counter = MVar Int
@@ -47,13 +48,27 @@ copyProcess (Process c b r) = do
   let pr2 = Process c b newres
   return pr2
 
--- |Sets the result within a process
-setResult :: Int -> Process -> IO Process
-setResult i pr = do
-  debug "setResult"
-  let res = getResult pr
-  putMVar res i
+-- |Releases the process
+releaseResult :: Process -> IO Process
+releaseResult pr@(Process _ _ r) = do
+  debug "releaseResult"
+  putMVar r 1
   return pr
+
+waitForResult :: Process -> IO Process
+waitForResult pr@(Process _ _ r) = do
+  debug "waitForResult"
+  val <- takeMVar r
+  putMVar r val
+  let val' = force val
+  return pr
+
+blockResult  :: Process -> IO Process
+blockResult pr@(Process _ _ r)= do
+  debug "blockResult"
+  val <- takeMVar r
+  return pr
+
 
 -- |Increments the counter (adding a new process)
 incCounter :: Process -> IO Process
@@ -69,7 +84,7 @@ loadProcess pr@(Process c b r) = do
   debug "loadProcess"
   blocker <- takeMVar b -- WILL BE BLOCKED UNTIL GO
   cntval <- takeMVar c
-  _ <- takeMVar r -- let's take out result so that we can wait for that
+  blockResult pr
   let newcnt = cntval + 1
   putMVar c newcnt
   unless (newcnt >= maxProcesses) (putMVar b blocker) -- put blocker back if we're still good
@@ -92,8 +107,12 @@ startProcess io pr = do
   debug "startProcess"
   loadProcess pr -- WILL BE BLOCKED UNTIL GO
   forkFinally (do
+--               loadProcess pr -- WILL BE BLOCKED UNTIL GO
                debug "started"
                io
+               --putMVar (getResult pr) 1
+               releaseResult pr
+               return ()
               ) (\_ -> do
                         let _ = endProcess pr
                         return ()
@@ -104,12 +123,11 @@ startProcess io pr = do
 waitProcess :: Process -> IO Process
 waitProcess pr@(Process _ _ r) = do
   debug "waitProcess"
-  res <- takeMVar r
-  putMVar r res
+  waitForResult pr
   return pr
 
 -- |Finishes running a process and deals with all the side effects
 endProcess :: Process -> IO Process
 endProcess pr = do
   debug "endProcess"
-  setResult 1 pr >>= unloadProcess
+  unloadProcess pr

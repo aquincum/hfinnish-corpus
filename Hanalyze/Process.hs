@@ -24,7 +24,9 @@ maxProcesses :: Int
 maxProcesses = 5
 
 debug :: String -> IO ()
-debug = putStrLn
+debug s = do
+  tid <- myThreadId
+  putStrLn $ "Thread " ++ (show tid) ++ ": " ++ s
 
 
 -- |Initializes a new process with new MVars all around
@@ -78,7 +80,7 @@ unloadProcess :: Process -> IO Process
 unloadProcess pr@(Process c b r) = do
   -- we have to put blocker if things good
   debug "unloadProcess"
-  let _ = tryPutMVar b () -- put blocker back if it is not there.
+  putMVar b () -- put blocker back if it is not there.
   cntval <- takeMVar c
   putMVar c (cntval - 1)
   return pr
@@ -89,7 +91,10 @@ startProcess :: IO  () -> Process -> IO Process
 startProcess io pr = do
   debug "startProcess"
   loadProcess pr -- WILL BE BLOCKED UNTIL GO
-  forkFinally io (\_ -> do
+  forkFinally (do
+               debug "started"
+               io
+              ) (\_ -> do
                         let _ = endProcess pr
                         return ()
                  )
@@ -100,6 +105,7 @@ waitProcess :: Process -> IO Process
 waitProcess pr@(Process _ _ r) = do
   debug "waitProcess"
   res <- takeMVar r
+  putMVar r res
   return pr
 
 -- |Finishes running a process and deals with all the side effects

@@ -37,5 +37,6 @@ main = do
   setNumCapabilities 3
   fns <- getArgs
   ncap <- getNumCapabilities
-  initProcess >>= startProcess (dealWithAFile $ head fns) >>= waitProcess
+  let pr = initProcess >>= startProcess (dealWithAFile $ head fns)
+  pr >>= waitProcess
   putStrLn $ "Running with " ++ (show ncap) ++ " capabilities."

@@ -37,6 +37,15 @@ main = do
   setNumCapabilities 3
   fns <- getArgs
   ncap <- getNumCapabilities
-  let pr = initProcess >>= startProcess (dealWithAFile $ head fns)
-  pr >>= waitProcess
   putStrLn $ "Running with " ++ (show ncap) ++ " capabilities."
+--  let pr = initProcess  >>= map startProcess (dealWithAFile $ fns)
+--  pr >>= waitProcess
+  proto <- initProcess -- :: IO Process
+--  procs <- sequence $ map ((\x -> copyProcess proto) . startProcess . dealWithAFile) fns
+--  threadDelay 1000
+  procs <- sequence $ replicate (length fns) (copyProcess proto)
+  -- let tasks = zip procs fns
+  let procs' = map (\fn -> startProcess $ dealWithAFile fn) fns
+  procs'' <- sequence $ map (\pr -> (copyProcess proto) >>= pr) procs'
+  procs''' <-  sequence $ map waitProcess procs''
+  return ()

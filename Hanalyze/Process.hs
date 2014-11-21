@@ -1,6 +1,6 @@
 module Hanalyze.Process (
   Result, Process(..),
-  startProcess, endProcess, waitProcess,
+  startProcess, endProcess, waitProcess, 
   initProcess, copyProcess
   ) where
 

@@ -1,14 +1,15 @@
+-- |Implements some functions to take care of progress within the program
 module Hanalyze.Progress where
 
 import Data.Time.Clock
 import System.IO
 
--- |Type indicating progress
-data Progress = Progress 
-  Int -- ^total number of files in task
-  UTCTime -- ^time at the start of the whole task
-  Int -- ^processes already done
-  
+-- |Type indicating progress. Fields are:
+-- 1. An 'Int' with the total number of files in task
+-- 2. A 'UTCTime' that is the time at the start of the whole task
+-- 3. An 'Int' with the number of processes already done
+data Progress = Progress Int UTCTime Int
+
 -- |Initializes a progress variable
 initializeProgress :: [FilePath] -- the list of filenames to initialize nfiles from
                       -> IO Progress -- ^the new progress variable
@@ -39,4 +40,4 @@ printProgress (Progress nf st pd) = do
       perc = (pd'/nf')*100
       eta = if pd == 0 then 0 else diff * (nf'/pd' - 1)
   return $ (show pd) ++ "/" ++ (show nf) ++ "done, " ++ (show $ floor $ perc) ++
-    "%. Time elapsed: " ++ (formatElapsed diff) ++ " seconds, ETA: " ++ (formatElapsed eta)
+    "%. Time elapsed: " ++ (formatElapsed diff) ++ ", ETA: " ++ (formatElapsed eta)

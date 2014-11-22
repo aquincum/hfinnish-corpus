@@ -15,8 +15,18 @@ category:            Text
 build-type:          Simple
 cabal-version:       >=1.8
 
-executable hanalyze
-  main-is:           main.hs
+library
+  exposed-modules:   Hanalyze.FreqDist, Hanalyze.Vowels,
+                     Hanalyze.Process, Hanalyze.Progress
+  build-depends:       base ==4.6.*,
+                       containers, 
+                       text,
+                       time,
+                       deepseq
+
+
+executable create_fds
+  main-is:           create_fds.hs
   ghc-options:	     -threaded -rtsopts -eventlog
   -- other-modules:       
   build-depends:       base ==4.6.*,
@@ -25,4 +35,9 @@ executable hanalyze
                        split,
                        deepseq,
                        time
+
+executable merge_fds
+  main-is:           merge_fds.hs
+  ghc-options:       -threaded -rtsopts -eventlog
+  build-depends:     base ==4.6.*, containers, hanalyze
 

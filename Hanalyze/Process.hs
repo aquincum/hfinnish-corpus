@@ -7,6 +7,7 @@ module Hanalyze.Process (
 import Control.Concurrent
 import Control.Monad
 import Control.DeepSeq
+import Control.Exception
 
 -- |counting the number of running processes
 type Counter = MVar Int
@@ -29,6 +30,11 @@ debug s = do
   tid <- myThreadId
   putStrLn $ "Thread " ++ (show tid) ++ ": " ++ s
 
+debugErr :: Process -> SomeException -> IO Process
+debugErr pr e = do
+  let err = (show e)
+  debug ("PROBLEM IN HERE: " ++ err)
+  return pr
 
 -- |Initializes a new process with new MVars all around
 initProcess :: IO Process
@@ -82,7 +88,7 @@ incCounter pr@(Process c _ _) = do
 loadProcess :: Process -> IO Process
 loadProcess pr@(Process c b r) = do
   debug "loadProcess"
-  blocker <- takeMVar b -- WILL BE BLOCKED UNTIL GO
+  blocker <- takeMVar b  -- WILL BE BLOCKED UNTIL GO
   cntval <- takeMVar c
   blockResult pr
   let newcnt = cntval + 1
@@ -95,7 +101,6 @@ unloadProcess :: Process -> IO Process
 unloadProcess pr@(Process c b r) = do
   -- we have to put blocker if things good
   debug "unloadProcess"
-  putMVar b () -- put blocker back if it is not there.
   cntval <- takeMVar c
   putMVar c (cntval - 1)
   return pr
@@ -105,7 +110,8 @@ unloadProcess pr@(Process c b r) = do
 startProcess :: IO  () -> Process -> IO Process
 startProcess io pr = do
   debug "startProcess"
-  loadProcess pr -- WILL BE BLOCKED UNTIL GO
+  loadProcess pr
+ -- WILL BE BLOCKED UNTIL GO
   forkFinally (do
 --               loadProcess pr -- WILL BE BLOCKED UNTIL GO
                debug "started"
@@ -114,6 +120,7 @@ startProcess io pr = do
                releaseResult pr
                return ()
               ) (\_ -> do
+                        putMVar (getBlocker pr) () -- put blocker back if it is not there.
                         let _ = endProcess pr
                         return ()
                  )

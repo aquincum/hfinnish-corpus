@@ -25,16 +25,22 @@ data Process = Process {getCounter :: Counter, getBlocker :: Blocker, getResult 
 maxProcesses :: Int
 maxProcesses = 5
 
+
 debug :: String -> IO ()
-debug s = do
+{-debug s = do
   tid <- myThreadId
   putStrLn $ "Thread " ++ (show tid) ++ ": " ++ s
+-}
+debug s = do return ()
+
 
 debugErr :: Process -> SomeException -> IO Process
 debugErr pr e = do
   let err = (show e)
   debug ("PROBLEM IN HERE: " ++ err)
   return pr
+
+
 
 -- |Initializes a new process with new MVars all around
 initProcess :: IO Process

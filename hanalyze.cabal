@@ -23,5 +23,6 @@ executable hanalyze
                        containers, 
                        text,
                        split,
-                       deepseq
+                       deepseq,
+                       time
 

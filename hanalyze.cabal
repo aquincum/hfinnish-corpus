@@ -43,5 +43,6 @@ executable create_fds
 executable merge_fds
   main-is:           merge_fds.hs
   ghc-options:       -threaded -rtsopts -eventlog
-  build-depends:     base ==4.6.*, containers, hanalyze, text, time, deepseq
+  build-depends:     base ==4.6.*, containers, hanalyze, 
+                     text, time, deepseq, parallel
 

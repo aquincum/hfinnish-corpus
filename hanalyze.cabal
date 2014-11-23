@@ -3,17 +3,21 @@
 
 name:                hanalyze
 version:             0.1.0.0
-synopsis:            Analyzing a raw webcorpus for my dissertation.
--- description:         
+synopsis:            Haskell-based corpus analysis tools.
+description:         Haskell-based corpus analysis tools. The main goal is to analyze a raw webcorpus that can be used for my dissertation. It is therefore mainly a learning tool so far.
 homepage:            https://github.com/aquincum/hfinnish-corpus
--- license:             
+license:             GPL
 license-file:        LICENSE
 author:              Daniel Szeredi
 maintainer:          daniel@szeredi.hu
--- copyright:           
+copyright:           (c) 2014 Daniel Szeredi
 category:            Text
 build-type:          Simple
 cabal-version:       >=1.8
+
+source-repository head
+  type:              git
+  location:          http://github.com/aquincum/hanalyze/
 
 library
   exposed-modules:   Hanalyze.FreqDist, Hanalyze.Vowels,
@@ -39,5 +43,5 @@ executable create_fds
 executable merge_fds
   main-is:           merge_fds.hs
   ghc-options:       -threaded -rtsopts -eventlog
-  build-depends:     base ==4.6.*, containers, hanalyze
+  build-depends:     base ==4.6.*, containers, hanalyze, text, time, deepseq
 

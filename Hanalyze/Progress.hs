@@ -5,13 +5,17 @@ import Data.Time.Clock
 import System.IO
 
 -- |Type indicating progress. Fields are:
+--
 -- 1. An 'Int' with the total number of files in task
+--
 -- 2. A 'UTCTime' that is the time at the start of the whole task
+--
 -- 3. An 'Int' with the number of processes already done
+--
 data Progress = Progress Int UTCTime Int
 
 -- |Initializes a progress variable
-initializeProgress :: [FilePath] -- the list of filenames to initialize nfiles from
+initializeProgress :: [FilePath] -- ^the list of filenames to initialize nfiles from
                       -> IO Progress -- ^the new progress variable
 initializeProgress fns = do
   let nfiles = length fns

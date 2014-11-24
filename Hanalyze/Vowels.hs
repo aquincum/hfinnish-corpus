@@ -35,11 +35,11 @@ harmonyV c
 -- True
 -- >>> fullHarmonic "ela" Neutral
 -- False
-fullHarmonic :: Token -> HarmonyV -> Bool
+fullHarmonic :: String -> HarmonyV -> Bool
 fullHarmonic str harm = foldl (\acc x -> if harmonyV x `elem` [Just harm, Nothing] then acc && True else False) True str
 
 -- |Determines the 'HarmonyW' category of a word.
-harmonicity :: Token -> HarmonyW
+harmonicity :: String -> HarmonyW
 harmonicity "" = Anything
 harmonicity (x:xs)
   | harmonyV x == Just Back = case sofar of AllFront -> FrontBack
@@ -72,7 +72,7 @@ digraph [x,y] = x==y
 digraph _ = False
 
 -- |Breaks down a token into a list of segments
-segment :: Token -> [Segment]
+segment :: String -> [Segment]
 segment "" = []
 segment [v] = [[v]]
 segment (h:f:t) = if digraph [h,f] then [h,f] : segment t else [h] : segment (f:t)

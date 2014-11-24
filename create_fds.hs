@@ -12,6 +12,7 @@ import Hanalyze.FreqDist
 import Hanalyze.Vowels
 import Hanalyze.Process
 import Hanalyze.Progress
+import qualified Data.Text.Lazy as T
 
 qsort (p:xs) = qsort [x | x<-xs, x<p] ++ [p] ++ qsort [x | x<-xs, x>=p]
 
@@ -36,7 +37,7 @@ dealWithAFile fn progress = do
 sequentialMain :: [FilePath] -> IO ()
 sequentialMain fns = do
   fd <- multiReadCountFreqs fns
-  let filtered = FreqDist $ Map.filterWithKey (\s _ -> relevantStem (segment s) []) (getMap fd)
+  let filtered = FreqDist $ Map.filterWithKey (\s _ -> relevantStem (segment $ T.unpack s) []) (getMap fd)
   saveFreqDist filtered "out.txt"
 
 main :: IO ()

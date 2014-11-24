@@ -26,22 +26,23 @@ library
                        containers, 
                        text,
                        time,
-                       deepseq
-
+                       deepseq,
+                       bytestring
 
 executable create_fds
   main-is:           create_fds.hs
-  ghc-options:	     -threaded -rtsopts -eventlog
-  -- other-modules:       
-  build-depends:       base ==4.6.*,
-                       containers, 
-                       text,
-                       split,
-                       deepseq,
-                       time
+  ghc-options:	     -threaded -rtsopts
+  build-depends:     base ==4.6.*,
+                     containers, 
+                     text,
+                     split,
+                     deepseq,
+                     time,
+                     bytestring
 
 executable merge_fds
   main-is:           merge_fds.hs
-  ghc-options:       -threaded -rtsopts -eventlog
-  build-depends:     base ==4.6.*, containers, hanalyze, text, time, deepseq
+  ghc-options:       -rtsopts -auto-all -caf-all -prof
+  build-depends:     base ==4.6.*, containers, hanalyze, text, time, deepseq,
+                     bytestring
 

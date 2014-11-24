@@ -3,7 +3,7 @@
 module Hanalyze.FreqDist
        (
          -- * Types
-         Token, Segment, FreqDist(..),
+         Token, Segment, FreqDist(..), fdEmpty,
 
          -- * Reading and saving FreqDists
          fdEmpty,

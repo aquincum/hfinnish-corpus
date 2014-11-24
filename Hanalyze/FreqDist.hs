@@ -78,11 +78,11 @@ readFreqDistLine line =
 -- |Reads a saved FreqDist file
 readFreqDist :: FilePath -> IO FreqDist
 readFreqDist fp = do
-  !ls <- {-# SCC lineing #-} fmap T.lines ({-# SCC reading #-}TIO.readFile fp)
-  let !pairs = {-# SCC mapping #-} map readFreqDistLine ls
-      !stringmap = {-# SCC mapbuilding #-} pairs `seq` Map.fromList pairs
-      !fd = FreqDist $ {-# SCC fdbuilding #-} Map.map (\s -> read $ T.unpack s :: Integer) stringmap
-  return ( {-# SCC returning #-} fd `deepseq` fd)
+  ls <- {-# SCC lineing #-} fmap T.lines ({-# SCC reading #-}TIO.readFile fp)
+  let pairs = {-# SCC mapping #-} map readFreqDistLine ls
+      stringmap = {-# SCC mapbuilding #-} Map.fromList pairs
+      fd = FreqDist $ {-# SCC fdbuilding #-} Map.map (\s -> (read $ T.unpack s) :: Integer) stringmap
+  return ( {-# SCC returning #-} fd)
 
 
 -- |Recursively write out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.

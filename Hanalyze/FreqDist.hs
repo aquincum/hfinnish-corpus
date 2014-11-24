@@ -17,8 +17,8 @@ import System.IO
 import System.Environment
 import Control.Applicative
 import Data.Monoid
-import qualified Data.Text.Lazy as T
-import qualified Data.Text.Lazy.IO as TIO
+import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 import Control.DeepSeq
 import Control.Exception
 

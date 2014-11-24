@@ -12,7 +12,7 @@ import Hanalyze.FreqDist
 import Hanalyze.Vowels
 import Hanalyze.Process
 import Hanalyze.Progress
-import qualified Data.Text.Lazy as T
+import qualified Data.Text as T
 
 qsort (p:xs) = qsort [x | x<-xs, x<p] ++ [p] ++ qsort [x | x<-xs, x>=p]
 

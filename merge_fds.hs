@@ -7,7 +7,6 @@ import System.Environment
 import Data.Monoid
 import Data.List
 import Control.Applicative
-import Control.DeepSeq
 
 -- |Runs the merging operation
 runMerge :: FilePath -> -- ^The file name of the _output_
@@ -16,8 +15,18 @@ runMerge :: FilePath -> -- ^The file name of the _output_
 runMerge out ins = do
   --fds <- sequence $ fmap readFreqDist ins
   --let fd = fds `seq` mconcat fds
---  fd <- sequence (fmap readFreqDist ins) >>= foldl' (\a b -> (liftA2 mappend) a (return b)) (return fdEmpty)
+  --fd <- sequence (fmap readFreqDist ins) >>= foldl' (\a b -> (liftA2 mappend) a (return b)) (return fdEmpty)
   fd <- foldl (\a b -> (liftA2 mappend) a (readFreqDist b)) (return fdEmpty) ins 
+
+  -- placeholder for parallel
+  --fds <- sequence $ runEval $ rpar $ fmap readFreqDist ins
+  --let fd = runEval $ rpar $ mconcat fds
+  --below is cooler, haskellier and much less clear!
+  --unfortunately parallelism doesn't help. It does hurt,
+  --though, recommend running with -N2
+  --fd <- runEval $ (sequence $ fmap (rpar . readFreqDist) ins) >>=
+  --                (\fds -> rpar $ liftM mconcat $ sequence $ fds)
+
   saveFreqDist fd out
   return ()
 

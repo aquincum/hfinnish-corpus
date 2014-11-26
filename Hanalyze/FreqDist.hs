@@ -18,8 +18,11 @@ import Control.Applicative
 import Data.Monoid
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as TIO
+import qualified Data.Text.Encoding as TE
 import Control.DeepSeq
 import Control.Exception
+import qualified Data.ByteString.UTF8 as BUTF8
+import qualified System.IO.MMap as MMap
 
 -- |As imported from the corpus
 type Token = T.Text
@@ -69,15 +72,15 @@ multiReadCountFreqs fns = do
   return $ mconcat fds
 
 -- |Inside function to read in the first 2 words in a line to a pair
-readFreqDistLine :: T.Text -> (T.Text, T.Text)
+readFreqDistLine :: BUTF8.ByteString -> (T.Text, T.Text)
 readFreqDistLine line =
-  let (w1:w2:t) = {-# SCC rFDLwords #-} T.words line in
-  ({-# SCC rFDLpairb #-} (w1,w2))
+  let (w1,w2) = {-# SCC rFDLwords #-} BUTF8.break (\c -> c /= '\t') line in
+  ({-# SCC rFDLpairb #-} (TE.decodeUtf8 w1, TE.decodeUtf8 w2))
 
 -- |Reads a saved FreqDist file
 readFreqDist :: FilePath -> IO FreqDist
 readFreqDist fp = do
-  ls <- {-# SCC lineing #-} fmap T.lines ({-# SCC reading #-}TIO.readFile fp)
+  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteStringLazy fp Nothing)
   let pairs = {-# SCC mapping #-} map readFreqDistLine ls
       stringmap = {-# SCC mapbuilding #-} Map.fromList pairs
       fd = FreqDist $ {-# SCC fdbuilding #-} Map.map (\s -> (read $ T.unpack s) :: Integer) stringmap

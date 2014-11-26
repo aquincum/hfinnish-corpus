@@ -33,13 +33,6 @@ dealWithAFile fn progress = do
     (\e -> putStrLn ("Error in printing, " ++ (show (e::SomeException))))
 
 
--- |old main: sequential reading of all files
-sequentialMain :: [FilePath] -> IO ()
-sequentialMain fns = do
-  fd <- multiReadCountFreqs fns
-  let filtered = FreqDist $ Map.filterWithKey (\s _ -> relevantStem (segment $ T.unpack s) []) (getMap fd)
-  saveFreqDist filtered "out.txt"
-
 main :: IO ()
 main = do
   setNumCapabilities 3

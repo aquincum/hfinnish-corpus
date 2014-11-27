@@ -10,10 +10,17 @@ import Hanalyze.Vowels
 import Hanalyze.Process
 import Hanalyze.Progress
 import qualified Data.Text.Lazy as T
+import Data.Char
+
+cleanupWord :: String -> String
+cleanupWord [] = []
+cleanupWord (x:xs) = if isAlphaNum x then xs else x:xs
 
 -- |Filter a line
 filterLine :: Token -> Integer -> Bool
-filterLine t _ = relevantStem (segment $ T.unpack t) []
+filterLine t _ = (relevantStem . segment . cleanupWord) (T.unpack t) []
+
+  --(relevantStem  . cleanupWord)  (segment $ T.unpack t) []
 
 -- |Filter a FreqDist
 filterFD :: FreqDist -> FreqDist

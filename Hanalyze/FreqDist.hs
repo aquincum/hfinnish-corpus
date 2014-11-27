@@ -18,10 +18,10 @@ import Control.Applicative
 import Data.Monoid
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as TIO
-import qualified Data.Text.Encoding as TE
+import qualified Data.Text.Lazy.Encoding as TE
 import Control.DeepSeq
 import Control.Exception
-import qualified Data.ByteString.UTF8 as BUTF8
+import qualified Data.ByteString.Lazy.UTF8 as BUTF8
 import qualified System.IO.MMap as MMap
 
 -- |As imported from the corpus

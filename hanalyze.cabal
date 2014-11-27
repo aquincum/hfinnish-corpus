@@ -46,3 +46,8 @@ executable merge_fds
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel
 
+executable filter_fds
+  main-is:           filter_fds.hs
+  ghc-options:       -rtsopts -O2
+  build-depends:     base ==4.6.*, containers, hanalyze, 
+                     text, time, deepseq, parallel

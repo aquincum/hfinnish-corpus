@@ -24,7 +24,6 @@ import Control.DeepSeq
 import Control.Exception
 import qualified Data.ByteString.UTF8 as BUTF8
 import qualified Data.ByteString as B
-import qualified System.IO.MMap as MMap
 
 -- |As imported from the corpus
 type Token = T.Text

@@ -97,9 +97,9 @@ readFrequency s = case TR.decimal s of
 -- |Reads a saved FreqDist file
 readFreqDist :: FilePath -> IO FreqDist
 readFreqDist fp = do
-  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteString fp Nothing)
+--  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteString fp Nothing)
 --  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.unsafeMMapFile fp)
---  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}B.readFile fp)
+  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}B.readFile fp)
   let pairs = {-# SCC mapping #-} map readFreqDistLine ls
       stringmap = {-# SCC mapbuilding #-} Map.fromList pairs
       fd = FreqDist $ {-# SCC fdbuilding #-} Map.map readFrequency stringmap

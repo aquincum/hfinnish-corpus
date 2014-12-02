@@ -17,7 +17,7 @@ cleanupWord [] = []
 cleanupWord (x:xs) = if isAlphaNum x then xs else x:xs
 
 -- |Filter a line
-filterLine :: Token -> Integer -> Bool
+filterLine :: Token -> Int -> Bool
 filterLine t _ = (relevantStem . segment . cleanupWord) (T.unpack t) []
 
   --(relevantStem  . cleanupWord)  (segment $ T.unpack t) []

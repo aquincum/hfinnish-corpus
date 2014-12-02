@@ -19,9 +19,11 @@ import Data.Monoid
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as TIO
 import qualified Data.Text.Lazy.Encoding as TE
+import qualified Data.Text.Lazy.Read as TR
 import Control.DeepSeq
 import Control.Exception
 import qualified Data.ByteString.Lazy.UTF8 as BUTF8
+import qualified Data.ByteString.Lazy as B
 import qualified System.IO.MMap as MMap
 
 -- |As imported from the corpus
@@ -29,7 +31,7 @@ type Token = T.Text
 -- |Words are segmented to phonemes, where diphthongs, long vowels and geminates are treated as one Segment.
 type Segment = String
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
-data FreqDist = FreqDist {getMap :: !(Map.Map Token Integer)} deriving (Eq,Show)
+data FreqDist = FreqDist {getMap :: !(Map.Map Token Int)} deriving (Eq,Show)
 
 instance NFData FreqDist where
   rnf fd = rnf $ getMap fd
@@ -74,16 +76,35 @@ multiReadCountFreqs fns = do
 -- |Inside function to read in the first 2 words in a line to a pair
 readFreqDistLine :: BUTF8.ByteString -> (T.Text, T.Text)
 readFreqDistLine line =
-  let (w1,w2) = {-# SCC rFDLwords #-} BUTF8.break (\c -> c /= '\t') line in
-  ({-# SCC rFDLpairb #-} (TE.decodeUtf8 w1, TE.decodeUtf8 w2))
+  let (w1,w2) = {-# SCC rFDLwords #-} BUTF8.break (\c -> c == '\t') line
+      txt2 = case TE.decodeUtf8' $ BUTF8.drop 1 w2 of
+        Left err -> T.pack "0"
+        Right x -> x
+      in
+  case TE.decodeUtf8' w1 of
+    Left err -> (T.pack "UnicodeError", txt2)
+    Right txt1 -> (txt1, txt2)
+
+
+-- |Convert a Text with the frequency info to an integer. Implemented to
+-- test different techniques
+readFrequency :: T.Text -> Int
+readFrequency s = case TR.decimal s of
+  Left _ -> (-1)
+  Right (num,rem) -> num
+-- ancient:readFrequency = (read . T.unpack)
+
 
 -- |Reads a saved FreqDist file
 readFreqDist :: FilePath -> IO FreqDist
 readFreqDist fp = do
-  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteStringLazy fp Nothing)
+--  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteStringLazy fp Nothing)
+  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}B.readFile fp)
   let pairs = {-# SCC mapping #-} map readFreqDistLine ls
       stringmap = {-# SCC mapbuilding #-} Map.fromList pairs
-      fd = FreqDist $ {-# SCC fdbuilding #-} Map.map (\s -> (read $ T.unpack s) :: Integer) stringmap
+      fd = FreqDist $ {-# SCC fdbuilding #-} Map.map readFrequency stringmap
+  putStrLn (T.unpack $ TE.decodeUtf8 (ls!!2))
+  putStrLn (T.unpack $ snd (pairs!!2))
   return ( {-# SCC returning #-} fd)
 
 

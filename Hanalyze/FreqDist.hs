@@ -24,7 +24,7 @@ import Control.DeepSeq
 import Control.Exception
 import qualified Data.ByteString.Lazy.UTF8 as BUTF8
 import qualified Data.ByteString.Lazy as B
-import qualified System.IO.MMap as MMap
+import qualified System.IO.Posix.MMap.Lazy as MMap
 
 -- |As imported from the corpus
 type Token = T.Text
@@ -98,8 +98,9 @@ readFrequency s = case TR.decimal s of
 -- |Reads a saved FreqDist file
 readFreqDist :: FilePath -> IO FreqDist
 readFreqDist fp = do
---  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteStringLazy fp Nothing)
-  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}B.readFile fp)
+--  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteString fp Nothing)
+  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.unsafeMMapFile fp)
+--  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}B.readFile fp)
   let pairs = {-# SCC mapping #-} map readFreqDistLine ls
       stringmap = {-# SCC mapbuilding #-} Map.fromList pairs
       fd = FreqDist $ {-# SCC fdbuilding #-} Map.map readFrequency stringmap

@@ -36,4 +36,5 @@ filterFDFile fn = do
 main :: IO ()
 main = do
   fns <- getArgs
-  filterFDFile $ head fns
+  sequence $ map filterFDFile fns
+  return ()

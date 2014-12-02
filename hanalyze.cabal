@@ -28,7 +28,7 @@ library
                        time,
                        deepseq,
                        bytestring, 
-                       bytestring-mmap,
+                       mmap,
                        utf8-string
 
 executable create_fds
@@ -40,18 +40,18 @@ executable create_fds
                      split,
                      deepseq,
                      time,
-                     bytestring, bytestring-mmap, utf8-string
+                     bytestring, mmap, utf8-string
 
 executable merge_fds
   main-is:           merge_fds.hs
   ghc-options:       -threaded -rtsopts -O2
   build-depends:     base ==4.6.*, containers, hanalyze, 
-                     text, time, deepseq, parallel, bytestring-mmap, 
+                     text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring
 
 executable filter_fds
   main-is:           filter_fds.hs
   ghc-options:       -rtsopts -O2
   build-depends:     base ==4.6.*, containers, hanalyze, 
-                     text, time, deepseq, parallel, bytestring-mmap, 
+                     text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring

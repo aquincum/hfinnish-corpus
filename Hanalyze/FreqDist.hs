@@ -16,15 +16,15 @@ import System.IO
 import System.Environment
 import Control.Applicative
 import Data.Monoid
-import qualified Data.Text.Lazy as T
-import qualified Data.Text.Lazy.IO as TIO
-import qualified Data.Text.Lazy.Encoding as TE
-import qualified Data.Text.Lazy.Read as TR
+import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
+import qualified Data.Text.Encoding as TE
+import qualified Data.Text.Read as TR
 import Control.DeepSeq
 import Control.Exception
-import qualified Data.ByteString.Lazy.UTF8 as BUTF8
-import qualified Data.ByteString.Lazy as B
-import qualified System.IO.Posix.MMap.Lazy as MMap
+import qualified Data.ByteString.UTF8 as BUTF8
+import qualified Data.ByteString as B
+import qualified System.IO.MMap as MMap
 
 -- |As imported from the corpus
 type Token = T.Text
@@ -98,8 +98,8 @@ readFrequency s = case TR.decimal s of
 -- |Reads a saved FreqDist file
 readFreqDist :: FilePath -> IO FreqDist
 readFreqDist fp = do
---  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteString fp Nothing)
-  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.unsafeMMapFile fp)
+  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteString fp Nothing)
+--  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.unsafeMMapFile fp)
 --  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}B.readFile fp)
   let pairs = {-# SCC mapping #-} map readFreqDistLine ls
       stringmap = {-# SCC mapbuilding #-} Map.fromList pairs

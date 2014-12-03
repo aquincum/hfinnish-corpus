@@ -7,7 +7,11 @@ module Hanalyze.FreqDist
 
          -- * Reading and saving FreqDists
          multiReadCountFreqs, readCountFreqs,
-         saveFreqDist, readFreqDist)
+         saveFreqDist, readFreqDist,
+
+         -- * Manipulating FreqDists
+         cleanupFD
+         )
        where
 
 import qualified Data.Map.Strict as Map
@@ -41,6 +45,7 @@ instance Monoid FreqDist where
   -- |Appending two 'FreqDist's by adding up the values in keys
   mappend !left !right =  let innermap = Map.unionWith (+) (left `seq` getMap left) (right `seq` getMap right) in
     left `deepseq` right `deepseq` innermap `deepseq` FreqDist $ innermap
+
 
 -- |The empty FreqDist map.
 fdEmpty :: FreqDist
@@ -126,3 +131,12 @@ writeCountFreqs fd fn (Just handle) = let ((mkey,mval),mfd2) = Map.deleteFindMax
 saveFreqDist :: FreqDist -> FilePath -> IO ()
 saveFreqDist fd fn = writeCountFreqs fd fn Nothing
 
+-- |Cleans up a 'FreqDist' using the cleanup function that converts the filty
+-- string to the cleaned up string
+cleanupFD :: (T.Text -> T.Text) -> FreqDist -> FreqDist
+cleanupFD cleanup fd = let map = getMap fd
+                           accumulate = \acc key val ->
+                             Map.unionWith (+) acc $ Map.singleton (cleanup key) val
+                           cleaned = Map.foldlWithKey' accumulate Map.empty map
+                       in
+                         FreqDist cleaned

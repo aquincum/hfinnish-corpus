@@ -12,13 +12,14 @@ import Hanalyze.Progress
 import qualified Data.Text as T
 import Data.Char
 
-cleanupWord :: String -> String
-cleanupWord [] = []
-cleanupWord (x:xs) = if isAlphaNum x then xs else x:xs
+
+-- |Cleaning up non-alphanumeric symbols. Could get more complicated
+cleanupWord :: T.Text -> T.Text
+cleanupWord = T.filter isAlphaNum
 
 -- |Filter a line
 filterLine :: Token -> Int -> Bool
-filterLine t _ = (relevantStem . segment . cleanupWord) (T.unpack t) []
+filterLine t _ = (relevantStem . segment) (T.unpack t) []
 
   --(relevantStem  . cleanupWord)  (segment $ T.unpack t) []
 
@@ -31,7 +32,7 @@ filterFD fd = FreqDist $ Map.filterWithKey (filterLine) $ getMap fd
 filterFDFile :: FilePath -> IO ()
 filterFDFile fn = do
   fd <- readFreqDist fn
-  saveFreqDist (filterFD fd) ("filtered_"++fn)
+  saveFreqDist (filterFD . cleanupFD cleanupWord $ fd) ("filtered_"++fn)
 
 
 

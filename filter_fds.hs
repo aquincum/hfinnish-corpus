@@ -31,7 +31,7 @@ filterFD fd = FreqDist $ Map.filterWithKey (filterLine) $ getMap fd
 filterFDFile :: FilePath -> IO ()
 filterFDFile fn = do
   fd <- readFreqDist fn
-  saveFreqDist fd ("filtered_"++fn)
+  saveFreqDist (filterFD fd) ("filtered_"++fn)
 
 
 

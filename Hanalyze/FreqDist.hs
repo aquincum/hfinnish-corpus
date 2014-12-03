@@ -104,8 +104,7 @@ readFreqDist fp = do
   let pairs = {-# SCC mapping #-} map readFreqDistLine ls
       stringmap = {-# SCC mapbuilding #-} Map.fromList pairs
       fd = FreqDist $ {-# SCC fdbuilding #-} Map.map readFrequency stringmap
-  putStrLn (T.unpack $ TE.decodeUtf8 (ls!!2))
-  putStrLn (T.unpack $ snd (pairs!!2))
+  putStrLn $ "Loading " ++ fp
   return ( {-# SCC returning #-} fd)
 
 

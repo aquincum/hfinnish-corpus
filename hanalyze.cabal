@@ -55,3 +55,11 @@ executable filter_fds
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring
+
+test-suite testing
+  main-is:           testing.hs
+  build-depends:     base ==4.6.*, containers, hanalyze, 
+                     text, time, deepseq, parallel, mmap, 
+                     utf8-string, bytestring, HUnit >=1.2.5.2,
+                     QuickCheck
+  type:              exitcode-stdio-1.0

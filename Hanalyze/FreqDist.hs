@@ -122,6 +122,7 @@ writeCountFreqs fd fn Nothing = do
   handle <- openFile fn WriteMode
   writeCountFreqs fd fn $ Just handle
   hClose handle
+  putStrLn "Done"
   return ()
 writeCountFreqs fd fn (Just handle) = let ((mkey,mval),mfd2) = Map.deleteFindMax (getMap fd) in do
     TIO.hPutStrLn handle $ T.concat [mkey, T.pack "\t", T.pack $ show mval]
@@ -129,7 +130,7 @@ writeCountFreqs fd fn (Just handle) = let ((mkey,mval),mfd2) = Map.deleteFindMax
 
 -- |Saves a 'FreqDist' to a file, using 'writeCountFreqs' inside.
 saveFreqDist :: FreqDist -> FilePath -> IO ()
-saveFreqDist fd fn = writeCountFreqs fd fn Nothing
+saveFreqDist fd fn = putStrLn ("Saving " ++ fn) >> writeCountFreqs fd fn Nothing
 
 -- |Cleans up a 'FreqDist' using the cleanup function that converts the filty
 -- string to the cleaned up string

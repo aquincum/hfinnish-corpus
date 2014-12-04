@@ -1,11 +1,20 @@
 -- |The modules for segmenting tokens and analyzing their harmonic properties
 module Hanalyze.Vowels (
-  HarmonyV(..), HarmonyW(..), Suffixing(..), harmonyV, harmonicity, fullHarmonic,
-  suffixIt, segment, relevantStem
+  -- * Types
+  HarmonyV(..), HarmonyW(..), Suffixing(..),
+
+  -- * Basic harmonicity functions
+  
+  harmonyV, harmonicity, fullHarmonic,
+  suffixIt,
+
+  -- * Segmenting 
+
+  segment,
   ) where
 
 import Hanalyze.FreqDist (Token, Segment)
-import Data.Maybe (isNothing, isJust)
+import qualified Data.Text as T (unpack)
 
 -- |Harmony value of a vowel (Front, Neutral, Back), [i,e] are neutral
 data HarmonyV = Front | Neutral | Back deriving (Show, Eq)
@@ -77,20 +86,4 @@ segment "" = []
 segment [v] = [[v]]
 segment (h:f:t) = if digraph [h,f] then [h,f] : segment t else [h] : segment (f:t)
 
--- |In my dissertation, I'll be looking at C[i,e,ie]C[a,ä] forms and more generally C[i,e,ie]CV forms.
--- First try: C[i,e,ie,ei]C[a,ä] stems are relevant
---
--- Run as:
---
--- >>> relevantStem (segment "aliaala") []
--- False
-relevantStem :: [Segment] -- ^token recursively folded left-to-right
-                -> [Segment] -- ^saved list of vowels so far
-                -> Bool  -- ^the return value
-relevantStem [] [v1,v2] = True
-relevantStem [] _ = False
-relevantStem (h:t) l
-  | isNothing $ harmonyV $ head h = relevantStem t l
-relevantStem (h:t) [v1,v2] = if isJust $ harmonyV $ head h then False else relevantStem t [v1,v2]
-relevantStem (h:t) [v1] = if h `elem` ["a","aa","ä","ää"] then relevantStem t [v1,h] else False
-relevantStem (h:t) [] = if h `elem` ["e","i","ee","ii","ei","ie"] then relevantStem t [h] else False
+

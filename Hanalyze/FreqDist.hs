@@ -10,7 +10,7 @@ module Hanalyze.FreqDist
          saveFreqDist, readFreqDist,
 
          -- * Manipulating FreqDists
-         cleanupFD
+         cleanupFD, filterFD, filterFDFile
          )
        where
 
@@ -128,6 +128,13 @@ writeCountFreqs fd fn (Just handle) = let ((mkey,mval),mfd2) = Map.deleteFindMax
     TIO.hPutStrLn handle $ T.concat [mkey, T.pack "\t", T.pack $ show mval]
     writeCountFreqs (FreqDist mfd2) fn $ Just handle
 
+
+{-saveFreqDist' fd fn = do
+  let map = getMap fd
+      l = unlines . 
+  -}                        
+
+
 -- |Saves a 'FreqDist' to a file, using 'writeCountFreqs' inside.
 saveFreqDist :: FreqDist -> FilePath -> IO ()
 saveFreqDist fd fn = putStrLn ("Saving " ++ fn) >> writeCountFreqs fd fn Nothing
@@ -141,3 +148,22 @@ cleanupFD cleanup fd = let map = getMap fd
                            cleaned = Map.foldlWithKey' accumulate Map.empty map
                        in
                          FreqDist cleaned
+
+
+-- |Filter a FreqDist based on a filtering function that has the
+-- type 'Token -> Bool'
+filterFD :: (Token -> Bool) -> FreqDist -> FreqDist
+filterFD f fd = FreqDist $ Map.filterWithKey expfilt $ getMap fd
+  where
+    expfilt = \tok _ -> f tok
+
+
+-- |Filter a Frequency Distribution file with a filter function and
+-- a cleanup function
+filterFDFile :: (Token -> Bool) -> -- ^The filtering function
+                (Token -> Token) -> -- ^The cleanup function
+                FilePath -> -- ^The file name
+                IO ()
+filterFDFile f cleanup fn = do
+  fd <- readFreqDist fn
+  saveFreqDist (filterFD f. cleanupFD cleanup $ fd) ("filtered_"++fn)

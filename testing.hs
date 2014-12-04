@@ -10,6 +10,7 @@ import qualified Test.HUnit as HU
 import Test.HUnit ((~=?), (~:), (@?))
 import Control.Monad (unless)
 import System.Exit
+import System.Process
 
 instance Arbitrary FreqDist where
   arbitrary = do
@@ -64,10 +65,26 @@ saveLoad fd fn = do
   readFreqDist fn
 
 prop_saveLoad :: FreqDist -> Property
-prop_saveLoad fd = monadicIO $ do
-  fd2 <- run $ saveLoad fd "temp.tmp.tmp"
-  assert $ fd == fd2    
-                                                    
+prop_saveLoad fd = (monadicIO $ run $ saveFreqDist fd "temp.tmp.tmp")
+                   .&.
+                   (monadicIO $ do
+                       fd2 <- run $ readFreqDist "temp.tmp.tmp"
+                       assert (fd2==fd)
+                   )
+
+test_filter :: IO Bool
+test_filter =
+  runCommand "dist/build/filter_fds/filter_fds freqdist_xaaa" >>=
+  waitForProcess >>
+  runCommand "diff -q filtered_freqdist_xaaa filtered_freqdist_xaaa_testagainst" >>=
+  waitForProcess >>= \excode ->
+  if excode == ExitSuccess then
+    return True
+  else
+    return False
+
+
+
 
 myCheck :: (Testable prop) => String -> prop -> IO ()
 myCheck s pr = putStr s >> quickCheck pr
@@ -82,5 +99,6 @@ main = do
   test_loading >>= flip unless exitFailure
   -- doesn't work because laziness :/ writing does not start before reading
   -- myCheck "Saving and loading: " prop_saveLoad
+  test_filter >>= flip unless exitFailure
   exitSuccess
   

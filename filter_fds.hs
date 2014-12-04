@@ -11,33 +11,37 @@ import Hanalyze.Process
 import Hanalyze.Progress
 import qualified Data.Text as T
 import Data.Char
+import Data.Maybe (isNothing, isJust)
 
+-- |In my dissertation, I'll be looking at C[i,e,ie]C[a,ä] forms and more generally C[i,e,ie]CV forms.
+-- First try: C[i,e,ie,ei]C[a,ä] stems are relevant
+--
+-- Example:
+--
+-- >>> relevantStem (segment "aliaala") []
+-- False
+relevantStem :: [Segment] -- ^token recursively folded left-to-right
+                -> [Segment] -- ^saved list of vowels so far
+                -> Bool  -- ^the return value
+relevantStem [] [v1,v2] = True
+relevantStem [] _ = False
+relevantStem (h:t) l
+  | isNothing $ harmonyV $ head h = relevantStem t l
+relevantStem (h:t) [v1,v2] = if isJust $ harmonyV $ head h then False else relevantStem t [v1,v2]
+relevantStem (h:t) [v1] = if h `elem` ["a","aa","ä","ää"] then relevantStem t [v1,h] else False
+relevantStem (h:t) [] = if h `elem` ["e","i","ee","ii","ei","ie"] then relevantStem t [h] else False
+
+-- |Filter a token based on relevance 
+filterTokenRelevant :: Token ->  Bool
+filterTokenRelevant t = (relevantStem . segment) (T.unpack t) []
 
 -- |Cleaning up non-alphanumeric symbols. Could get more complicated
-cleanupWord :: T.Text -> T.Text
+cleanupWord :: Token -> Token
 cleanupWord = T.filter isAlphaNum
-
--- |Filter a line
-filterLine :: Token -> Int -> Bool
-filterLine t _ = (relevantStem . segment) (T.unpack t) []
-
-  --(relevantStem  . cleanupWord)  (segment $ T.unpack t) []
-
--- |Filter a FreqDist
-filterFD :: FreqDist -> FreqDist
-filterFD fd = FreqDist $ Map.filterWithKey (filterLine) $ getMap fd
-
-
--- |Filter a Frequency Distribution file
-filterFDFile :: FilePath -> IO ()
-filterFDFile fn = do
-  fd <- readFreqDist fn
-  saveFreqDist (filterFD . cleanupFD cleanupWord $ fd) ("filtered_"++fn)
-
 
 
 main :: IO ()
 main = do
   fns <- getArgs
-  sequence $ map filterFDFile fns
+  sequence $ map (filterFDFile filterTokenRelevant cleanupWord) fns
   return ()

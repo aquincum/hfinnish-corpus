@@ -11,6 +11,7 @@ import Test.HUnit ((~=?), (~:), (@?))
 import Control.Monad (unless)
 import System.Exit
 import System.Process
+import Control.Concurrent
 
 instance Arbitrary FreqDist where
   arbitrary = do
@@ -65,11 +66,15 @@ saveLoad fd fn = do
   readFreqDist fn
 
 prop_saveLoad :: FreqDist -> Property
-prop_saveLoad fd = (monadicIO $ run $ saveFreqDist fd "temp.tmp.tmp")
-                   .&.
-                   (monadicIO $ do
+prop_saveLoad fd = (monadicIO $ do
+                       mv <- run $ newMVar False
+                       run $ forkFinally (saveFreqDist fd "temp.tmp.tmp")
+                           (\_ -> do
+                               putMVar mv True
+                           )
+                       x <- run $ takeMVar mv
                        fd2 <- run $ readFreqDist "temp.tmp.tmp"
-                       assert (fd2==fd)
+                       assert (fd == fd2 && x)
                    )
 
 test_filter :: IO Bool
@@ -87,7 +92,10 @@ test_filter =
 
 
 myCheck :: (Testable prop) => String -> prop -> IO ()
-myCheck s pr = putStr s >> quickCheck pr
+myCheck s pr = putStr s >> quickCheckResult pr >>= \res ->
+  case res of
+    Success _ _ _  -> return ()
+    _ -> exitFailure
 
 main :: IO ()
 main = do

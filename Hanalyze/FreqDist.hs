@@ -160,10 +160,10 @@ filterFD f fd = FreqDist $ Map.filterWithKey expfilt $ getMap fd
 
 -- |Filter a Frequency Distribution file with a filter function and
 -- a cleanup function
-filterFDFile :: (Token -> Bool) -> -- ^The filtering function
-                (Token -> Token) -> -- ^The cleanup function
-                FilePath -> -- ^The file name
-                IO ()
+filterFDFile :: (Token -> Bool) -- ^The filtering function
+                -> (Token -> Token) -- ^The cleanup function
+                -> FilePath -- ^The file name
+                -> IO ()
 filterFDFile f cleanup fn = do
   fd <- readFreqDist fn
   saveFreqDist (filterFD f. cleanupFD cleanup $ fd) ("filtered_"++fn)

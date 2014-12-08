@@ -48,9 +48,10 @@ main = do
 --  threadDelay 1000
   procs <- sequence $ replicate (length fns) (copyProcess proto)
   -- let tasks = zip procs fns
-  let procs' = map (\fn -> startProcess $ dealWithAFile fn progress) fns
+  let procs' = map (startProcess . flip dealWithAFile progress) fns
   procs'' <- sequence $ map (\pr -> (copyProcess proto) >>= pr) procs'
   procs''' <-  sequence $ map waitProcess procs''
+
 {-  finalPV <- takeMVar progress
   printProgress finalPV >>= putStrLn -}
   return ()

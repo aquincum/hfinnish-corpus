@@ -27,9 +27,9 @@ relevantStem [] [v1,v2] = True
 relevantStem [] _ = False
 relevantStem (h:t) l
   | isNothing $ harmonyV $ head h = relevantStem t l
-relevantStem (h:t) [v1,v2] = if isJust $ harmonyV $ head h then False else relevantStem t [v1,v2]
-relevantStem (h:t) [v1] = if h `elem` ["a","aa","ä","ää"] then relevantStem t [v1,h] else False
-relevantStem (h:t) [] = if h `elem` ["e","i","ee","ii","ei","ie"] then relevantStem t [h] else False
+relevantStem (h:t) [v1,v2] = (isNothing . harmonyV $ head h) && relevantStem t [v1,v2]
+relevantStem (h:t) [v1] = (h `elem` ["a","aa","ä","ää"]) && relevantStem t [v1,h] 
+relevantStem (h:t) [] = (h `elem` ["e","i","ee","ii","ei","ie"]) && relevantStem t [h]
 
 -- |Filter a token based on relevance 
 filterTokenRelevant :: Token ->  Bool
@@ -43,5 +43,5 @@ cleanupWord = T.filter isAlphaNum
 main :: IO ()
 main = do
   fns <- getArgs
-  sequence $ map (filterFDFile filterTokenRelevant cleanupWord) fns
+  mapM_ (filterFDFile filterTokenRelevant cleanupWord) fns
   return ()

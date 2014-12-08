@@ -31,12 +31,12 @@ debug :: String -> IO ()
   tid <- myThreadId
   putStrLn $ "Thread " ++ (show tid) ++ ": " ++ s
 -}
-debug s = do return ()
+debug s = return ()
 
 
 debugErr :: Process -> SomeException -> IO Process
 debugErr pr e = do
-  let err = (show e)
+  let err = show e
   debug ("PROBLEM IN HERE: " ++ err)
   return pr
 

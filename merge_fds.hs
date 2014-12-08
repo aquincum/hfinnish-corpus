@@ -1,4 +1,4 @@
-{-# LANGUAGE DoAndIfThenElse,BangPatterns #-}
+{-# LANGUAGE DoAndIfThenElse #-}
 module Main where
 
 import Hanalyze.FreqDist
@@ -13,10 +13,7 @@ runMerge :: FilePath -> -- ^The file name of the _output_
             [FilePath] -> -- ^File names of the _input_ files
             IO ()
 runMerge out ins = do
-  --fds <- sequence $ fmap readFreqDist ins
-  --let fd = fds `seq` mconcat fds
-  --fd <- sequence (fmap readFreqDist ins) >>= foldl' (\a b -> (liftA2 mappend) a (return b)) (return fdEmpty)
-  fd <- foldl (\a b -> (liftA2 mappend) a (readFreqDist b)) (return fdEmpty) ins 
+  fd <- foldl (\a b -> liftA2 mappend a (readFreqDist b)) (return fdEmpty) ins 
 
   -- placeholder for parallel
   --fds <- sequence $ runEval $ rpar $ fmap readFreqDist ins
@@ -33,7 +30,7 @@ runMerge out ins = do
 main :: IO ()
 main = do
   fns <- getArgs
-  if (length fns) < 2 then
+  if length fns < 2 then
     putStrLn "Usage:\nmerge_fds <output_file> [input files...]"
   else 
     runMerge (head fns) (tail fns)

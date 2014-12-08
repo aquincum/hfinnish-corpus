@@ -28,9 +28,9 @@ incrementProgress (Progress nf st pd) = Progress nf st (pd+1)
 
 formatElapsed :: NominalDiffTime -> String
 formatElapsed ndf
-  | secs < 180 = (show $ floor secs) ++ "s"
-  | secs < (60*60*3) = (show $ floor $ secs/60) ++ " minutes"
-  | otherwise = (show $ floor $ secs/(60*60)) ++ " hours"
+  | secs < 180 = show (floor secs) ++ "s"
+  | secs < (60*60*3) = show (floor $ secs/60) ++ " minutes"
+  | otherwise = show (floor $ secs/(60*60)) ++ " hours"
   where secs = toRational ndf
 
                            
@@ -43,5 +43,5 @@ printProgress (Progress nf st pd) = do
       pd' = fromIntegral pd
       perc = (pd'/nf')*100
       eta = if pd == 0 then 0 else diff * (nf'/pd' - 1)
-  return $ (show pd) ++ "/" ++ (show nf) ++ "done, " ++ (show $ floor $ perc) ++
-    "%. Time elapsed: " ++ (formatElapsed diff) ++ ", ETA: " ++ (formatElapsed eta)
+  return $ show pd ++ "/" ++ show nf ++ "done, " ++ show (floor perc) ++
+    "%. Time elapsed: " ++ formatElapsed diff ++ ", ETA: " ++ formatElapsed eta

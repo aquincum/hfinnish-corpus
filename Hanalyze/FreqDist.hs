@@ -81,7 +81,7 @@ multiReadCountFreqs fns = do
 -- |Inside function to read in the first 2 words in a line to a pair
 readFreqDistLine :: BUTF8.ByteString -> (T.Text, T.Text)
 readFreqDistLine line =
-  let (w1,w2) = {-# SCC rFDLwords #-} BUTF8.break (\c -> c == '\t') line
+  let (w1,w2) =  BUTF8.break (== '\t') line
       txt2 = case TE.decodeUtf8' $ BUTF8.drop 1 w2 of
         Left err -> T.pack "0"
         Right x -> x
@@ -95,7 +95,7 @@ readFreqDistLine line =
 -- test different techniques
 readFrequency :: T.Text -> Int
 readFrequency s = case TR.decimal s of
-  Left _ -> (-1)
+  Left _ -> -1
   Right (num,rem) -> num
 -- ancient:readFrequency = (read . T.unpack)
 
@@ -103,14 +103,14 @@ readFrequency s = case TR.decimal s of
 -- |Reads a saved FreqDist file
 readFreqDist :: FilePath -> IO FreqDist
 readFreqDist fp = do
-  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.mmapFileByteString fp Nothing)
---  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}MMap.unsafeMMapFile fp)
---  ls <- {-# SCC lineing #-} fmap BUTF8.lines ({-# SCC reading #-}B.readFile fp)
-  let pairs = {-# SCC mapping #-} map readFreqDistLine ls
-      stringmap = {-# SCC mapbuilding #-} Map.fromList pairs
-      fd = FreqDist $ {-# SCC fdbuilding #-} Map.map readFrequency stringmap
+  ls <- fmap BUTF8.lines (MMap.mmapFileByteString fp Nothing)
+--  ls <- MMap.unsafeMMapFile fp)
+--  ls <- B.readFile fp)
+  let pairs =  map readFreqDistLine ls
+      stringmap =  Map.fromList pairs
+      fd = FreqDist $  Map.map readFrequency stringmap
   putStrLn $ "Loading " ++ fp
-  return ( {-# SCC returning #-} fd)
+  return fd
 
 
 -- |Recursively write out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
@@ -143,8 +143,7 @@ saveFreqDist fd fn = putStrLn ("Saving " ++ fn) >> writeCountFreqs fd fn Nothing
 -- string to the cleaned up string
 cleanupFD :: (T.Text -> T.Text) -> FreqDist -> FreqDist
 cleanupFD cleanup fd = let map = getMap fd
-                           accumulate = \acc key val ->
-                             Map.unionWith (+) acc $ Map.singleton (cleanup key) val
+                           accumulate acc key val = Map.unionWith (+) acc $ Map.singleton (cleanup key) val
                            cleaned = Map.foldlWithKey' accumulate Map.empty map
                        in
                          FreqDist cleaned
@@ -155,7 +154,7 @@ cleanupFD cleanup fd = let map = getMap fd
 filterFD :: (Token -> Bool) -> FreqDist -> FreqDist
 filterFD f fd = FreqDist $ Map.filterWithKey expfilt $ getMap fd
   where
-    expfilt = \tok _ -> f tok
+    expfilt tok _ = f tok
 
 
 -- |Filter a Frequency Distribution file with a filter function and

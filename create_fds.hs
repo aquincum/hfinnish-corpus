@@ -30,7 +30,7 @@ dealWithAFile fn progress = do
   progStr <- printProgress progVarUpdated
   putMVar progress progVarUpdated
   catch (putStrLn ("Done " ++ pruned ++ ". " ++ progStr))
-    (\e -> putStrLn ("Error in printing, " ++ (show (e::SomeException))))
+    (\e -> putStrLn ("Error in printing, " ++ show (e::SomeException)))
 
 
 main :: IO ()
@@ -40,18 +40,10 @@ main = do
   progVar <- initializeProgress fns
   progress <- newMVar progVar
   ncap <- getNumCapabilities
-  putStrLn $ "Running with " ++ (show ncap) ++ " capabilities."
---  let pr = initProcess  >>= map startProcess (dealWithAFile $ fns)
---  pr >>= waitProcess
+  putStrLn $ "Running with " ++ show ncap ++ " capabilities."
   proto <- initProcess -- :: IO Process
---  procs <- sequence $ map ((\x -> copyProcess proto) . startProcess . dealWithAFile) fns
---  threadDelay 1000
-  procs <- sequence $ replicate (length fns) (copyProcess proto)
-  -- let tasks = zip procs fns
+  procs <- M.replicateM (length fns) (copyProcess proto)
   let procs' = map (startProcess . flip dealWithAFile progress) fns
-  procs'' <- sequence $ map (\pr -> (copyProcess proto) >>= pr) procs'
-  procs''' <-  sequence $ map waitProcess procs''
-
-{-  finalPV <- takeMVar progress
-  printProgress finalPV >>= putStrLn -}
+  procs'' <- mapM (\pr -> copyProcess proto >>= pr) procs'
+  procs''' <-  mapM waitProcess procs''
   return ()

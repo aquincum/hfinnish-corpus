@@ -45,7 +45,7 @@ harmonyV c
 -- >>> fullHarmonic "ela" Neutral
 -- False
 fullHarmonic :: String -> HarmonyV -> Bool
-fullHarmonic str harm = foldl (\acc x -> if harmonyV x `elem` [Just harm, Nothing] then acc && True else False) True str
+fullHarmonic str harm = foldl (\acc x -> harmonyV x `elem` [Just harm, Nothing] && acc) True str
 
 -- |Determines the 'HarmonyW' category of a word.
 harmonicity :: String -> HarmonyW

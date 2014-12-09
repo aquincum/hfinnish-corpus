@@ -37,7 +37,7 @@ filterTokenRelevant t = (relevantStem . segment) (T.unpack t) []
 
 -- |Cleaning up non-alphanumeric symbols. Could get more complicated
 cleanupWord :: Token -> Token
-cleanupWord = T.filter isAlphaNum
+cleanupWord = T.filter (`elem` "abcdefghijklmnopqrstuvwxyzäö")
 
 
 main :: IO ()

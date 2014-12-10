@@ -5,8 +5,8 @@ module Hanalyze.Vowels (
 
   -- * Basic harmonicity functions
   
-  harmonyV, harmonicity, fullHarmonic,
-  suffixIt,
+  harmonyV, onlyVowels, harmonicity, fullHarmonic,
+  suffixIt, 
 
   -- * Segmenting 
 
@@ -30,13 +30,19 @@ data HarmonyW = Anything -- ^Only consonants, indeterminable
 -- |Whether a word is front suffixing or back suffixing
 data Suffixing = BackSuffixes | FrontSuffixes deriving (Show, Eq)
 
+
 -- |Determines the harmony value of a vowel /character/
 harmonyV :: Char -> Maybe HarmonyV
-harmonyV c 
+harmonyV c
   | c `elem` "aou" = Just Back
   | c `elem` "ei" = Just Neutral
   | c `elem` "äöy" = Just Front
   | otherwise = Nothing
+
+-- |return a 'String' with the vowels only
+onlyVowels :: String -> String
+onlyVowels = filter (`elem` "aouieyöä")
+
 
 -- |Tells whether a token contains vowels exclusively in the given 'HarmonyV' category.
 --

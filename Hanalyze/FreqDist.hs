@@ -3,14 +3,21 @@
 module Hanalyze.FreqDist
        (
          -- * Types
-         Token, Segment, FreqDist(..), fdEmpty,
+         Token, Segment, FreqDist(..), 
 
+         -- * Simple lifted Map function
+         fdEmpty, fdKeys,
+
+
+         
          -- * Reading and saving FreqDists
          multiReadCountFreqs, readCountFreqs,
-         saveFreqDist, readFreqDist,
+         saveFreqDist, readFreqDist, writeCountFreqs,
 
          -- * Manipulating FreqDists
-         cleanupFD, filterFD, filterFDFile, sumFD
+         cleanupFD, filterFD, filterFDFile, splitByFD, sumFD
+
+
          )
        where
 
@@ -53,6 +60,11 @@ instance Monoid FreqDist where
 -- |The empty FreqDist map.
 fdEmpty :: FreqDist
 fdEmpty = FreqDist Map.empty
+
+-- |Returns the keys as the list
+fdKeys :: FreqDist -> [Token]
+fdKeys = Map.keys . getMap
+
 
 -- |Loads a corpus file into a list of tokens.
 loadFile :: FilePath -> IO [Token]
@@ -117,19 +129,13 @@ readFreqDist fp = do
 
 
 -- |Recursively write out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
--- Initiate with a Nothing Handle
-writeCountFreqs :: FreqDist -> FilePath -> Maybe Handle -> IO ()
-writeCountFreqs fd _ _ 
+writeCountFreqs :: FreqDist -> Handle -> IO ()
+writeCountFreqs fd _
   | fd == fdEmpty = return ()
-writeCountFreqs fd fn Nothing = do
-  handle <- openFile fn WriteMode
-  writeCountFreqs fd fn $ Just handle
-  hClose handle
-  putStrLn "Done"
-  return ()
-writeCountFreqs fd fn (Just handle) = let ((mkey,mval),mfd2) = Map.deleteFindMax (getMap fd) in do
+writeCountFreqs fd handle =
+  let ((mkey,mval),mfd2) = Map.deleteFindMax (getMap fd) in do
     TIO.hPutStrLn handle $ T.concat [mkey, T.pack "\t", T.pack $ show mval]
-    writeCountFreqs (FreqDist mfd2) fn $ Just handle
+    writeCountFreqs (FreqDist mfd2) handle
 
 
 {-saveFreqDist' fd fn = do
@@ -140,7 +146,10 @@ writeCountFreqs fd fn (Just handle) = let ((mkey,mval),mfd2) = Map.deleteFindMax
 
 -- |Saves a 'FreqDist' to a file, using 'writeCountFreqs' inside.
 saveFreqDist :: FreqDist -> FilePath -> IO ()
-saveFreqDist fd fn = putStrLn ("Saving " ++ fn) >> writeCountFreqs fd fn Nothing
+saveFreqDist fd fn = putStrLn ("Saving " ++ fn) >>
+                     openFile fn WriteMode >>= \handle ->
+                     writeCountFreqs fd handle >>
+                     hClose handle
 
 -- |Cleans up a 'FreqDist' using the cleanup function that converts the filty
 -- string to the cleaned up string
@@ -173,7 +182,7 @@ filterFDFile f cleanup fn = do
 
 -- |Split a 'FreqDist' into a summary 'FreqDist's based on a partitioning
 -- function.
-splitByFD :: (Ord x, Show x) =>
+splitByFD :: (Eq x, Show x) =>
              (Token -> x) -- ^partitioning function
              -> FreqDist  -- ^input 'FreqDist'
              -> FreqDist  -- ^summary 'FreqDist'

@@ -38,5 +38,6 @@ main = do
   fd <- readFreqDist $ head args
   summarySection fd
   vowelSummarySection fd onlyVowels
+  vowelSummarySection fd (segment . onlyVowels)
   vowelSummarySection fd harmonicity
   return ()

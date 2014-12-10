@@ -10,7 +10,7 @@ module Hanalyze.FreqDist
          saveFreqDist, readFreqDist,
 
          -- * Manipulating FreqDists
-         cleanupFD, filterFD, filterFDFile
+         cleanupFD, filterFD, filterFDFile, sumFD
          )
        where
 
@@ -29,6 +29,9 @@ import Control.Exception
 import qualified Data.ByteString.UTF8 as BUTF8
 import qualified Data.ByteString as B
 import qualified System.IO.MMap as MMap
+import qualified Data.List as List 
+
+
 
 -- |As imported from the corpus
 type Token = T.Text
@@ -166,3 +169,25 @@ filterFDFile :: (Token -> Bool) -- ^The filtering function
 filterFDFile f cleanup fn = do
   fd <- readFreqDist fn
   saveFreqDist (filterFD f. cleanupFD cleanup $ fd) ("filtered_"++fn)
+
+
+-- |Split a 'FreqDist' into a summary 'FreqDist's based on a partitioning
+-- function.
+splitByFD :: (Ord x, Show x) =>
+             (Token -> x) -- ^partitioning function
+             -> FreqDist  -- ^input 'FreqDist'
+             -> FreqDist  -- ^summary 'FreqDist'
+splitByFD func fd =
+  let map = getMap fd
+      retvals = List.map (\(x,y) -> (func x,y)) $ Map.toList map
+      classes = List.nub $ List.map fst retvals
+      sum classid = List.foldl' (\(x,y) (k,z) -> (x,if k == classid then y+z else y)) (T.pack $ show classid,0) retvals
+      c = FreqDist . Map.fromList $ List.map (sum) classes
+  in
+      c
+
+sumFD :: FreqDist -> Int
+sumFD fd = Map.foldl' (+) 0 $ getMap fd
+
+
+  

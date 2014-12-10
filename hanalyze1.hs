@@ -19,15 +19,13 @@ summarySection fd = sectionHeader "Summary" >>
                     dataPointInt "grand total" (sumFD fd)
 
 
-vowelSummarySection :: FreqDist -> IO ()
-vowelSummarySection fd = sectionHeader "Vowel structure summary" >>
-                         writeCountFreqs summedfd stdout >>
-                         saveFreqDist summedfd "test.out"
-                         where
-                           summingf = onlyVowels . T.unpack
-                           summedfd = splitByFD summingf fd
---                           classes = fdKeys summedfd
---                           printClass key = dataPointInt (T.unpack key)
+vowelSummarySection :: (Show x, Eq x) => FreqDist -> (String -> x) -> IO ()
+vowelSummarySection fd f =
+  sectionHeader "Vowel structure summary" >>
+  writeCountFreqs summedfd stdout
+  where
+    summingf = f . T.unpack
+    summedfd = splitByFD summingf fd
 
 
 
@@ -39,5 +37,6 @@ main = do
     error $ "Usage: " ++ progn ++ " freqdist_file"
   fd <- readFreqDist $ head args
   summarySection fd
-  vowelSummarySection fd
+  vowelSummarySection fd onlyVowels
+  vowelSummarySection fd harmonicity
   return ()

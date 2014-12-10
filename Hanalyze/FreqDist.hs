@@ -191,9 +191,8 @@ splitByFD func fd =
       retvals = List.map (\(x,y) -> (func x,y)) $ Map.toList map
       classes = List.nub $ List.map fst retvals
       sum classid = List.foldl' (\(x,y) (k,z) -> (x,if k == classid then y+z else y)) (T.pack $ show classid,0) retvals
-      c = FreqDist . Map.fromList $ List.map (sum) classes
   in
-      c
+      FreqDist . Map.fromList $ List.map (sum) classes
 
 sumFD :: FreqDist -> Int
 sumFD fd = Map.foldl' (+) 0 $ getMap fd

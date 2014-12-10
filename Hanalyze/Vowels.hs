@@ -28,7 +28,7 @@ data HarmonyW = Anything -- ^Only consonants, indeterminable
               | AllNeutral -- ^Only front neutral vowels
               deriving (Show, Eq)
 -- |Whether a word is front suffixing or back suffixing
-data Suffixing = BackSuffixes | FrontSuffixes deriving (Show, Eq)
+data Suffixing = BackSuffixes | FrontSuffixes | LastVowel deriving (Show, Eq)
 
 
 -- |Determines the harmony value of a vowel /character/
@@ -70,13 +70,14 @@ harmonicity (x:xs)
   | harmonyV x == Just Neutral = case sofar of AllBack -> BackNeutral
                                                BackNeutral -> BackNeutral
                                                FrontNeutral -> FrontNeutral
-                                               AllFront -> AllFront
+                                               AllFront -> FrontNeutral
                                                _ -> AllNeutral
   | otherwise = sofar
   where sofar = harmonicity xs
 
 -- |Determines whether the word is back or front suffixing given a 'HarmonyW' category
 suffixIt :: HarmonyW -> Suffixing
+suffixIt FrontBack = LastVowel
 suffixIt w = if w `elem` [AllFront, FrontNeutral, AllNeutral] then FrontSuffixes else BackSuffixes
 
 -- |Tests whether two letters constitute one phoneme

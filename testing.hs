@@ -12,6 +12,7 @@ import Control.Monad (unless)
 import System.Exit
 import System.Process
 import Control.Concurrent
+import qualified Data.List as List (foldl')
 
 instance Arbitrary FreqDist where
   arbitrary = do
@@ -126,6 +127,7 @@ testFilter =
   else
     return False
 
+prop_sum fd = sumFD fd == List.foldl' (+) 0 (map snd (Map.toList $ getMap fd))
 
 
 myCheck :: (Testable prop) => String -> prop -> IO ()
@@ -150,5 +152,6 @@ main = do
   -- myCheck "Saving and loading: " prop_saveLoad
   testFilter >>= flip unless (giveUp "testLoading")
   testHarmony >>= flip unless (giveUp "testHarmonyW")
+  myCheck "Summing FDs: " prop_sum
   exitSuccess
   

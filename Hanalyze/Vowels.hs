@@ -14,7 +14,8 @@ module Hanalyze.Vowels (
   ) where
 
 import Hanalyze.FreqDist (Token, Segment)
-import qualified Data.Text as T (unpack)
+import qualified Data.Text as T
+import Data.Maybe
 
 -- |Harmony value of a vowel (Front, Neutral, Back), [i,e] are neutral
 data HarmonyV = Front | Neutral | Back deriving (Show, Eq)
@@ -40,8 +41,8 @@ harmonyV c
   | otherwise = Nothing
 
 -- |return a 'String' with the vowels only
-onlyVowels :: String -> String
-onlyVowels = filter (`elem` "aouieyöä")
+onlyVowels :: T.Text -> T.Text
+onlyVowels = T.filter (isJust . harmonyV)
 
 
 -- |Tells whether a token contains vowels exclusively in the given 'HarmonyV' category.

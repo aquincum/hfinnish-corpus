@@ -37,11 +37,9 @@ import qualified Data.ByteString.UTF8 as BUTF8
 import qualified Data.ByteString as B
 import qualified System.IO.MMap as MMap
 import qualified Data.List as List 
+import Hanalyze.Token
 
 
-
--- |As imported from the corpus
-type Token = T.Text
 -- |Words are segmented to phonemes, where diphthongs, long vowels and geminates are treated as one Segment.
 type Segment = String
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.

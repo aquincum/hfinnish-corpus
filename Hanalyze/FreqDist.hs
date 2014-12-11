@@ -33,7 +33,7 @@ import qualified Data.ByteString.UTF8 as BUTF8
 import qualified System.IO.MMap as MMap
 import qualified Data.List as List 
 import qualified Hanalyze.Token as T
-import Hanalyze.Token (Token)
+import Hanalyze.Token (Token, Segment)
 
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
 data FreqDist = FreqDist {getMap :: !(Map.Map Token Int)} deriving (Eq,Show)

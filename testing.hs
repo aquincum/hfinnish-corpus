@@ -1,10 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
 import Hanalyze.FreqDist
 import Hanalyze.Vowels
 import Control.Applicative ((<$>))
 import qualified Data.Map as Map
-import qualified Data.Text as T
+import qualified Hanalyze.Token as T
 import Data.Monoid
 import qualified Test.HUnit as HU
 import Test.HUnit ((~=?), (~:), (@?))
@@ -21,7 +22,7 @@ instance Arbitrary FreqDist where
     return $ FreqDist $  Map.fromList $  zip names (map abs positives)
     
 
-instance Arbitrary T.Text where
+instance Arbitrary Token where
   arbitrary =  T.pack <$> arbitrary
 
 prop_monoid_i :: FreqDist -> Bool

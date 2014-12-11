@@ -33,7 +33,7 @@ relevantStem (h:t) [] = (h `elem` ["e","i","ee","ii","ei","ie"]) && relevantStem
 
 -- |Filter a token based on relevance 
 filterTokenRelevant :: Token ->  Bool
-filterTokenRelevant t = (relevantStem . segment) (T.unpack t) []
+filterTokenRelevant t = (relevantStem . segment) t []
 
 -- |Cleaning up non-alphanumeric symbols. Could get more complicated
 cleanupWord :: Token -> Token

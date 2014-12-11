@@ -18,13 +18,12 @@ summarySection fd = sectionHeader "Summary" >>
                     dataPointInt "grand total" (sumFD fd)
 
 
-vowelSummarySection :: (Show x, Eq x) => FreqDist -> (String -> x) -> IO ()
+vowelSummarySection :: (Show x, Eq x) => FreqDist -> (Token -> x) -> IO ()
 vowelSummarySection fd f =
   sectionHeader "Vowel structure summary" >>
   writeCountFreqs summedfd stdout
   where
-    summingf = f . T.unpack
-    summedfd = splitByFD summingf fd
+    summedfd = splitByFD f fd
 
 
 

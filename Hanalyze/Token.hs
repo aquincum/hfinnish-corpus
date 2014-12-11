@@ -37,10 +37,14 @@ import System.IO hiding (readFile, hPutStrLn)
 -- needed from Text: unpack, filter, pack, toLower, words, concat
 
 -- |As imported from the corpus
-newtype Token = Tok {getText :: Txt.Text} deriving (Eq,Show,Ord)
+newtype Token = Tok {getText :: Txt.Text} deriving (Eq,Ord)
 
 -- |Words are segmented to phonemes, where diphthongs, long vowels and geminates are treated as one Segment.
 type Segment = String
+
+-- |Need to write own instance, to return the inner string with 'show'.
+instance Show Token where
+  show = unpack
 
 -- |Strings can be overloaded
 instance String.IsString Token where

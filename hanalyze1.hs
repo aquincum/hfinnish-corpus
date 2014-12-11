@@ -2,6 +2,7 @@ module Main where
 
 import System.IO
 import System.Environment
+import qualified Data.Map as Map
 import Hanalyze.FreqDist
 import Hanalyze.Vowels
 import Control.Monad

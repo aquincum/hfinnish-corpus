@@ -97,6 +97,11 @@ testHarmony = do
            suffixIt FrontNeutral == FrontSuffixes @? "front neutral"           
            suffixIt FrontBack == LastVowel @? "front back"     
            suffixIt AllNeutral == FrontSuffixes @? "all neutral"
+        ,
+        "onlyVowels" ~: do
+           onlyVowels "alma" == "aa" @? "aa fine"
+           onlyVowels "almä" == "aä" @? "aä fine"
+           onlyVowels "almö" == "aö" @? "aö fine"
         ]
 
 

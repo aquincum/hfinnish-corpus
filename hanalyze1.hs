@@ -5,8 +5,7 @@ import System.Environment
 import Hanalyze.FreqDist
 import Hanalyze.Vowels
 import Control.Monad
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as TE
+import qualified Hanalyze.Token as T
 
 sectionHeader :: String -> IO ()
 sectionHeader s = putStrLn s >> putStrLn "========"

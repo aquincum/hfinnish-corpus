@@ -9,7 +9,7 @@ import Hanalyze.FreqDist
 import Hanalyze.Vowels
 import Hanalyze.Process
 import Hanalyze.Progress
-import qualified Data.Text as T
+import qualified Hanalyze.Token as T
 import Data.Char
 import Data.Maybe (isNothing, isJust)
 

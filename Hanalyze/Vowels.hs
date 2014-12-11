@@ -13,8 +13,8 @@ module Hanalyze.Vowels (
   segment,
   ) where
 
-import Hanalyze.FreqDist (Token, Segment)
-import qualified Data.Text as T
+import qualified Hanalyze.Token as T
+import Hanalyze.Token (Token, Segment)
 import Data.Maybe
 
 -- |Harmony value of a vowel (Front, Neutral, Back), [i,e] are neutral
@@ -31,7 +31,6 @@ data HarmonyW = Anything -- ^Only consonants, indeterminable
 -- |Whether a word is front suffixing or back suffixing
 data Suffixing = BackSuffixes | FrontSuffixes | LastVowel deriving (Show, Eq)
 
-
 -- |Determines the harmony value of a vowel /character/
 harmonyV :: Char -> Maybe HarmonyV
 harmonyV c
@@ -41,7 +40,7 @@ harmonyV c
   | otherwise = Nothing
 
 -- |return a 'String' with the vowels only
-onlyVowels :: T.Text -> T.Text
+onlyVowels :: Token -> Token
 onlyVowels = T.filter (isJust . harmonyV)
 
 
@@ -51,30 +50,34 @@ onlyVowels = T.filter (isJust . harmonyV)
 -- True
 -- >>> fullHarmonic "ela" Neutral
 -- False
-fullHarmonic :: String -> HarmonyV -> Bool
-fullHarmonic str harm = foldl (\acc x -> harmonyV x `elem` [Just harm, Nothing] && acc) True str
+fullHarmonic :: Token -> HarmonyV -> Bool
+fullHarmonic str harm = T.foldl (\acc x -> harmonyV x `elem` [Just harm, Nothing] && acc) True str
 
 -- |Determines the 'HarmonyW' category of a word.
-harmonicity :: String -> HarmonyW
-harmonicity "" = Anything
-harmonicity (x:xs)
-  | harmonyV x == Just Back = case sofar of AllFront -> FrontBack
-                                            BackNeutral -> BackNeutral
-                                            FrontNeutral -> FrontBack
-                                            AllNeutral -> BackNeutral
-                                            _ -> AllBack
-  | harmonyV x == Just Front = case sofar of AllBack -> FrontBack
-                                             BackNeutral -> FrontBack
-                                             FrontNeutral -> FrontNeutral
-                                             AllNeutral -> FrontNeutral
-                                             _ -> AllFront
-  | harmonyV x == Just Neutral = case sofar of AllBack -> BackNeutral
-                                               BackNeutral -> BackNeutral
-                                               FrontNeutral -> FrontNeutral
-                                               AllFront -> FrontNeutral
-                                               _ -> AllNeutral
-  | otherwise = sofar
-  where sofar = harmonicity xs
+harmonicity :: Token -> HarmonyW
+harmonicity t = case T.uncons t of -- x:xs
+  Just (x, xs) -> let sofar = harmonicity xs in case harmonyV x of
+    Just Back -> case sofar of
+      AllFront -> FrontBack
+      BackNeutral -> BackNeutral
+      FrontNeutral -> FrontBack
+      AllNeutral -> BackNeutral
+      _ -> AllBack
+    Just Front -> case sofar of
+      AllBack -> FrontBack
+      BackNeutral -> FrontBack
+      FrontNeutral -> FrontNeutral
+      AllNeutral -> FrontNeutral
+      _ -> AllFront
+    Just Neutral -> case sofar of
+      AllBack -> BackNeutral
+      BackNeutral -> BackNeutral
+      FrontNeutral -> FrontNeutral
+      AllFront -> FrontNeutral
+      _ -> AllNeutral
+    _ -> sofar
+  _ -> Anything
+
 
 -- |Determines whether the word is back or front suffixing given a 'HarmonyW' category
 suffixIt :: HarmonyW -> Suffixing
@@ -89,9 +92,11 @@ digraph [x,y] = x==y
 digraph _ = False
 
 -- |Breaks down a token into a list of segments
-segment :: String -> [Segment]
-segment "" = []
-segment [v] = [[v]]
-segment (h:f:t) = if digraph [h,f] then [h,f] : segment t else [h] : segment (f:t)
+segment :: Token -> [Segment]
+segment tok = case T.uncons2 tok of
+  Nothing -> case T.uncons tok of
+    Nothing -> []
+    Just (c, _) -> [[c]]
+  Just (h, f, t) -> if digraph [h,f] then [h,f] : segment t else [h] : segment (T.cons f t)
 
 

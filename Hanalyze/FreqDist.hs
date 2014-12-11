@@ -27,21 +27,14 @@ import System.IO
 import System.Environment
 import Control.Applicative
 import Data.Monoid
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
-import qualified Data.Text.Encoding as TE
-import qualified Data.Text.Read as TR
 import Control.DeepSeq
 import Control.Exception
 import qualified Data.ByteString.UTF8 as BUTF8
-import qualified Data.ByteString as B
 import qualified System.IO.MMap as MMap
 import qualified Data.List as List 
-import Hanalyze.Token
+import qualified Hanalyze.Token as T
+import Hanalyze.Token (Token)
 
-
--- |Words are segmented to phonemes, where diphthongs, long vowels and geminates are treated as one Segment.
-type Segment = String
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
 data FreqDist = FreqDist {getMap :: !(Map.Map Token Int)} deriving (Eq,Show)
 
@@ -67,7 +60,7 @@ fdKeys = Map.keys . getMap
 -- |Loads a corpus file into a list of tokens.
 loadFile :: FilePath -> IO [Token]
 loadFile fn = do
-  let contents = T.toLower <$> TIO.readFile fn -- Text
+  let contents = T.toLower <$> T.readFile fn -- Text
       tokentxts = fmap T.words contents
   tokentxts
 
@@ -92,24 +85,24 @@ multiReadCountFreqs fns = do
   return $ mconcat fds
 
 -- |Inside function to read in the first 2 words in a line to a pair
-readFreqDistLine :: BUTF8.ByteString -> (T.Text, T.Text)
+readFreqDistLine :: BUTF8.ByteString -> (Token, Token)
 readFreqDistLine line =
   let (w1,w2) =  BUTF8.break (== '\t') line
-      txt2 = case TE.decodeUtf8' $ BUTF8.drop 1 w2 of
+      txt2 = case T.decodeFromUTF $ BUTF8.drop 1 w2 of
         Left err -> T.pack "0"
         Right x -> x
       in
-  case TE.decodeUtf8' w1 of
+  case T.decodeFromUTF w1 of
     Left err -> (T.pack "UnicodeError", txt2)
     Right txt1 -> (txt1, txt2)
 
 
 -- |Convert a Text with the frequency info to an integer. Implemented to
 -- test different techniques
-readFrequency :: T.Text -> Int
-readFrequency s = case TR.decimal s of
+readFrequency :: Token -> Int
+readFrequency s = case T.decimal s of
   Left _ -> -1
-  Right (num,rem) -> num
+  Right num -> num
 -- ancient:readFrequency = (read . T.unpack)
 
 
@@ -132,7 +125,7 @@ writeCountFreqs fd _
   | fd == fdEmpty = return ()
 writeCountFreqs fd handle =
   let ((mkey,mval),mfd2) = Map.deleteFindMax (getMap fd) in do
-    TIO.hPutStrLn handle $ T.concat [mkey, T.pack "\t", T.pack $ show mval]
+    T.hPutStrLn handle $ mconcat [mkey, T.pack "\t", T.pack $ show mval]
     writeCountFreqs (FreqDist mfd2) handle
 
 
@@ -151,7 +144,7 @@ saveFreqDist fd fn = putStrLn ("Saving " ++ fn) >>
 
 -- |Cleans up a 'FreqDist' using the cleanup function that converts the filty
 -- string to the cleaned up string
-cleanupFD :: (T.Text -> T.Text) -> FreqDist -> FreqDist
+cleanupFD :: (Token -> Token) -> FreqDist -> FreqDist
 cleanupFD cleanup fd = let map = getMap fd
                            accumulate acc key val = Map.unionWith (+) acc $ Map.singleton (cleanup key) val
                            cleaned = Map.foldlWithKey' accumulate Map.empty map

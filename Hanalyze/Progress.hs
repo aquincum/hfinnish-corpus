@@ -26,6 +26,7 @@ initializeProgress fns = do
 incrementProgress :: Progress -> Progress
 incrementProgress (Progress nf st pd) = Progress nf st (pd+1)
 
+-- |Formats the time elapsed in a 'Progress'
 formatElapsed :: NominalDiffTime -> String
 formatElapsed ndf
   | secs < 180 = show (floor secs) ++ "s"

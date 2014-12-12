@@ -1,5 +1,13 @@
 module Hanalyze.Process (
-  Result, Process(..),
+  -- * Data types and type synonyms
+  Process(..),
+  Counter, Blocker, Result,
+
+  -- * General settings
+  maxProcesses,
+
+  -- * Process management
+  
   startProcess, endProcess, waitProcess, 
   initProcess, copyProcess
   ) where

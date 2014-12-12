@@ -51,7 +51,7 @@ prop_finding fb = let firstF = featureName $ head $ getBundle fb
                       foundLF = findInBundle lastF fb
                   in
                    (getBundle fb /= []) ==>
-                   isJust foundFF && isJust foundLF && (featureName $ fromJust foundFF) == firstF && (featureName $ fromJust foundLF) == lastF
+                   isJust foundFF && isJust foundLF && featureName  (fromJust foundFF) == firstF && featureName (fromJust foundLF) == lastF
 
 prop_merging fb1 fb2 =
   let
@@ -63,12 +63,9 @@ prop_merging fb1 fb2 =
    forAll (elements feats1) (\feat -> featureName feat /= "" ==>
                               case findInBundle (featureName feat) merged of
                                 Nothing -> False
-                                Just mfeat -> if featureName mfeat /= featureName feat
-                                              then False
-                                              else if plusMinus mfeat /= plusMinus feat
-                                                   then plusMinus mfeat == Null &&
-                                                        isJust (findInBundle (featureName feat) fb2)
-                                                   else True
+                                Just mfeat | featureName mfeat /= featureName feat -> False
+                                           | plusMinus mfeat /= plusMinus feat -> plusMinus mfeat == Null && isJust (findInBundle (featureName feat) fb2)
+                                           | otherwise -> True
 
                               
                             )

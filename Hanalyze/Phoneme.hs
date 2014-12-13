@@ -1,4 +1,51 @@
-module Hanalyze.Phoneme where
+module Hanalyze.Phoneme
+       (
+         -- * Data types
+         PlusMinus(..), Feature(..), FeatureBundle,
+         Phoneme(..), PhonemicInventory,
+
+         -- * Basic functions
+         -- ** With 'PlusMinus'
+         minusPM,
+
+         -- ** With 'Feature'
+         minus, underspecified,
+
+         -- ** With 'FeatureBundle'
+         emptyBundle, setBundle, getBundle,
+
+         -- * Merging features and bundles
+         mergeFeature, mergeFeature', mergeBundle,
+
+         -- * Lookup functions
+         findInBundle, findPhoneme,
+
+         -- * Segmenting
+         segment,
+                       
+         -- * Feature system
+         -- ** basic features
+         -- *** consonants
+         fLabial, fCoronal, fVelar, fGlottal, fPalatal, fContinuant,
+         fSonorant, fCons, fVoiced, fVoiceless,
+
+         -- *** vowels
+         fVowel, fHigh, fLow,
+         fRounded, fFront, fLong,
+
+         -- ** as feature bundles
+         -- *** consonants
+         labial, coronal, velar, glottal, palatal, voiced, voiceless,
+         stop, nasal, fricative, approximant, lateral, trill, short,
+         long,
+
+         -- *** vowels
+         high, mid, low, rounded, unrounded, front, back,
+
+         -- * Inventories
+         finnishInventory
+
+         ) where
 
 import Data.Monoid
 import Data.Maybe
@@ -45,6 +92,9 @@ underspecified (F pm fn) = F Null fn
 newtype FeatureBundle = Bundle {
   innerBundle :: [Feature]
 } deriving (Show)
+
+emptyBundle :: FeatureBundle
+emptyBundle = Bundle []
 
 -- |If I reimplement 'FeatureBundle' as sets, I want to hide the type constructor
 setBundle :: [Feature] -> FeatureBundle
@@ -209,6 +259,8 @@ testInv = [
   Phoneme "y" (mconcat [front, high, rounded])
  ]
 
+
+-- |Produces more or less the relevant Finnish phonemic inventory.
 finnishInventory :: PhonemicInventory
 finnishInventory = mapWith testInv short ++ mapWith doubledInv long ++ [
   Phoneme "ie" (mconcat [front, high, unrounded, long]),
@@ -219,6 +271,8 @@ finnishInventory = mapWith testInv short ++ mapWith doubledInv long ++ [
     doubledInv = map (\phon -> let n = phonemeName phon in
                        Phoneme (n ++ if n == "ng" then "" else n) (featureBundle phon)) testInv
 
+
+-- |Locates a phoneme in a phonemic inventory
 findPhoneme :: PhonemicInventory -> String -> Maybe Phoneme
 findPhoneme [] _ = Nothing
 findPhoneme (x:xs) s = if phonemeName x == s
@@ -247,23 +301,4 @@ segment inv t = innersegment (T.unpack t)
        case foundphoneme of
          Nothing -> Nothing
          Just ph -> liftM2 (:) (Just ph)  (innersegment rest)
-
-
-data Pattern = P Phoneme | Dot | Star | Question
-
-filterWord :: [Phoneme] -> [Pattern] -> Bool
-filterWord [] [] = True
-filterWord ph [] = False
-filterWord [] patt = False
-filterWord phall@(phtop:phrest) patall@(pattop:pattrest) = case pattop of
-  P phon | phonemeName phon == phonemeName phtop -> True
-         | otherwise -> False
-  Dot -> filterWord phrest pattrest
-  Question | filterWord phrest pattrest -> True
-           | filterWord phall pattrest -> True
-           | otherwise -> False
-  Star | filterWord phall pattrest -> True
-       | filterWord phrest patall -> True
-       | otherwise -> False
-
 

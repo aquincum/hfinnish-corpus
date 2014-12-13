@@ -2,6 +2,7 @@
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
 import Hanalyze.Phoneme
+import Hanalyze.Pattern
 import qualified Hanalyze.Token as T
 import Data.Monoid
 import Data.Maybe
@@ -81,6 +82,9 @@ testFinnish =
        isNothing (segment finnishInventory "jëlla") @? "returning nothing"
   ]
 
+prop_patterns str = case readPattern finnishInventory (T.pack str) of
+  Nothing -> True
+  Just x -> writePattern x == str
 
 myCheck :: (Testable prop) => String -> prop -> IO ()
 myCheck s pr = putStr s >> quickCheckResult pr >>= \res ->
@@ -99,5 +103,6 @@ main = do
   myCheck "Finding features" prop_finding
   myCheck "Merging bundles" prop_merging
   testFinnish >>= flip unless (giveUp "finnish inventory")
+  myCheck "Patterns" prop_patterns
   exitSuccess
   

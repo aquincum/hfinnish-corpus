@@ -22,7 +22,8 @@ source-repository head
 library
   exposed-modules:   Hanalyze.FreqDist, Hanalyze.Vowels,
                      Hanalyze.Process, Hanalyze.Progress,
-                     Hanalyze.Token, Hanalyze.Phoneme
+                     Hanalyze.Token, Hanalyze.Phoneme,
+                     Hanalyze.Pattern
   build-depends:       base ==4.6.*,
                        containers, 
                        text,

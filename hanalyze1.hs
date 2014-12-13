@@ -8,6 +8,7 @@ import Hanalyze.Vowels
 import Hanalyze.Pattern
 import Hanalyze.Phoneme
 import Control.Monad
+import Data.Monoid
 import qualified Hanalyze.Token as T
 
 sectionHeader :: String -> IO ()
@@ -24,10 +25,10 @@ summarySection fd = sectionHeader "Summary" >>
 vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO ()
 vowelSummarySection str fd f =
   sectionHeader ("Vowel structure summary -- " ++ str)  >>
-  writeCountFreqs summedfd stdout >>
+  writeSummaryTable summedfd stdout >>
   putStrLn ""
   where
-    summedfd = splitByFD f fd
+    summedfd = summarizeFD f fd
 
 
 
@@ -41,7 +42,11 @@ main = do
   summarySection fd
   vowelSummarySection "plain vowel structure" fd onlyVowels
   vowelSummarySection "plain harmonicity" fd harmonicity
-  let fd' = filterFD (\tok -> filterToken finnishInventory [Star, DotF vowel, DotF labial, Star] tok) fd
-  vowelSummarySection "with labials" fd' harmonicity
-  saveFreqDist fd' "test.out"
+  let fdLab = filterFD (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF labial, DotF $ mconcat [low,vowel]] tok) fd
+  let fdCor = filterFD (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF coronal, DotF $ mconcat [low,vowel]] tok) fd
+  let fdVel = filterFD (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF velar, DotF $ mconcat [low,vowel]] tok) fd      
+  vowelSummarySection "with labials" fdLab harmonicity
+  vowelSummarySection "with coronals" fdCor harmonicity
+  vowelSummarySection "with velars" fdVel harmonicity
+  --  saveFreqDist fd' a"test.out"
   return ()

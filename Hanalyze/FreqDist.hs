@@ -3,19 +3,21 @@
 module Hanalyze.FreqDist
        (
          -- * Types
-         Token, FreqDist(..), 
+         Token, FreqDist(..), SummaryTable(..),
 
          -- * Simple lifted Map functions
-         fdEmpty, fdKeys,
+         fdEmpty, fdKeys, sdEmpty,
 
 
          
          -- * Reading and saving FreqDists
          countFreqs, multiReadCountFreqs, readCountFreqs,
          saveFreqDist, readFreqDist, writeCountFreqs,
+         writeSummaryTable,
 
          -- * Manipulating FreqDists
-         cleanupFD, filterFD, filterFDFile, splitByFD, sumFD
+         cleanupFD, filterFD, filterFDFile, splitByFD, sumFD,
+         summarizeFD
 
 
          )
@@ -48,9 +50,15 @@ instance Monoid FreqDist where
     left `deepseq` right `deepseq` innermap `deepseq` FreqDist $ innermap
 
 
+data SummaryTable = SummaryTable {getSTMap :: Map.Map Token (Int, Int)} deriving (Eq, Show)
+
 -- |The empty FreqDist map.
 fdEmpty :: FreqDist
 fdEmpty = FreqDist Map.empty
+
+-- |The empty SummaryTable map.
+sdEmpty :: SummaryTable
+sdEmpty = SummaryTable Map.empty
 
 -- |Returns the keys as the list
 fdKeys :: FreqDist -> [Token]
@@ -128,6 +136,15 @@ writeCountFreqs fd handle =
     T.hPutStrLn handle $ mconcat [mkey, T.pack "\t", T.pack $ show mval]
     writeCountFreqs (FreqDist mfd2) handle
 
+-- |Recursively writes out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
+writeSummaryTable :: SummaryTable -> Handle -> IO ()
+writeSummaryTable fd _
+  | fd == sdEmpty = return ()
+writeSummaryTable fd handle =
+  let ((mkey,mval),mfd2) = Map.deleteFindMax (getSTMap fd) in do
+    T.hPutStrLn handle $ mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
+    writeSummaryTable (SummaryTable mfd2) handle
+
 
 {-saveFreqDist' fd fn = do
   let map = getMap fd
@@ -184,6 +201,23 @@ splitByFD func fd =
       sum classid = List.foldl' (\(x,y) (k,z) -> (x,if k == classid then y+z else y)) (T.pack $ show classid,0) retvals
   in
       FreqDist . Map.fromList $ List.map (sum) classes
+
+
+-- |Similar to 'splitByFD' but creates a summary table with token *and*
+-- type frequency.
+summarizeFD :: (Eq x, Show x) =>
+               (Token -> x) -- ^partitioning function
+               -> FreqDist  -- ^input 'FreqDist'
+               -> SummaryTable  -- ^summary table as 'SummaryTable'
+summarizeFD func fd =
+  let map = getMap fd
+      retvals = List.map (\(x,y) -> (func x,y)) $ Map.toList map
+      classes = List.nub $ List.map fst retvals
+      sum classid = List.foldl' (\(x,(y,typ)) (k,z) -> (x,(if k == classid then y+z else y,if k == classid then typ + 1 else  typ))) (T.pack $ show classid,(0,0)) retvals
+  in
+   SummaryTable . Map.fromList $ List.map (sum) classes
+
+
 
 -- |Simple summing function: returns the grand total frequency.
 sumFD :: FreqDist -> Int

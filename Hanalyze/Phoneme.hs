@@ -91,7 +91,7 @@ data Feature = Feature { plusMinus :: PlusMinus, featureName :: String } derivin
 instance Show Feature where
   show f = (show $ plusMinus f) ++ featureName f
 
--- 'minusPM' lifted to Feature
+-- |'minusPM' lifted to Feature
 minus :: Feature -> Feature
 minus (Feature pm fn) = Feature (minusPM pm) fn
 
@@ -315,7 +315,7 @@ findPhoneme (x:xs) s = if phonemeName x == s
                        then Just x
                        else findPhoneme xs s
 
--- |Segment a token, so far only with _digraphs_
+-- |Segment a token, so far only with *digraphs*
 segment :: PhonemicInventory -> Token -> Maybe [Phoneme]
 segment inv t = innersegment (T.unpack t)
   where -- innersegment with String representation for now

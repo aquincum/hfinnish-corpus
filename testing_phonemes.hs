@@ -14,7 +14,7 @@ import System.Exit
 import System.Process
 import Control.Concurrent
 import qualified Data.List as List (foldl')
-import Data.Map (size,(!))
+import Data.Map (size,(!),member)
 
 instance Arbitrary PlusMinus where
   arbitrary = elements [Plus, Minus, Null]
@@ -94,12 +94,56 @@ testFilterme =
       fd = countFreqs corpus
       phonP = fromJust $ findPhoneme finnishInventory "p"
       pattern = [P phonP, Star, P phonP]
-      filteredFd = filterFD (filterToken finnishInventory pattern) fd
-      filteredMap = getMap filteredFd
+      pattern2 = [Star, P phonP, Star]
+      pattern3 = [Star, P phonP, Question]
+      pattern4 = [Star, P phonP]
+      pattern5 = [Star, P phonP, Dot]
+      patternSoph1 = [Star, DotF $ mconcat [labial, nasal] , Star]
+      patternSoph2 = [QuestionF $ mconcat [labial], StarF $ mconcat [vowel], Star]
+      filteredFd pat = filterFD (filterToken finnishInventory pat) fd
+      filteredMap pat = getMap $ filteredFd pat
   in
-   putStrLn ("Here we go: " ++ show filteredMap) >>
-   return (size filteredMap == 1 &&
-           filteredMap ! "pep" == 1)
+   putStrLn ("Here we go: " ++ show (filteredMap patternSoph2)) >>
+   huTest [
+     "p*p" ~: do
+        size (filteredMap pattern) == 1 @? "size " ++ show (filteredMap pattern)
+        member "pep" (filteredMap pattern) @? "found " ++ show (filteredMap pattern)
+     ,
+     "*p*" ~: do
+        size (filteredMap pattern2) == 3 @? "size " ++ show (filteredMap pattern2)
+        member "pep" (filteredMap pattern2) @? "found pep " ++ show (filteredMap pattern2)
+        member "apää" (filteredMap pattern2) @? "found apää " ++ show (filteredMap pattern2)
+        member "pepe" (filteredMap pattern2) @? "found pepe " ++ show (filteredMap pattern2)
+     ,
+     "*p?" ~: do
+        size (filteredMap pattern3) == 3 @? "size " ++ show (filteredMap pattern3)
+        member "pep" (filteredMap pattern3) @? "found pep " ++ show (filteredMap pattern3)
+        member "pepe" (filteredMap pattern3) @? "found pepe " ++ show (filteredMap pattern3)
+        member "apää" (filteredMap pattern3) @? "found apää " ++ show (filteredMap pattern3)
+     ,
+     "*p" ~: do
+        size (filteredMap pattern4) == 1 @? "size " ++ show (filteredMap pattern4)
+        member "pep" (filteredMap pattern4) @? "found pep " ++ show (filteredMap pattern4)
+     ,
+     "*p." ~: do
+        size (filteredMap pattern5) == 2 @? "size " ++ show (filteredMap pattern5)
+        member "pepe" (filteredMap pattern5) @? "found pepe " ++ show (filteredMap pattern5)
+        member "apää" (filteredMap pattern5) @? "found apää" ++ show (filteredMap pattern5)
+     ,
+     "*[lab,nas]*" ~: do
+        size (filteredMap patternSoph1) == 2 @? "size " ++ show (filteredMap patternSoph1)
+        member "allma" (filteredMap patternSoph1) @? "found allma " ++ show (filteredMap patternSoph1)
+        member "belme" (filteredMap patternSoph1) @? "found belme " ++ show (filteredMap patternSoph1)
+     ,
+     "[lab]?[vow]*.*" ~: do 
+        size (filteredMap patternSoph2) == 5 @? "size " ++ show (filteredMap patternSoph2)
+        member "pep" (filteredMap patternSoph2) @? "found pep " ++ show (filteredMap patternSoph2)
+        member "pepe" (filteredMap patternSoph2) @? "found pepe " ++ show (filteredMap patternSoph2)        
+        member "belme" (filteredMap patternSoph2) @? "found belme " ++ show (filteredMap patternSoph2)
+        member "allma" (filteredMap patternSoph2) @? "found allma " ++ show (filteredMap patternSoph2)
+        member "apää" (filteredMap patternSoph2) @? "found apää" ++ show (filteredMap patternSoph2)
+     ]
+       
 
 
 

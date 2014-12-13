@@ -5,7 +5,7 @@ module Hanalyze.FreqDist
          -- * Types
          Token, FreqDist(..), 
 
-         -- * Simple lifted Map function
+         -- * Simple lifted Map functions
          fdEmpty, fdKeys,
 
 
@@ -97,7 +97,7 @@ readFreqDistLine line =
     Right txt1 -> (txt1, txt2)
 
 
--- |Convert a Text with the frequency info to an integer. Implemented to
+-- |Converts a Text with the frequency info to an integer. Implemented to
 -- test different techniques
 readFrequency :: Token -> Int
 readFrequency s = case T.decimal s of
@@ -119,7 +119,7 @@ readFreqDist fp = do
   return fd
 
 
--- |Recursively write out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
+-- |Recursively writes out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
 writeCountFreqs :: FreqDist -> Handle -> IO ()
 writeCountFreqs fd _
   | fd == fdEmpty = return ()
@@ -142,7 +142,7 @@ saveFreqDist fd fn = putStrLn ("Saving " ++ fn) >>
                      writeCountFreqs fd handle >>
                      hClose handle
 
--- |Cleans up a 'FreqDist' using the cleanup function that converts the filty
+-- |Cleans up a 'FreqDist' using the cleanup 'Token' -> 'Token' function that converts the filthy
 -- string to the cleaned up string
 cleanupFD :: (Token -> Token) -> FreqDist -> FreqDist
 cleanupFD cleanup fd = let map = getMap fd
@@ -152,15 +152,15 @@ cleanupFD cleanup fd = let map = getMap fd
                          FreqDist cleaned
 
 
--- |Filter a FreqDist based on a filtering function that has the
--- type 'Token -> Bool'
+-- |Filters a FreqDist based on a filtering function that has the
+-- type 'Token' -> 'Bool'
 filterFD :: (Token -> Bool) -> FreqDist -> FreqDist
 filterFD f fd = FreqDist $ Map.filterWithKey expfilt $ getMap fd
   where
     expfilt tok _ = f tok
 
 
--- |Filter a Frequency Distribution file with a filter function and
+-- |Filters a Frequency Distribution file with a filter function and
 -- a cleanup function
 filterFDFile :: (Token -> Bool) -- ^The filtering function
                 -> (Token -> Token) -- ^The cleanup function
@@ -171,7 +171,7 @@ filterFDFile f cleanup fn = do
   saveFreqDist (filterFD f. cleanupFD cleanup $ fd) ("filtered_"++fn)
 
 
--- |Split a 'FreqDist' into a summary 'FreqDist's based on a partitioning
+-- |Splits a 'FreqDist' into a summary 'FreqDist's based on a partitioning
 -- function.
 splitByFD :: (Eq x, Show x) =>
              (Token -> x) -- ^partitioning function
@@ -185,6 +185,7 @@ splitByFD func fd =
   in
       FreqDist . Map.fromList $ List.map (sum) classes
 
+-- |Simple summing function: returns the grand total frequency.
 sumFD :: FreqDist -> Int
 sumFD fd = Map.foldl' (+) 0 $ getMap fd
 

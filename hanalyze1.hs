@@ -41,9 +41,7 @@ main = do
   summarySection fd
   vowelSummarySection "plain vowel structure" fd onlyVowels
   vowelSummarySection "plain harmonicity" fd harmonicity
-  let fd' = filterFD (\tok -> case segment finnishInventory tok of
-                         Nothing -> False
-                         Just seg -> filterWord seg [Star, F vowel, F labial, Star]
-                     ) fd
+  let fd' = filterFD (\tok -> filterToken finnishInventory [Star, DotF vowel, DotF labial, Star] tok) fd
   vowelSummarySection "with labials" fd' harmonicity
+  saveFreqDist fd' "test.out"
   return ()

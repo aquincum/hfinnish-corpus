@@ -15,7 +15,7 @@ module Hanalyze.Phoneme
          emptyBundle, setBundle, getBundle,
 
          -- * Merging features and bundles
-         mergeFeature, mergeFeature', mergeBundle,
+         mergeFeature, mergeFeature', mergeBundle, subsetFB,
 
          -- * Lookup functions
          findInBundle, findPhoneme,
@@ -37,10 +37,10 @@ module Hanalyze.Phoneme
          -- *** consonants
          labial, coronal, velar, glottal, palatal, voiced, voiceless,
          stop, nasal, fricative, approximant, lateral, trill, short,
-         long,
+         long, consonant,
 
          -- *** vowels
-         high, mid, low, rounded, unrounded, front, back,
+         high, mid, low, rounded, unrounded, front, back, vowel,
 
          -- * Inventories
          finnishInventory
@@ -52,9 +52,10 @@ import Data.Maybe
 import Control.Monad
 import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token)
+import Data.List (delete)
 
 -- |Plus or minus of a binary feature
-data PlusMinus = Plus | Minus | Null deriving (Show,Eq)
+data PlusMinus = Plus | Minus | Null deriving (Eq)
 
 -- |Merging features will involve merging [+-] values.
 -- This will be done in a monoid style: if a feature is
@@ -69,6 +70,11 @@ instance Monoid PlusMinus where
   mappend Minus Plus = Null
   mappend x y = error $ "I don't understand " ++ show x ++ " + " ++ show y
 
+instance Show PlusMinus where
+  show Plus = "+"
+  show Minus = "-"
+  show Null = "0"
+
 -- |Complementer feature, turns 'Plus' to 'Minus', and 'Minus' to 'Plus', but
 -- leaves 'Null' alone
 minusPM :: PlusMinus -> PlusMinus
@@ -77,16 +83,24 @@ minusPM Minus = Plus
 minusPM Null = Null
 
 
+
 -- |A feature, whose value can be +, - or 0 (undefined)
-data Feature = F { plusMinus :: PlusMinus, featureName :: String } deriving (Show,Eq)
+data Feature = Feature { plusMinus :: PlusMinus, featureName :: String } deriving (Eq)
+
+
+instance Show Feature where
+  show f = (show $ plusMinus f) ++ featureName f
 
 -- 'minusPM' lifted to Feature
 minus :: Feature -> Feature
-minus (F pm fn) = F (minusPM pm) fn
+minus (Feature pm fn) = Feature (minusPM pm) fn
+
+
+
 
 -- |Null a feature
 underspecified :: Feature -> Feature
-underspecified (F pm fn) = F Null fn
+underspecified (Feature pm fn) = Feature Null fn
 
 -- |A feature bundle. Will be used as a monoid.
 newtype FeatureBundle = Bundle {
@@ -104,13 +118,13 @@ setBundle l =
     unique [] _ = []
     unique list names =
       let
-        topF = head list
-        fn = featureName topF
-        tailF = tail list
+        topFeature = head list
+        fn = featureName topFeature
+        tailFeature = tail list
       in
        if fn `elem` names
-       then unique tailF names
-       else topF : unique tailF (fn:names)
+       then unique tailFeature names
+       else topFeature : unique tailFeature (fn:names)
   in     
    Bundle $ unique l []
 
@@ -127,7 +141,7 @@ instance Monoid FeatureBundle where
 -- two different features just get lumped together
 mergeFeature :: Feature -> Feature -> FeatureBundle
 mergeFeature f1 f2 = if featureName f1 == featureName f2 then
-                       Bundle [F (plusMinus f1 `mappend` plusMinus f2) (featureName f1)]
+                       Bundle [Feature (plusMinus f1 `mappend` plusMinus f2) (featureName f1)]
                      else
                        Bundle [f1,f2]
 
@@ -135,9 +149,10 @@ mergeFeature f1 f2 = if featureName f1 == featureName f2 then
 -- return a Maybe value..
 mergeFeature' :: Feature -> Feature -> Maybe Feature
 mergeFeature' f1 f2 = if featureName f1 == featureName f2 then
-                        Just $ F (plusMinus f1 `mappend` plusMinus f2) (featureName f1)
+                        Just $ Feature (plusMinus f1 `mappend` plusMinus f2) (featureName f1)
                       else
                         Nothing
+
 
 
 -- |Find a 'Feature' by name in a 'FeatureBundle'
@@ -149,7 +164,7 @@ findInBundle s fb = case getBundle fb of
             else findInBundle s (Bundle xs) -- ugly
                
 -- |Merges two bundles so that there is no duplication. It might fail if a
--- feature with name "" is used -- please don't do that!
+-- feature with an empty string name  is used -- please don't do that!
 mergeBundle :: FeatureBundle -> FeatureBundle -> FeatureBundle
 mergeBundle b1 b2 = let f1 = getBundle b1
                         f2 = getBundle b2
@@ -163,6 +178,25 @@ mergeBundle b1 b2 = let f1 = getBundle b1
                     in
                      Bundle $ allinf1 ++ notinf1
 
+-- |Whether the first 'FeatureBundle' is the subset of the second
+-- one
+subsetFB :: FeatureBundle -> FeatureBundle -> Bool
+subsetFB f1 f2 | getBundle f1 == [] = True
+subsetFB f1 f2 | getBundle f2 == [] = False
+subsetFB f1 f2 = let (firstf:tailf) = getBundle f1
+                     fn = featureName firstf
+                     pm = plusMinus firstf
+                 in
+                  if pm == Null
+                  then subsetFB (Bundle tailf) f2
+                  else
+                    case findInBundle fn f2 of
+                      Nothing -> False
+                      Just foundf ->
+                        if (plusMinus firstf) == (plusMinus foundf)
+                        then subsetFB (Bundle tailf) f2
+                        else False
+
 
 -- |The definition of a phoneme consists of the textual representation
 -- and the feature bundle defining the phoneme.
@@ -174,26 +208,26 @@ data Phoneme = Phoneme {
 type PhonemicInventory = [Phoneme] 
 
 -- I'm just putting these here for now
-fLabial = F Plus "labial"
-fCoronal = F Plus "coronal"
-fVelar = F Plus "velar"
-fGlottal = F Plus "glottal"
-fPalatal = F Plus "palatal"
+fLabial = Feature Plus "labial"
+fCoronal = Feature Plus "coronal"
+fVelar = Feature Plus "velar"
+fGlottal = Feature Plus "glottal"
+fPalatal = Feature Plus "palatal"
 
-fContinuant = F Plus "continuant"
-fSonorant =  F Plus "sonorant"
-fCons = F Plus "consonantal"
+fContinuant = Feature Plus "continuant"
+fSonorant =  Feature Plus "sonorant"
+fCons = Feature Plus "consonantal"
 fVowel = minus fCons
 
-fVoiced = F Plus "voiced"
-fVoiceless = F Minus "voiced"
+fVoiced = Feature Plus "voiced"
+fVoiceless = Feature Minus "voiced"
 
-fHigh = F Plus "high"
-fLow = F Plus "low"
-fRounded = F Plus "rounded"
+fHigh = Feature Plus "high"
+fLow = Feature Plus "low"
+fRounded = Feature Plus "rounded"
 
-fFront = F Plus "front"
-fLong = F Plus "long"
+fFront = Feature Plus "front"
+fLong = Feature Plus "long"
 
 
 labial = Bundle [fLabial, underspecified fCoronal, underspecified fVelar, fCons]
@@ -210,22 +244,24 @@ nasal = Bundle [minus fContinuant, fSonorant, fCons, fVoiced]
 fricative = Bundle [fContinuant, minus fSonorant, fCons]
 approximant = Bundle [fContinuant, fSonorant, fCons, fVoiced]
 
-lateral = Bundle [F Plus "lateral"]
-trill = Bundle [F Plus "trill"]
+lateral = Bundle [Feature Plus "lateral"]
+trill = Bundle [Feature Plus "trill"]
 
 short = Bundle [minus fLong]
 long = Bundle [fLong]
+consonant = Bundle [fCons]
 
 -- vowels
+vowel = Bundle [fVowel]
 high = Bundle [fHigh, minus fLow, fVowel]
 mid = Bundle [minus fHigh, minus fLow, fVowel]
 low = Bundle [minus fHigh, fLow, fVowel]
 
-rounded = Bundle [fRounded]
-unrounded = Bundle [minus fRounded]
+rounded = Bundle [fRounded, fVowel]
+unrounded = Bundle [minus fRounded, fVowel]
 
-front = Bundle [fFront]
-back = Bundle [minus fFront]
+front = Bundle [fFront, fVowel]
+back = Bundle [minus fFront, fVowel]
 
 -- |Testing with a mock Finnish inventory
 testInv :: PhonemicInventory

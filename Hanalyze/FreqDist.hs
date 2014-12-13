@@ -3,7 +3,7 @@
 module Hanalyze.FreqDist
        (
          -- * Types
-         Token, Segment, FreqDist(..), 
+         Token, FreqDist(..), 
 
          -- * Simple lifted Map function
          fdEmpty, fdKeys,
@@ -11,7 +11,7 @@ module Hanalyze.FreqDist
 
          
          -- * Reading and saving FreqDists
-         multiReadCountFreqs, readCountFreqs,
+         countFreqs, multiReadCountFreqs, readCountFreqs,
          saveFreqDist, readFreqDist, writeCountFreqs,
 
          -- * Manipulating FreqDists
@@ -33,7 +33,7 @@ import qualified Data.ByteString.UTF8 as BUTF8
 import qualified System.IO.MMap as MMap
 import qualified Data.List as List 
 import qualified Hanalyze.Token as T
-import Hanalyze.Token (Token, Segment)
+import Hanalyze.Token (Token)
 
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
 data FreqDist = FreqDist {getMap :: !(Map.Map Token Int)} deriving (Eq,Show)

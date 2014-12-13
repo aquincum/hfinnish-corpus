@@ -8,13 +8,10 @@ module Hanalyze.Vowels (
   harmonyV, onlyVowels, harmonicity, fullHarmonic,
   suffixIt, 
 
-  -- * Segmenting 
-
-  segment,
   ) where
 
 import qualified Hanalyze.Token as T
-import Hanalyze.Token (Token, Segment)
+import Hanalyze.Token (Token)
 import Data.Maybe
 
 -- |Harmony value of a vowel (Front, Neutral, Back), [i,e] are neutral
@@ -85,12 +82,12 @@ suffixIt FrontBack = LastVowel
 suffixIt w = if w `elem` [AllFront, FrontNeutral, AllNeutral] then FrontSuffixes else BackSuffixes
 
 -- |Tests whether two letters constitute one phoneme
-digraph :: Segment -> Bool
+digraph :: String -> Bool
 digraph "ie" = True
 digraph "ei" = True
 digraph [x,y] = x==y
 digraph _ = False
-
+{-
 -- |Breaks down a token into a list of segments
 segment :: Token -> [Segment]
 segment tok = case T.uncons2 tok of
@@ -100,3 +97,4 @@ segment tok = case T.uncons2 tok of
   Just (h, f, t) -> if digraph [h,f] then [h,f] : segment t else [h] : segment (T.cons f t)
 
 
+-}

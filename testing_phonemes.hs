@@ -3,6 +3,7 @@ import Test.QuickCheck
 import Test.QuickCheck.Monadic
 import Hanalyze.Phoneme
 import Hanalyze.Pattern
+import Hanalyze.FreqDist
 import qualified Hanalyze.Token as T
 import Data.Monoid
 import Data.Maybe
@@ -13,12 +14,13 @@ import System.Exit
 import System.Process
 import Control.Concurrent
 import qualified Data.List as List (foldl')
+import Data.Map (size,(!))
 
 instance Arbitrary PlusMinus where
   arbitrary = elements [Plus, Minus, Null]
 
 instance Arbitrary Feature where
-  arbitrary = liftM2 F arbitrary arbitrary
+  arbitrary = liftM2 Feature arbitrary arbitrary
 
 instance Arbitrary FeatureBundle where
   arbitrary = liftM setBundle arbitrary
@@ -38,12 +40,12 @@ huTest tests = do
 testFeatureAddition = do
   huTest [
     "mergeFeature'" ~: do
-       F Plus "alma" `mergeFeature'` F Minus "alma" == Just (F Null "alma") @? "+ - = 0"
-       F Minus "alma" `mergeFeature'` F Minus "alma" == Just (F Minus "alma") @? "- - = -"
-       F Plus "alma" `mergeFeature'` F Plus "alma" == Just (F Plus "alma") @? "+ + = +"
-       F Plus "alma" `mergeFeature'` F Null "alma" == Just (F Plus "alma") @? "+ 0 = +"
-       F Null "alma" `mergeFeature'` F Minus "alma" == Just (F Minus "alma") @? "0 - = 0-"
-       F Plus "elme" `mergeFeature'` F Minus "alma" == Nothing @? "+ - = 0"
+       Feature Plus "alma" `mergeFeature'` Feature Minus "alma" == Just (Feature Null "alma") @? "+ - = 0"
+       Feature Minus "alma" `mergeFeature'` Feature Minus "alma" == Just (Feature Minus "alma") @? "- - = -"
+       Feature Plus "alma" `mergeFeature'` Feature Plus "alma" == Just (Feature Plus "alma") @? "+ + = +"
+       Feature Plus "alma" `mergeFeature'` Feature Null "alma" == Just (Feature Plus "alma") @? "+ 0 = +"
+       Feature Null "alma" `mergeFeature'` Feature Minus "alma" == Just (Feature Minus "alma") @? "0 - = 0-"
+       Feature Plus "elme" `mergeFeature'` Feature Minus "alma" == Nothing @? "+ - = 0"
     ]
 
 prop_finding fb = let firstF = featureName $ head $ getBundle fb
@@ -86,6 +88,21 @@ prop_patterns str = case readPattern finnishInventory (T.pack str) of
   Nothing -> True
   Just x -> writePattern x == str
 
+testFilterme :: IO Bool 
+testFilterme = 
+  let corpus = T.words $ T.pack "allma belme apää pep pepe belme apää allma allma"
+      fd = countFreqs corpus
+      phonP = fromJust $ findPhoneme finnishInventory "p"
+      pattern = [P phonP, Star, P phonP]
+      filteredFd = filterFD (filterToken finnishInventory pattern) fd
+      filteredMap = getMap filteredFd
+  in
+   putStrLn ("Here we go: " ++ show filteredMap) >>
+   return (size filteredMap == 1 &&
+           filteredMap ! "pep" == 1)
+
+
+
 myCheck :: (Testable prop) => String -> prop -> IO ()
 myCheck s pr = putStr s >> quickCheckResult pr >>= \res ->
   case res of
@@ -104,5 +121,6 @@ main = do
   myCheck "Merging bundles" prop_merging
   testFinnish >>= flip unless (giveUp "finnish inventory")
   myCheck "Patterns" prop_patterns
+  testFilterme >>= flip unless (giveUp "finnish inventory")
   exitSuccess
   

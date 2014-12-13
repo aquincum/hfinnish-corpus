@@ -5,6 +5,8 @@ import System.Environment
 import qualified Data.Map as Map
 import Hanalyze.FreqDist
 import Hanalyze.Vowels
+import Hanalyze.Pattern
+import Hanalyze.Phoneme
 import Control.Monad
 import qualified Hanalyze.Token as T
 
@@ -19,10 +21,11 @@ summarySection fd = sectionHeader "Summary" >>
                     dataPointInt "grand total" (sumFD fd)
 
 
-vowelSummarySection :: (Show x, Eq x) => FreqDist -> (Token -> x) -> IO ()
-vowelSummarySection fd f =
-  sectionHeader "Vowel structure summary" >>
-  writeCountFreqs summedfd stdout
+vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO ()
+vowelSummarySection str fd f =
+  sectionHeader ("Vowel structure summary -- " ++ str)  >>
+  writeCountFreqs summedfd stdout >>
+  putStrLn ""
   where
     summedfd = splitByFD f fd
 
@@ -36,7 +39,11 @@ main = do
     error $ "Usage: " ++ progn ++ " freqdist_file"
   fd <- readFreqDist $ head args
   summarySection fd
-  vowelSummarySection fd onlyVowels
-  vowelSummarySection fd (segment . onlyVowels)
-  vowelSummarySection fd harmonicity
+  vowelSummarySection "plain vowel structure" fd onlyVowels
+  vowelSummarySection "plain harmonicity" fd harmonicity
+  let fd' = filterFD (\tok -> case segment finnishInventory tok of
+                         Nothing -> False
+                         Just seg -> filterWord seg [Star, F vowel, F labial, Star]
+                     ) fd
+  vowelSummarySection "with labials" fd' harmonicity
   return ()

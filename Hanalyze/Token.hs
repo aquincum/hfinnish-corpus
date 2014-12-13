@@ -2,7 +2,7 @@
 -- that we can change its actual implementation to, say, a 'ByteString' etc., anytime!
 module Hanalyze.Token (
   -- * Constructing, packing, unpacking
-  Token, Segment, pack, unpack,
+  Token, pack, unpack,
 
   -- * cons'ing
   cons, uncons, uncons2,
@@ -38,9 +38,6 @@ import System.IO hiding (readFile, hPutStrLn)
 
 -- |As imported from the corpus
 newtype Token = Tok {getText :: Txt.Text} deriving (Eq,Ord)
-
--- |Words are segmented to phonemes, where diphthongs, long vowels and geminates are treated as one Segment.
-type Segment = String
 
 -- |Need to write own instance, to return the inner string with 'show'.
 instance Show Token where

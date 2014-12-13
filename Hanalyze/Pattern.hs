@@ -12,10 +12,11 @@ module Hanalyze.Pattern (
 import Hanalyze.Phoneme
 import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token, pack, unpack)
-
+import Data.List (intersperse)
 
 -- |A pattern for filtering
 data Pattern = P Phoneme -- ^Matches a given phoneme based on its label
+             | AnyP [Phoneme] -- ^Matches any of the listed phonemes
              | Dot -- ^Matches one and one phoneme only
              | Star -- ^Matches 0 or more phonemes
              | Question -- ^Matches 0 or 1 phoneme
@@ -52,9 +53,10 @@ writePattern pat = foldl (++) [] (map write' pat)
       Question -> "?"
       Dot -> "."
       P y -> phonemeName y
-      DotF fb -> (foldl (\acc feat -> acc ++ (show feat) ++ ",") "[" $ getBundle fb) ++ "]"
-      StarF fb -> (foldl (\acc feat -> acc ++ (show feat) ++ ",") "[" $ getBundle fb) ++ "]*"
-      QuestionF fb -> (foldl (\acc feat -> acc ++ (show feat) ++ ",") "[" $ getBundle fb) ++ "]?" 
+      AnyP plist -> "[" ++ foldl (++) "" (map (phonemeName) plist) ++ "]."
+      DotF fb -> "[" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "]."
+      StarF fb -> "[" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "]*"
+      QuestionF fb -> "[" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "]?"
 
 -- |Filter a word as a list of phonemes based on a pattern
 filterWord :: [Phoneme] -> [Pattern] -> Bool
@@ -69,6 +71,8 @@ filterWord [] patt = case head patt of
 filterWord phall@(phtop:phrest) pattall@(pattop:pattrest) = case pattop of
   P phon | phonemeName phon == phonemeName phtop -> filterWord phrest pattrest
          | otherwise -> False
+  AnyP phons | length (filter (\p -> phonemeName p==phonemeName phtop) phons) > 0 -> filterWord phrest pattrest
+             | otherwise -> False
   DotF fb | subsetFB fb (featureBundle phtop) -> filterWord phrest pattrest
           | otherwise -> False
   Dot -> filterWord phrest pattrest

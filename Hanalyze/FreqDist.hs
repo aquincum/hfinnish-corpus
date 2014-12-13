@@ -16,8 +16,8 @@ module Hanalyze.FreqDist
          writeSummaryTable,
 
          -- * Manipulating FreqDists
-         cleanupFD, filterFD, filterFDFile, splitByFD, sumFD,
-         summarizeFD
+         cleanupFD, filterFD, filterByFreqFD, filterFDFile, splitByFD,
+         sumFD, summarizeFD
 
 
          )
@@ -176,6 +176,10 @@ filterFD f fd = FreqDist $ Map.filterWithKey expfilt $ getMap fd
   where
     expfilt tok _ = f tok
 
+-- |Filters a FreqDist based on a filtering function that has the
+-- type 'Int' -> 'Bool', as it filters on frequency data
+filterByFreqFD :: (Int -> Bool) -> FreqDist -> FreqDist
+filterByFreqFD f fd = FreqDist $ Map.filter f  $ getMap fd
 
 -- |Filters a Frequency Distribution file with a filter function and
 -- a cleanup function

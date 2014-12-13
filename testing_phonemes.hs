@@ -93,6 +93,8 @@ testFilterme =
   let corpus = T.words $ T.pack "allma belme apää pep pepe belme apää allma allma"
       fd = countFreqs corpus
       phonP = fromJust $ findPhoneme finnishInventory "p"
+      phonA = fromJust $ findPhoneme finnishInventory "a"
+      phonB = fromJust $ findPhoneme finnishInventory "b"
       pattern = [P phonP, Star, P phonP]
       pattern2 = [Star, P phonP, Star]
       pattern3 = [Star, P phonP, Question]
@@ -100,6 +102,7 @@ testFilterme =
       pattern5 = [Star, P phonP, Dot]
       patternSoph1 = [Star, DotF $ mconcat [labial, nasal] , Star]
       patternSoph2 = [QuestionF $ mconcat [labial], StarF $ mconcat [vowel], Star]
+      patternSoph3 = [AnyP [phonA,phonB], Star]
       filteredFd pat = filterFD (filterToken finnishInventory pat) fd
       filteredMap pat = getMap $ filteredFd pat
   in
@@ -142,6 +145,12 @@ testFilterme =
         member "belme" (filteredMap patternSoph2) @? "found belme " ++ show (filteredMap patternSoph2)
         member "allma" (filteredMap patternSoph2) @? "found allma " ++ show (filteredMap patternSoph2)
         member "apää" (filteredMap patternSoph2) @? "found apää" ++ show (filteredMap patternSoph2)
+     ,
+     "[ab].*" ~: do
+       size (filteredMap patternSoph3) == 3 @?  "size " ++ show (filteredMap patternSoph3)
+       member "allma" (filteredMap patternSoph2) @? "found allma " ++ show (filteredMap patternSoph3)
+       member "apää" (filteredMap patternSoph2) @? "found apää " ++ show (filteredMap patternSoph3)
+       member "belme" (filteredMap patternSoph2) @? "found belme " ++ show (filteredMap patternSoph3)        
      ]
        
 

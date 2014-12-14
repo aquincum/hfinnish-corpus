@@ -1,4 +1,4 @@
-{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE BangPatterns, MultiParamTypeClasses, FlexibleInstances, FunctionalDependencies  #-}
 -- |The module for importing corpora into frequency distributions.
 module Hanalyze.FreqDist
        (
@@ -37,6 +37,16 @@ import qualified Data.List as List
 import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token)
 
+
+-- |Tables that can be written out
+class Eq t => Table t val | t -> val where
+  tEmpty :: t
+  tConstruct :: t -> Map.Map Token val -> t
+  tGetMap :: t -> Map.Map Token val
+  tPrintfun :: t -> (Token, val) -> Token
+--  eq :: t -> t -> Bool
+  
+
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
 data FreqDist = FreqDist {getMap :: !(Map.Map Token Int)} deriving (Eq,Show)
 
@@ -49,16 +59,51 @@ instance Monoid FreqDist where
   mappend !left !right =  let innermap = Map.unionWith (+) (left `seq` getMap left) (right `seq` getMap right) in
     left `deepseq` right `deepseq` innermap `deepseq` FreqDist $ innermap
 
+instance Table FreqDist Int where
+  tEmpty = fdEmpty
+  tConstruct = \_ -> FreqDist
+  tGetMap = getMap
+  tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show mval]
 
+-- |Annotation is just a 'Data.Text.Text', therefore a 'Token'
+type Annotation = Token
+
+-- |Annotated frequency distribution: a key (a token) links to:
+--
+-- 1. annotated information (first value in the tuple) of the type 'Annotation'
+-- 2. token frequency, as with 'FreqDist'
+--
+data AnnotatedFreqDist = AnnotatedFreqDist {getAFDMap :: Map.Map Token (Annotation, Int)} deriving (Eq, Show)
+
+instance Table AnnotatedFreqDist (Annotation, Int) where
+  tEmpty = afdEmpty
+  tConstruct = \_ -> AnnotatedFreqDist
+  tGetMap = getAFDMap
+  tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
+  
+
+-- |Summary table of frequency distributions, where the token is probably some
+-- summing factor. The value is a tuple, where the first value is, as usual,
+-- token frequency, and the second value is the type frequency.
 data SummaryTable = SummaryTable {getSTMap :: Map.Map Token (Int, Int)} deriving (Eq, Show)
 
--- |The empty FreqDist map.
+instance Table SummaryTable (Int, Int) where
+  tEmpty = sdEmpty
+  tConstruct = \_ -> SummaryTable
+  tGetMap = getSTMap         
+  tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
+
+-- |The empty 'FreqDist' map.
 fdEmpty :: FreqDist
 fdEmpty = FreqDist Map.empty
 
--- |The empty SummaryTable map.
+-- |The empty 'SummaryTable' map.
 sdEmpty :: SummaryTable
 sdEmpty = SummaryTable Map.empty
+
+-- |The empty 'AnnotatedFreqDist' map.
+afdEmpty :: AnnotatedFreqDist
+afdEmpty = AnnotatedFreqDist Map.empty
 
 -- |Returns the keys as the list
 fdKeys :: FreqDist -> [Token]
@@ -127,16 +172,29 @@ readFreqDist fp = do
   return fd
 
 
--- |Recursively writes out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
-writeCountFreqs :: FreqDist -> Handle -> IO ()
-writeCountFreqs fd _
-  | fd == fdEmpty = return ()
-writeCountFreqs fd handle =
-  let ((mkey,mval),mfd2) = Map.deleteFindMax (getMap fd) in do
-    T.hPutStrLn handle $ mconcat [mkey, T.pack "\t", T.pack $ show mval]
-    writeCountFreqs (FreqDist mfd2) handle
+-- |Generic 'Table' writer. The individual functions 'writeCountFreqs' and 'writeSummaryTable' are preserved for a bit.
+writeTable :: (Table a x) => a -> Handle -> IO () 
+writeTable fd _ | fd == tEmpty = return ()
+writeTable fd handle =
+  let ((mkey, mval), mfd2) = Map.deleteFindMax (tGetMap fd) in
+  do
+    T.hPutStrLn handle $ tPrintfun fd (mkey,mval)
+    writeTable (tConstruct fd mfd2) handle
+
+
+  
 
 -- |Recursively writes out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
+writeCountFreqs :: FreqDist -> Handle -> IO ()
+writeCountFreqs  = writeTable
+
+-- |Recursively writes out the token frequencies in a 'SummaryTable', ordered in theory, but needs fixing.
+writeSummaryTable :: SummaryTable -> Handle -> IO ()
+writeSummaryTable = writeTable
+
+
+{-
+-- |Recursively writes out the token frequencies in a 'SummaryTable', ordered in theory, but needs fixing.
 writeSummaryTable :: SummaryTable -> Handle -> IO ()
 writeSummaryTable fd _
   | fd == sdEmpty = return ()
@@ -146,6 +204,7 @@ writeSummaryTable fd handle =
     writeSummaryTable (SummaryTable mfd2) handle
 
 
+-}
 {-saveFreqDist' fd fn = do
   let map = getMap fd
       l = unlines . 
@@ -221,7 +280,8 @@ summarizeFD func fd =
   in
    SummaryTable . Map.fromList $ List.map (sum) classes
 
-
+-- |Annotates a 
+--annotateFD ::
 
 -- |Simple summing function: returns the grand total frequency.
 sumFD :: FreqDist -> Int

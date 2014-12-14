@@ -3,21 +3,22 @@
 module Hanalyze.FreqDist
        (
          -- * Types
-         Token, FreqDist(..), SummaryTable(..),
+         Token, Table(..), Annotation,
+         FreqDist(..), SummaryTable(..), AnnotatedFreqDist(..),
 
          -- * Simple lifted Map functions
-         fdEmpty, fdKeys, sdEmpty,
+         fdEmpty, fdKeys, sdEmpty, afdEmpty,
 
 
          
          -- * Reading and saving FreqDists
          countFreqs, multiReadCountFreqs, readCountFreqs,
-         saveFreqDist, readFreqDist, writeCountFreqs,
-         writeSummaryTable,
+         saveFreqDist, readFreqDist, writeTable,
+         writeCountFreqs, writeSummaryTable,
 
          -- * Manipulating FreqDists
          cleanupFD, filterFD, filterByFreqFD, filterFDFile, splitByFD,
-         sumFD, summarizeFD
+         sumFD, summarizeFD, annotateFD
 
 
          )
@@ -253,8 +254,8 @@ filterFDFile f cleanup fn = do
 
 -- |Splits a 'FreqDist' into a summary 'FreqDist's based on a partitioning
 -- function.
-splitByFD :: (Eq x, Show x) =>
-             (Token -> x) -- ^partitioning function
+splitByFD :: (Eq a, Show a) =>
+             (Token -> a) -- ^partitioning function
              -> FreqDist  -- ^input 'FreqDist'
              -> FreqDist  -- ^summary 'FreqDist'
 splitByFD func fd =
@@ -268,8 +269,8 @@ splitByFD func fd =
 
 -- |Similar to 'splitByFD' but creates a summary table with token *and*
 -- type frequency.
-summarizeFD :: (Eq x, Show x) =>
-               (Token -> x) -- ^partitioning function
+summarizeFD :: (Eq a, Show a) =>
+               (Token -> a) -- ^partitioning function
                -> FreqDist  -- ^input 'FreqDist'
                -> SummaryTable  -- ^summary table as 'SummaryTable'
 summarizeFD func fd =
@@ -280,9 +281,26 @@ summarizeFD func fd =
   in
    SummaryTable . Map.fromList $ List.map (sum) classes
 
--- |Annotates a 
---annotateFD ::
+-- |Annotates a 'FreqDist' with a list of filter functions that are paired
+-- with annotation labels.
+annotateFD :: [(Annotation, Token -> Bool)] -- ^a list of partitioning functions paired with labels. If the function returns Just x, the token will be annotated, otherwise the given function will not annotate the token.
+              -> FreqDist -- ^input 'FreqDist'
+              -> AnnotatedFreqDist -- ^output 'AnnotatedFreqDist'
+annotateFD funlist fd =
+  let innerlist = Map.toList $ getMap fd
+      getAnnotation :: (Annotation, Token -> Bool) -> Token -> Annotation
+      getAnnotation (ann,fun) tok = case fun tok of
+        False -> T.pack ""
+        True -> ann
+      getAllAnnotations :: [(Annotation, Token -> Bool)] -> Token -> Annotation
+      getAllAnnotations annfuns tok = let anns = List.map (\f -> getAnnotation f tok) annfuns
+                                      in
+                                       mconcat $ List.intercalate [T.pack ", "] [anns]
+      annmap = List.map (\(x,y) -> (x, (getAllAnnotations funlist x, y))) innerlist
+  in
+   AnnotatedFreqDist $ Map.fromList annmap
 
+      
 -- |Simple summing function: returns the grand total frequency.
 sumFD :: FreqDist -> Int
 sumFD fd = Map.foldl' (+) 0 $ getMap fd

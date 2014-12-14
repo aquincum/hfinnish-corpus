@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
 import System.IO
@@ -40,17 +42,21 @@ summarizeByC fd = do
   vowelSummarySection "with coronals" fdCor harmonicity
   vowelSummarySection "with velars" fdVel harmonicity
 
-summarizeAnderson :: FreqDist -> IO ()
+summarizeAnderson :: FreqDist -> IO AnnotatedFreqDist
 summarizeAnderson fd = do
   let l p = fromJust $ findPhoneme finnishInventory p
       gravesNotP = [l "k", l "g", l "kk", l "m", l "mm", l "ng", l "f", l "ff", l "v", l "vv", l "h", l "hh", l "j", l "jj"]
       acutesP = [l "p", l "pp", l "t", l "tt", l "d", l "dd", l "n", l "nn", l "s", l "ss", l "z", l "zz", l "š", l "šš", l "ž", l "žž", l "l", l "ll", l "r", l "rr"]
-  let fdGrave = filterFD (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, AnyP gravesNotP, DotF $ mconcat [low,vowel]] tok) fd
-  let fdAcuteI = filterFD (\tok -> filterToken finnishInventory [DotF consonant, AnyP [l "i", l "ii", l "ei"], AnyP acutesP, DotF $ mconcat [low,vowel]] tok) fd
-  let fdAcuteE = filterFD (\tok -> filterToken finnishInventory [DotF consonant, AnyP [l "e", l "ee"], AnyP acutesP, DotF $ mconcat [low,vowel]] tok) fd
+      funGrave tok = filterToken finnishInventory [DotF consonant, DotF vowel, AnyP gravesNotP, DotF $ mconcat [low,vowel]] tok
+      funAcuteI tok = filterToken finnishInventory [DotF consonant, AnyP [l "i", l "ii", l "ei"], AnyP acutesP, DotF $ mconcat [low,vowel]] tok
+      funAcuteE tok = filterToken finnishInventory [DotF consonant, AnyP [l "e", l "ee"], AnyP acutesP, DotF $ mconcat [low,vowel]] tok
+      fdGrave = filterFD funGrave fd
+      fdAcuteI = filterFD funAcuteI fd
+      fdAcuteE = filterFD funAcuteE fd
   vowelSummarySection "with graves without [p] (Anderson: disharmonic)" fdGrave harmonicity
   vowelSummarySection "with acutes or [p] after [i(:),ei] (Anderson: disharmonic)" fdAcuteI harmonicity
   vowelSummarySection "with acutes or [p] after [e(:)] (Anderson: harmonic)" fdAcuteE harmonicity
+  return $ annotateFD [("grave", funGrave), ("acute with i", funAcuteI), ("acute with e", funAcuteE)] fd
 
 
 main :: IO ()
@@ -64,13 +70,16 @@ main = do
   vowelSummarySection "plain vowel structure" fd onlyVowels
   vowelSummarySection "plain harmonicity" fd harmonicity
   putStrLn "# MAIN FD"
-  summarizeAnderson fd
+  withFile "summary_annot_fd.txt" WriteMode (\h -> do
+                                              annotfd <- summarizeAnderson fd
+                                              writeTable annotfd h
+                                              )
   putStrLn "# ONLY >10 FREQ FD"      
   summarizeAnderson $ filterByFreqFD (> 10) fd
   putStrLn "# ONLY >50 FREQ FD"      
   summarizeAnderson $ filterByFreqFD (> 50) fd
   putStrLn "# ONLY >100 FREQ FD"      
   summarizeAnderson $ filterByFreqFD (> 100) fd
-      
+
   --  saveFreqDist fd' a"test.out"
   return ()

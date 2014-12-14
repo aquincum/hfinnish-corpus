@@ -51,14 +51,15 @@ class Eq t => Table t val | t -> val where
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
 data FreqDist = FreqDist {getMap :: !(Map.Map Token Int)} deriving (Eq,Show)
 
+{-
 instance NFData FreqDist where
   rnf fd = rnf $ getMap fd
-
+-}
 instance Monoid FreqDist where
   mempty = fdEmpty
   -- |Appending two 'FreqDist's by adding up the values in keys
   mappend !left !right =  let innermap = Map.unionWith (+) (left `seq` getMap left) (right `seq` getMap right) in
-    left `deepseq` right `deepseq` innermap `deepseq` FreqDist $ innermap
+    FreqDist $ innermap
 
 instance Table FreqDist Int where
   tEmpty = fdEmpty
@@ -262,7 +263,7 @@ splitByFD func fd =
   let map = getMap fd
       retvals = List.map (\(x,y) -> (func x,y)) $ Map.toList map
       classes = List.nub $ List.map fst retvals
-      sum classid = List.foldl' (\(x,y) (k,z) -> (x,if k == classid then y+z else y)) (T.pack $ show classid,0) retvals
+      sum classid = List.foldl' (\(x,y) (k,z) ->  y `seq` (x,if k == classid then y+z else y)) (T.pack $ show classid,0) retvals
   in
       FreqDist . Map.fromList $ List.map (sum) classes
 
@@ -277,7 +278,7 @@ summarizeFD func fd =
   let map = getMap fd
       retvals = List.map (\(x,y) -> (func x,y)) $ Map.toList map
       classes = List.nub $ List.map fst retvals
-      sum classid = List.foldl' (\(x,(y,typ)) (k,z) -> (x,(if k == classid then y+z else y,if k == classid then typ + 1 else  typ))) (T.pack $ show classid,(0,0)) retvals
+      sum classid = List.foldl' (\(x,(y,typ)) (k,z) -> y `seq` typ `seq` (x,(if k == classid then y+z else y,if k == classid then typ + 1 else  typ))) (T.pack $ show classid,(0,0)) retvals
   in
    SummaryTable . Map.fromList $ List.map (sum) classes
 

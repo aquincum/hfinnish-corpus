@@ -124,9 +124,9 @@ prop_saveLoad fd = monadicIO $ do
 
 testFilter :: IO Bool
 testFilter =
-  runCommand "dist/build/filter_fds/filter_fds freqdist_xaaa" >>=
+  runCommand "dist/build/filter_fds/filter_fds freqdists/freqdist_xaaa" >>=
   waitForProcess >>
-  runCommand "diff -q filtered_freqdist_xaaa filtered_freqdist_xaaa_testagainst" >>=
+  runCommand "diff -q filtered_freqdist_xaaa freqdists/filtered_freqdist_xaaa_testagainst" >>=
   waitForProcess >>= \excode ->
   if excode == ExitSuccess then
     return True

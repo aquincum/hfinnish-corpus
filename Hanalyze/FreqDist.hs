@@ -37,6 +37,8 @@ import qualified System.IO.MMap as MMap
 import qualified Data.List as List 
 import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token)
+import Data.List.Split (splitOn)
+import System.FilePath.Posix
 
 
 -- |Tables that can be written out
@@ -249,8 +251,11 @@ filterFDFile :: (Token -> Bool) -- ^The filtering function
                 -> FilePath -- ^The file name
                 -> IO ()
 filterFDFile f cleanup fn = do
+  let saveprefix = "freqdist_"
+      (dirname,fname) = splitFileName fn
+      savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
-  saveFreqDist (filterFD f. cleanupFD cleanup $ fd) ("filtered_"++fn)
+  saveFreqDist (filterFD f. cleanupFD cleanup $ fd) savefn
 
 
 -- |Splits a 'FreqDist' into a summary 'FreqDist's based on a partitioning

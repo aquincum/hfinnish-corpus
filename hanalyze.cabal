@@ -31,7 +31,9 @@ library
                        deepseq,
                        bytestring, 
                        mmap,
-                       utf8-string
+                       utf8-string,
+                       filepath,
+                       split
 
 executable create_fds
   main-is:           create_fds.hs
@@ -42,35 +44,38 @@ executable create_fds
                      split,
                      deepseq,
                      time,
-                     bytestring, mmap, utf8-string
+                     bytestring, mmap, utf8-string, filepath
 
 executable merge_fds
   main-is:           merge_fds.hs
   ghc-options:       -threaded -rtsopts -O2
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
-                     utf8-string, bytestring
+                     utf8-string, bytestring, filepath,
+                     split
 
 executable filter_fds
   main-is:           filter_fds.hs
   ghc-options:       -rtsopts -O2
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
-                     utf8-string, bytestring
+                     utf8-string, bytestring, filepath,
+                     split
 
 executable hanalyze1
   main-is:           hanalyze1.hs
   ghc-options:       -rtsopts -O2
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
-                     utf8-string, bytestring
+                     utf8-string, bytestring, filepath,
+                     split
 
 test-suite testing
   main-is:           testing.hs
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
-                     QuickCheck, process
+                     QuickCheck, process, filepath, split
   type:              exitcode-stdio-1.0
 
 test-suite testing_phonemes
@@ -78,5 +83,5 @@ test-suite testing_phonemes
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
-                     QuickCheck, process
+                     QuickCheck, process, split, filepath
   type:              exitcode-stdio-1.0

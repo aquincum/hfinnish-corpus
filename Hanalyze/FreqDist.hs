@@ -251,7 +251,7 @@ filterFDFile :: (Token -> Bool) -- ^The filtering function
                 -> FilePath -- ^The file name
                 -> IO ()
 filterFDFile f cleanup fn = do
-  let saveprefix = "freqdist_"
+  let saveprefix = "filtered_"
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn

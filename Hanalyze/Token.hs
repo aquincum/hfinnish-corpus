@@ -16,7 +16,7 @@ module Hanalyze.Token (
   foldl,
 
   -- * IO functions
-  readFile, hPutStrLn
+  readFile, hPutStrLn, hGetLine
 
   ) where
 
@@ -32,7 +32,7 @@ import Data.Monoid
 import Control.DeepSeq
 import Prelude hiding (concat, filter, readFile, hPutStrLn, words, foldl)
 import Control.Monad
-import System.IO hiding (readFile, hPutStrLn)
+import System.IO hiding (readFile, hPutStrLn, hGetLine)
 
 -- needed from Text: unpack, filter, pack, toLower, words, concat
 
@@ -117,9 +117,15 @@ decimal t = fst `liftM` (TxtR.decimal . getText $ t)
 readFile :: FilePath -> IO Token
 readFile fn = Tok `liftM` TxtIO.readFile fn
 
+-- |Reads in a line from a handle
+hGetLine :: Handle -> IO Token
+hGetLine h = Tok `liftM` TxtIO.hGetLine h
+
+
 -- |Outputs a token to a handle
 hPutStrLn :: Handle -> Token -> IO ()
 hPutStrLn h t = TxtIO.hPutStrLn h $ getText t
+
 
 -- |Simple left fold on a token
 foldl :: (a -> Char -> a) -> a -> Token -> a

@@ -23,7 +23,7 @@ library
   exposed-modules:   Hanalyze.FreqDist, Hanalyze.Vowels,
                      Hanalyze.Process, Hanalyze.Progress,
                      Hanalyze.Token, Hanalyze.Phoneme,
-                     Hanalyze.Pattern
+                     Hanalyze.Pattern, Hanalyze.Omorfi
   build-depends:       base ==4.6.*,
                        containers, 
                        text,
@@ -33,7 +33,8 @@ library
                        mmap,
                        utf8-string,
                        filepath,
-                       split
+                       split,
+                       parsec
 
 executable create_fds
   main-is:           create_fds.hs
@@ -61,6 +62,14 @@ executable filter_fds
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split
+
+executable stem_fds
+  main-is:           stem_fds.hs
+  ghc-options:       -rtsopts -O2
+  build-depends:     base ==4.6.*, containers, hanalyze, 
+                     text, time, deepseq, parallel, mmap, 
+                     utf8-string, bytestring, filepath,
+                     split, temporary, process
 
 executable hanalyze1
   main-is:           hanalyze1.hs

@@ -3,8 +3,10 @@ import Test.QuickCheck
 import Test.QuickCheck.Monadic
 import Hanalyze.FreqDist
 import Hanalyze.Vowels
+import Hanalyze.Omorfi
 import Control.Applicative ((<$>))
 import qualified Data.Map as Map
+import Data.Map ((!))
 import qualified Hanalyze.Token as T
 import Data.Monoid
 import qualified Test.HUnit as HU
@@ -133,6 +135,33 @@ testFilter =
   else
     return False
 
+testOmorfiPlain :: IO Bool
+testOmorfiPlain = do
+  ofd <- loadOmorfiFile "freqdists/omorfitest_analyzed"
+  let ofdmap = tGetMap ofd
+  huTest [
+    "tokennames" ~: do
+       "hilkan" `elem` Map.keys ofdmap @? "token hilkan not found"
+       "hiljan" `elem` Map.keys ofdmap @? "token hiljan not found"
+       "hiljaa" `elem` Map.keys ofdmap @? "token hiljaa not found"
+    ,
+    "poses" ~: do
+       getPOS ((ofdmap ! "hilkan") !! 0) == N @? "hilkan N"
+       getPOS ((ofdmap ! "hiljan") !! 0) == Other @? "hiljan Adv"
+       getPOS ((ofdmap ! "hiljaa") !! 0) == Other @? "hiljaa Adv"
+    ,
+    "stems" ~: do
+       getStem ((ofdmap ! "hilkan") !! 0) == "hilkka" @? "hilkan stem"
+       getStem ((ofdmap ! "hiljan") !! 0) == "hiljan" @? "hiljan stem"
+       getStem ((ofdmap ! "hiljaa") !! 0) == "hiljaa" @? "hiljaa stem"
+    ,
+    "ois" ~: do
+       getOtherInfo ((ofdmap ! "hilkan") !! 0) == OtherInfo "Gen Sg" @? "hilkan oi"
+       getOtherInfo ((ofdmap ! "hiljan") !! 0) == NoOI @? "hiljan oi"
+       getOtherInfo ((ofdmap ! "hiljaa") !! 0) == NoOI @? "hiljaa oi"
+    ]
+                  
+
 prop_sum fd = sumFD fd == List.foldl' (+) 0 (map snd (Map.toList $ getMap fd))
 
 
@@ -159,5 +188,6 @@ main = do
   testFilter >>= flip unless (giveUp "testLoading")
   testHarmony >>= flip unless (giveUp "testHarmonyW")
   myCheck "Summing FDs: " prop_sum
+  testOmorfiPlain >>= flip unless (giveUp "testOmorfiPlain")
   exitSuccess
   

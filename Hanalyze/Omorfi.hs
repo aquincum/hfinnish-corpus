@@ -7,13 +7,16 @@ import qualified Data.Text.IO as TxtIO
 import Hanalyze.Token (Token)
 import Hanalyze.FreqDist
 import System.IO
-import System.Process
+import qualified System.Process as SysProc
 import Control.Monad
 import qualified Data.Map as Map
 import Data.Monoid
 import Text.Parsec
+import Control.Concurrent
 
-newtype OmorfiPipe = OmorfiPipe { oIn :: Handle, oOut :: Handle}
+
+data OmorfiPipeStatus = OPSOpen | OPSClosed
+data OmorfiPipe = OmorfiPipe { oIn :: Handle, oOut :: Handle, oPh :: SysProc.ProcessHandle, oStatus :: OmorfiPipeStatus}
 
 data POS = N | V | Other deriving (Eq, Show)
 data OtherInfo = NoOI | OtherInfo { getOIToken :: Token} deriving (Eq, Show)
@@ -41,10 +44,45 @@ instance Table OmorfiFD [OmorfiInfo] where
                                              if othi == NoOI then "--" else getOIToken $ othi,
                                              "\n"]
         OmorfiInfoError err -> mconcat [mkey, "\t", err]
-      
+
 
 initOmorfi :: IO OmorfiPipe
+initOmorfi = do
+  let oproc = (SysProc.proc "omorfi-interactive.sh" []){
+        SysProc.std_in = SysProc.CreatePipe,
+        SysProc.std_out = SysProc.CreatePipe
+        }
+  (Just inh, Just outh, _, ph) <- SysProc.createProcess oproc
+  hSetBuffering inh NoBuffering
+  hSetBuffering outh NoBuffering
+  return $ OmorfiPipe inh outh ph OPSOpen
 
+getOmorfiAnalysis :: OmorfiPipe -> Token -> IO [OmorfiInfo]
+getOmorfiAnalysis (OmorfiPipe _ _ _ OPSClosed) _ = error "Trying to read closed omorfi"
+getOmorfiAnalysis (OmorfiPipe inh outh ph OPSOpen) tok = do
+  T.hPutStrLn inh tok
+  cont <- getUntilPrompt outh (Txt.pack "")
+  case parse parseToken "omorfi" cont of
+    Left e -> (putStrLn $ "Omorfi parsing error -- " ++ show e) >> return []
+    Right (tok', ofis) -> return ofis
+
+
+getUntilPrompt :: Handle -> Txt.Text -> IO Txt.Text
+getUntilPrompt h str = do
+  ch <- hGetChar h
+  case ch of
+    '>' -> return $ Txt.reverse str
+    c -> getUntilPrompt h (c `Txt.cons` str)
+      
+  
+
+closeOmorfi :: OmorfiPipe -> IO String
+closeOmorfi (OmorfiPipe _ _ _ OPSClosed) = return "Already closed"
+closeOmorfi (OmorfiPipe inh outh ph OPSOpen) = do
+  hClose inh
+  stats <-  hGetContents outh
+  hClose outh
+  return stats
 
 
 loadOmorfiFile :: FilePath -> IO OmorfiFD
@@ -65,6 +103,7 @@ parseFile =  do
 
 parseToken :: Parsec Txt.Text st (Token,[OmorfiInfo])
 parseToken = do
+  optional (string "> ")
   tok <- firstLine
   eol
   analyses <- many1 $ analysisLine tok

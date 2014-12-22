@@ -6,7 +6,7 @@ import System.IO
 
 -- |Type indicating progress. Fields are:
 --
--- 1. An 'Int' with the total number of files in task
+-- 1. An 'Int' with the total number of objects in task
 --
 -- 2. A 'UTCTime' that is the time at the start of the whole task
 --
@@ -14,13 +14,13 @@ import System.IO
 --
 data Progress = Progress Int UTCTime Int
 
--- |Initializes a progress variable
-initializeProgress :: [FilePath] -- ^the list of filenames to initialize nfiles from
+-- |Initializes a progress variable with a filename list
+initializeProgress :: [a] -- ^the list of objects to initialize nobjs from
                       -> IO Progress -- ^the new progress variable
 initializeProgress fns = do
-  let nfiles = length fns
+  let nobjs = length fns
   starttime <- getCurrentTime
-  return $ Progress nfiles starttime 0
+  return $ Progress nobjs starttime 0
 
 -- |Called when a process is done running.
 incrementProgress :: Progress -> Progress

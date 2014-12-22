@@ -34,7 +34,8 @@ library
                        utf8-string,
                        filepath,
                        split,
-                       parsec
+                       parsec,
+                       process
 
 executable create_fds
   main-is:           create_fds.hs
@@ -84,7 +85,8 @@ test-suite testing
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
-                     QuickCheck, process, filepath, split
+                     QuickCheck, process, filepath, split,
+                     parsec
   type:              exitcode-stdio-1.0
 
 test-suite testing_phonemes

@@ -111,13 +111,13 @@ testHarmony = do
   
 saveLoad :: FreqDist -> FilePath -> IO FreqDist
 saveLoad fd fn = do
-  saveFreqDist fd fn
+  saveTable fd fn
   readFreqDist fn
 
 prop_saveLoad :: FreqDist -> Property
 prop_saveLoad fd = monadicIO $ do
                        mv <- run $ newMVar False
-                       run $ forkFinally (saveFreqDist fd "temp.tmp.tmp")
+                       run $ forkFinally (saveTable fd "temp.tmp.tmp")
                            (\_ -> putMVar mv True)
                        x <- run $ takeMVar mv
                        fd2 <- run $ readFreqDist "temp.tmp.tmp"

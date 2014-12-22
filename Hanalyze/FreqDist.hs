@@ -13,8 +13,7 @@ module Hanalyze.FreqDist
          
          -- * Reading and saving FreqDists
          countFreqs, multiReadCountFreqs, readCountFreqs,
-         saveFreqDist, readFreqDist, writeTable, saveTable,
-         writeCountFreqs, writeSummaryTable,
+         readFreqDist, writeTable, saveTable,
 
          -- * Manipulating FreqDists
          cleanupFD, filterFD, filterByFreqFD, filterFDFile, splitByFD,
@@ -176,7 +175,7 @@ readFreqDist fp = do
   return fd
 
 
--- |Generic 'Table' writer. The individual functions 'writeCountFreqs' and 'writeSummaryTable' are preserved for a bit.
+-- |Generic 'Table' writer.
 writeTable :: (Table a x) => a -> Handle -> IO () 
 writeTable fd _ | fd == tEmpty = return ()
 writeTable fd handle =
@@ -185,47 +184,15 @@ writeTable fd handle =
     T.hPutStrLn handle $ tPrintfun fd (mkey,mval)
     writeTable (tConstruct fd mfd2) handle
 
--- |Saves a 'Table' to a file, using 'writeCountFreqs' inside. The specific 'saveFreqDist' is still available for a bit
+-- |Saves a 'Table' to a file, using 'writeTable' inside.
 -- for backwards compatibility
 saveTable :: (Table a x) => a -> FilePath -> IO ()
 saveTable fd fn = putStrLn ("Saving " ++ fn) >>
                   openFile fn WriteMode >>= \handle ->
                   writeTable fd handle >>
                   hClose handle
-  
 
--- |Recursively writes out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
-writeCountFreqs :: FreqDist -> Handle -> IO ()
-writeCountFreqs  = writeTable
-
--- |Recursively writes out the token frequencies in a 'SummaryTable', ordered in theory, but needs fixing.
-writeSummaryTable :: SummaryTable -> Handle -> IO ()
-writeSummaryTable = writeTable
-
-
-{-
--- |Recursively writes out the token frequencies in a 'SummaryTable', ordered in theory, but needs fixing.
-writeSummaryTable :: SummaryTable -> Handle -> IO ()
-writeSummaryTable fd _
-  | fd == sdEmpty = return ()
-writeSummaryTable fd handle =
-  let ((mkey,mval),mfd2) = Map.deleteFindMax (getSTMap fd) in do
-    T.hPutStrLn handle $ mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
-    writeSummaryTable (SummaryTable mfd2) handle
-
-
--}
-{-saveFreqDist' fd fn = do
-  let map = getMap fd
-      l = unlines . 
-  -}                        
-
-
--- |Saves a 'FreqDist' to a file, using 'writeCountFreqs' inside.
-saveFreqDist :: FreqDist -> FilePath -> IO ()
-saveFreqDist = saveTable
-
--- |Cleans up a 'FreqDist' using the cleanup 'Token' -> 'Token' function that converts the filthy
+-- |Cleans up a 'Table' using the cleanup 'Token' -> 'Token' function that converts the filthy
 -- string to the cleaned up string
 cleanupFD :: (Token -> Token) -> FreqDist -> FreqDist
 cleanupFD cleanup fd = let map = getMap fd
@@ -258,7 +225,7 @@ filterFDFile f cleanup fn = do
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
-  saveFreqDist (filterFD f. cleanupFD cleanup $ fd) savefn
+  saveTable (filterFD f. cleanupFD cleanup $ fd) savefn
 
 
 -- |Splits a 'FreqDist' into a summary 'FreqDist's based on a partitioning

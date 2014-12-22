@@ -48,7 +48,8 @@ data OtherInfo = NoOI -- ^No extra information given
 data OmorfiInfo = OmorfiInfo {
   getPOS :: POS,
   getStem :: Token,
-  getOtherInfo :: OtherInfo
+  getOtherInfo :: OtherInfo,
+  getWeight :: Double
   } | OmorfiInfoError Token
                 deriving (Eq,Show)
 
@@ -63,11 +64,12 @@ instance Table OmorfiFD [OmorfiInfo] where
   tPrintfun _ (mkey, mval) = mconcat $ map printOInfo mval
     where
       printOInfo oi = case oi of
-        OmorfiInfo pos stem othi -> mconcat [mkey, "\t",
-                                             stem, "\t",
-                                             T.pack $ show $ pos, "\t",
-                                             if othi == NoOI then "--" else getOIToken $ othi,
-                                             "\n"]
+        OmorfiInfo pos stem othi weight -> mconcat [mkey, "\t",
+                                                    stem, "\t",
+                                                    T.pack $ show $ pos, "\t",
+                                                    if othi == NoOI then "--" else getOIToken $ othi, "\t",
+                                                    T.pack $ show $ weight,
+                                                    "\n"]
         OmorfiInfoError err -> mconcat [mkey, "\t", err]
 
 -- |Initializes an Omorfi connection by starting the interactive process
@@ -129,7 +131,7 @@ closeOmorfi (OmorfiPipe inh _ ph) = do
 analyseFDOmorfi :: FreqDist -> IO OmorfiFD
 analyseFDOmorfi fd = do
   omorfi <- initOmorfi
-  let tokens = Map.keys $ getMap fd
+  let tokens = fdKeys fd
   progVar <- initializeProgress tokens >>= newMVar
   let runToken tok = do
         oanal <- getOmorfiAnalysis omorfi tok
@@ -184,6 +186,10 @@ parseToken = do
       sep :: Parsec Txt.Text st ()
       eol = (many (tab <|> char ' ') >> endOfLine >> return ()) <|> eof
       sep = skipMany1 (tab <|> char ' ')
+      double :: Parsec Txt.Text st Double
+      double =
+        many1 (oneOf "0123456789.") >>=
+        return . fst . head . reads
       parseOneWord :: Parsec Txt.Text st Token
       parseOneWord =  T.pack `liftM` many1 (noneOf "\n\t ")
       firstLine :: Parsec Txt.Text st Token
@@ -201,12 +207,13 @@ parseToken = do
               _ -> Other
 --        leftover <- (try (sep >> T.pack `liftM` many1 (noneOf "\n"))) <|>
   --                  (try eol >> T.pack `liftM` string "")
-        leftover <- option (T.pack "") (sep>>T.pack `liftM` many1 (noneOf "\n"))
+        leftover <- option (T.pack "") (sep>>T.pack `liftM` many1 (noneOf "\n\t"))
+        weight <- option 0.0 (sep >> double)
         eol
         -- DEBUG: let x = unsafePerformIO $ putStrLn $ "LEFTOVER (" ++ T.unpack leftover ++ ")"
         -- DEBUG: if x `seq` fullword /= tok then
         if fullword /= tok then
           return $ OmorfiInfoError $ mconcat [tok, "/=", fullword,  ": first field of analysis must be the token."]
         else 
-            return $ OmorfiInfo pos stem (if leftover == "" then NoOI else OtherInfo leftover)
+            return $ OmorfiInfo pos stem (if leftover == "" then NoOI else OtherInfo leftover) weight
 

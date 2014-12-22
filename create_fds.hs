@@ -23,7 +23,7 @@ dealWithAFile fn progress = do
   --putStrLn ("Loading " ++ pruned)
   fd <- readCountFreqs fn
   --putStrLn ("File " ++ pruned ++ " read")
-  saveFreqDist fd (saveprefix ++ pruned)
+  saveTable fd (saveprefix ++ pruned)
   progVar <- takeMVar progress
   let progVarUpdated = incrementProgress progVar
   progStr <- printProgress progVarUpdated

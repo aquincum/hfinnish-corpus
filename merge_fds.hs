@@ -24,7 +24,7 @@ runMerge out ins = do
   --fd <- runEval $ (sequence $ fmap (rpar . readFreqDist) ins) >>=
   --                (\fds -> rpar $ liftM mconcat $ sequence $ fds)
 
-  saveFreqDist fd out
+  saveTable fd out
   return ()
 
 main :: IO ()

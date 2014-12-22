@@ -29,7 +29,7 @@ summarySection fd = sectionHeader "Summary" >>
 vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO ()
 vowelSummarySection str fd f =
   sectionHeader ("Vowel structure summary -- " ++ str)  >>
-  writeSummaryTable summedfd stdout >>
+  writeTable summedfd stdout >>
   putStrLn ""
   where
     summedfd = summarizeFD f fd
@@ -86,5 +86,5 @@ main = do
   putStrLn "# ONLY >100 FREQ FD"      
   summarizeAnderson $ filterByFreqFD (> 100) fd
   -}
-  --  saveFreqDist fd' a"test.out"
+  --  saveTable fd' a"test.out"
   return ()

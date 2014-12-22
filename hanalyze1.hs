@@ -67,8 +67,9 @@ main = do
     progn <- getProgName
     error $ "Usage: " ++ progn ++ " freqdist_file"
   fd <- readFreqDist $ head args
+  putStrLn "Omorfi analysis"
   om <- analyseFDOmorfi fd
-  writeTable om stdout
+  saveTable om "omorfied.out"
   {-
   summarySection fd
   vowelSummarySection "plain vowel structure" fd onlyVowels

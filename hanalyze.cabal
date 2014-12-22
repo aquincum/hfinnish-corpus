@@ -35,7 +35,7 @@ library
                        filepath,
                        split,
                        parsec,
-                       process,
+                       process >= 1.2.0.0,
                        unix
 
 executable create_fds
@@ -71,7 +71,7 @@ executable stem_fds
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
-                     split, temporary, process
+                     split, temporary, process >= 1.2.0.0
 
 executable hanalyze1
   main-is:           hanalyze1.hs
@@ -79,14 +79,14 @@ executable hanalyze1
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
-                     split, parsec, process, unix
+                     split, parsec, process >= 1.2.0.0, unix
 
 test-suite testing
   main-is:           testing.hs
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
-                     QuickCheck, process, filepath, split,
+                     QuickCheck, process >= 1.2.0.0, filepath, split,
                      parsec, unix
   type:              exitcode-stdio-1.0
 
@@ -95,5 +95,5 @@ test-suite testing_phonemes
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
-                     QuickCheck, process, split, filepath
+                     QuickCheck, process >= 1.2.0.0, split, filepath
   type:              exitcode-stdio-1.0

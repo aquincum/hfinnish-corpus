@@ -135,8 +135,7 @@ analyseFDOmorfi fd = do
         oanal <- getOmorfiAnalysis omorfi tok
         progval <- takeMVar progVar
         let progval' = incrementProgress progval
-        progStr <- printProgress progval'
-        putStrLn progStr
+        printEveryPercent progval'
         putMVar progVar progval'
         return (tok,oanal)
   analysed <- mapM runToken tokens

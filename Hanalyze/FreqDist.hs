@@ -13,7 +13,7 @@ module Hanalyze.FreqDist
          
          -- * Reading and saving FreqDists
          countFreqs, multiReadCountFreqs, readCountFreqs,
-         saveFreqDist, readFreqDist, writeTable,
+         saveFreqDist, readFreqDist, writeTable, saveTable,
          writeCountFreqs, writeSummaryTable,
 
          -- * Manipulating FreqDists
@@ -185,7 +185,13 @@ writeTable fd handle =
     T.hPutStrLn handle $ tPrintfun fd (mkey,mval)
     writeTable (tConstruct fd mfd2) handle
 
-
+-- |Saves a 'Table' to a file, using 'writeCountFreqs' inside. The specific 'saveFreqDist' is still available for a bit
+-- for backwards compatibility
+saveTable :: (Table a x) => a -> FilePath -> IO ()
+saveTable fd fn = putStrLn ("Saving " ++ fn) >>
+                  openFile fn WriteMode >>= \handle ->
+                  writeTable fd handle >>
+                  hClose handle
   
 
 -- |Recursively writes out the token frequencies in a 'FreqDist', ordered in theory, but needs fixing.
@@ -217,10 +223,7 @@ writeSummaryTable fd handle =
 
 -- |Saves a 'FreqDist' to a file, using 'writeCountFreqs' inside.
 saveFreqDist :: FreqDist -> FilePath -> IO ()
-saveFreqDist fd fn = putStrLn ("Saving " ++ fn) >>
-                     openFile fn WriteMode >>= \handle ->
-                     writeCountFreqs fd handle >>
-                     hClose handle
+saveFreqDist = saveTable
 
 -- |Cleans up a 'FreqDist' using the cleanup 'Token' -> 'Token' function that converts the filthy
 -- string to the cleaned up string

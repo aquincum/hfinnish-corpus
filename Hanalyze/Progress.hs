@@ -2,6 +2,7 @@
 module Hanalyze.Progress where
 
 import Data.Time.Clock
+import Control.Monad
 import System.IO
 
 -- |Type indicating progress. Fields are:
@@ -46,3 +47,17 @@ printProgress (Progress nf st pd) = do
       eta = if pd == 0 then 0 else diff * (nf'/pd' - 1)
   return $ show pd ++ "/" ++ show nf ++ "done, " ++ show (floor perc) ++
     "%. Time elapsed: " ++ formatElapsed diff ++ ", ETA: " ++ formatElapsed eta
+
+-- |Print only every n'th progress report, as well as 0% and 100%
+printEveryNth :: Progress -- ^The progress to print out
+                 -> Int -- ^n
+                 -> IO ()
+printEveryNth prog@(Progress nf st pd) n =
+  when (pd == 0 || pd == nf || pd `mod` n == 0) (printProgress prog >>= putStrLn)
+
+-- |Print only at every % increase
+printEveryPercent :: Progress -> IO ()
+printEveryPercent prog@(Progress nf st pd) =
+  let nfpercent = nf `div` 100 in
+  printEveryNth prog nfpercent
+  

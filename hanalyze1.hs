@@ -9,6 +9,7 @@ import Hanalyze.FreqDist
 import Hanalyze.Vowels
 import Hanalyze.Pattern
 import Hanalyze.Phoneme
+import Hanalyze.Omorfi
 import Control.Monad
 import Data.Monoid
 import Data.Maybe
@@ -66,6 +67,9 @@ main = do
     progn <- getProgName
     error $ "Usage: " ++ progn ++ " freqdist_file"
   fd <- readFreqDist $ head args
+  om <- analyseFDOmorfi fd
+  writeTable om stdout
+  {-
   summarySection fd
   vowelSummarySection "plain vowel structure" fd onlyVowels
   vowelSummarySection "plain harmonicity" fd harmonicity
@@ -80,6 +84,6 @@ main = do
   summarizeAnderson $ filterByFreqFD (> 50) fd
   putStrLn "# ONLY >100 FREQ FD"      
   summarizeAnderson $ filterByFreqFD (> 100) fd
-
+  -}
   --  saveFreqDist fd' a"test.out"
   return ()

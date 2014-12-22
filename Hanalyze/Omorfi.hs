@@ -7,10 +7,13 @@ import qualified Data.Text as Txt
 import qualified Data.Text.IO as TxtIO
 import Hanalyze.Token (Token)
 import Hanalyze.FreqDist
+import Hanalyze.Progress
 import System.IO
 import System.Process
+import System.Process.Internals (ProcessHandle(..), ProcessHandle__(..))
 import System.Posix.Terminal
 import System.Posix.IO
+import System.Posix.Signals
 import Control.Monad
 import qualified Data.Map as Map
 import Data.Monoid
@@ -76,7 +79,8 @@ initOmorfi = do
   let oproc = (proc "omorfi-interactive.sh" []){
         std_in = UseHandle slave,
         std_out = UseHandle slave,
-        std_err = UseHandle slave
+        std_err = UseHandle slave,
+        create_group = True
         }
   (_, _, _, ph) <- createProcess oproc
   return $ OmorfiPipe master master ph
@@ -106,7 +110,39 @@ getUntilEmptyLine h = do
 closeOmorfi :: OmorfiPipe -> IO ()
 closeOmorfi (OmorfiPipe inh _ ph) = do
   hClose inh
+  terminateProcessGroup ph
   terminateProcess ph
+  waitForProcess ph
+  return ()
+ where
+  terminateProcessGroup p = do
+    let (ProcessHandle pmvar _) = p
+    ph_ <- readMVar pmvar
+    case ph_ of
+      OpenHandle pid -> signalProcessGroup sigTERM pid
+      otherwise -> return ()
+
+
+  
+
+-- |Analyses a 'FreqDist' with interactive omorfi
+analyseFDOmorfi :: FreqDist -> IO OmorfiFD
+analyseFDOmorfi fd = do
+  omorfi <- initOmorfi
+  let tokens = Map.keys $ getMap fd
+  progVar <- initializeProgress tokens >>= newMVar
+  let runToken tok = do
+        oanal <- getOmorfiAnalysis omorfi tok
+        progval <- takeMVar progVar
+        let progval' = incrementProgress progval
+        progStr <- printProgress progval'
+        putStrLn progStr
+        putMVar progVar progval'
+        return (tok,oanal)
+  analysed <- mapM runToken tokens
+  closeOmorfi omorfi
+  return $ OmorfiFD $ Map.fromList analysed
+      
 
 
 -- |Loads a file that was created by @omorfi-analyse.sh@ and returns its
@@ -138,7 +174,7 @@ parseFile =  do
 -- >>>
 parseToken :: Parsec Txt.Text st (Token,[OmorfiInfo])
 parseToken = do
-  many $ optional (string "> ")
+  many $  (string "> ")
   tok <- firstLine
   eol
   analyses <- many1 $ analysisLine tok

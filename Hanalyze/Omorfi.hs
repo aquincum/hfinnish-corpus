@@ -17,6 +17,8 @@ import Data.Monoid
 import Text.Parsec
 import Control.Concurrent
 
+-- DEBUG: import System.IO.Unsafe
+
 
 -- |A data structure that is responsible to handle communication between Omorfi and
 -- Hanalyze. For now, @omorfi-interactive.sh@ will be invoked and its input and
@@ -87,7 +89,7 @@ getOmorfiAnalysis (OmorfiPipe inh outh ph) tok = do
   cont <- getUntilEmptyLine outh
   --TxtIO.hPutStrLn stdout cont
   case parse parseToken "omorfi" cont of
-    Left e -> (putStrLn $ "Omorfi parsing error -- " ++ show e) >> return []
+    Left e -> (putStrLn $ "Omorfi parsing error -- " ++ show e ++ "\n" ++ Txt.unpack cont) >> return []
     Right (tok', ofis) -> return ofis
 
 
@@ -105,6 +107,7 @@ closeOmorfi :: OmorfiPipe -> IO ()
 closeOmorfi (OmorfiPipe inh _ ph) = do
   hClose inh
   terminateProcess ph
+
 
 -- |Loads a file that was created by @omorfi-analyse.sh@ and returns its
 -- contents as an 'OmorfiFD'
@@ -135,11 +138,10 @@ parseFile =  do
 -- >>>
 parseToken :: Parsec Txt.Text st (Token,[OmorfiInfo])
 parseToken = do
-  optional (string "> ")
+  many $ optional (string "> ")
   tok <- firstLine
   eol
   analyses <- many1 $ analysisLine tok
-  eol
   eol
   return (tok,analyses)
     where
@@ -165,6 +167,9 @@ parseToken = do
 --        leftover <- (try (sep >> T.pack `liftM` many1 (noneOf "\n"))) <|>
   --                  (try eol >> T.pack `liftM` string "")
         leftover <- option (T.pack "") (sep>>T.pack `liftM` many1 (noneOf "\n"))
+        eol
+        -- DEBUG: let x = unsafePerformIO $ putStrLn $ "LEFTOVER (" ++ T.unpack leftover ++ ")"
+        -- DEBUG: if x `seq` fullword /= tok then
         if fullword /= tok then
           return $ OmorfiInfoError $ mconcat [tok, "/=", fullword,  ": first field of analysis must be the token."]
         else 

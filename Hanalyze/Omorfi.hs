@@ -9,6 +9,8 @@ import Hanalyze.Token (Token)
 import Hanalyze.FreqDist
 import System.IO
 import System.Process
+import System.Posix.Terminal
+import System.Posix.IO
 import Control.Monad
 import qualified Data.Map as Map
 import Data.Monoid
@@ -16,17 +18,13 @@ import Text.Parsec
 import Control.Concurrent
 
 
--- |Status of an 'OmorfiPipe': can be open or closed
-data OmorfiPipeStatus = OPSOpen | OPSClosed
-
 -- |A data structure that is responsible to handle communication between Omorfi and
 -- Hanalyze. For now, @omorfi-interactive.sh@ will be invoked and its input and
 -- output handles managed within this module.
 data OmorfiPipe = OmorfiPipe {
   oIn :: Handle,
   oOut :: Handle,
-  oPh :: ProcessHandle,
-  oStatus :: OmorfiPipeStatus
+  oPh :: ProcessHandle
   }
 
 -- |Part-of-speech information given by Omorfi -- curently not too much
@@ -70,47 +68,43 @@ instance Table OmorfiFD [OmorfiInfo] where
 -- |Initializes an Omorfi connection by starting the interactive process
 initOmorfi :: IO OmorfiPipe
 initOmorfi = do
+  (fd1,fd2) <- openPseudoTerminal
+  master <- fdToHandle fd1
+  slave <- fdToHandle fd2
   let oproc = (proc "omorfi-interactive.sh" []){
-        std_in = CreatePipe,
-        std_out = CreatePipe,
-        std_err = UseHandle stderr
+        std_in = UseHandle slave,
+        std_out = UseHandle slave,
+        std_err = UseHandle slave
         }
-  (Just inh, Just outh, _, ph) <- createProcess oproc
-  hSetBuffering inh NoBuffering
-  hSetBuffering outh NoBuffering
-  return $ OmorfiPipe inh outh ph OPSOpen
+  (_, _, _, ph) <- createProcess oproc
+  return $ OmorfiPipe master master ph
 
 -- |Given an Omorfi connection, analyzes a token to its possible analyses
 getOmorfiAnalysis :: OmorfiPipe -> Token -> IO [OmorfiInfo]
-getOmorfiAnalysis (OmorfiPipe _ _ _ OPSClosed) _ = error "Trying to read closed omorfi"
-getOmorfiAnalysis (OmorfiPipe inh outh ph OPSOpen) tok = do
+getOmorfiAnalysis (OmorfiPipe inh outh ph) tok = do
   T.hPutStrLn inh tok
   hFlush inh
-  cont <- getUntilPrompt outh (Txt.pack "")
+  cont <- getUntilEmptyLine outh
+  --TxtIO.hPutStrLn stdout cont
   case parse parseToken "omorfi" cont of
     Left e -> (putStrLn $ "Omorfi parsing error -- " ++ show e) >> return []
     Right (tok', ofis) -> return ofis
 
 
 -- |Internal function which does not work yet. Reads input until
--- it reaches the Omorfi prompt ">"
-getUntilPrompt :: Handle -> Txt.Text -> IO Txt.Text
-getUntilPrompt h str = do
-  ch <- hGetChar h
-  putStrLn ("got " ++ [ch])
-  case ch of
-    '>' -> return $ Txt.reverse str
-    c -> getUntilPrompt h (c `Txt.cons` str)
+-- it reaches an empty line the Omorfi prompt ">"
+getUntilEmptyLine :: Handle -> IO Txt.Text
+getUntilEmptyLine h = do
+  line <- Txt.strip `liftM` TxtIO.hGetLine h
+  case line of
+    "" -> return "\n"
+    l -> getUntilEmptyLine h >>= \x -> return $ Txt.intercalate "\n" [l,x]
       
--- |Tries to wrap up an Omorfi connection. It returns the stats given by
--- Omorfi when quitting the program as a string.
-closeOmorfi :: OmorfiPipe -> IO String
-closeOmorfi (OmorfiPipe _ _ _ OPSClosed) = return "Already closed"
-closeOmorfi (OmorfiPipe inh outh ph OPSOpen) = do
+-- |Tries to wrap up an Omorfi connection. 
+closeOmorfi :: OmorfiPipe -> IO ()
+closeOmorfi (OmorfiPipe inh _ ph) = do
   hClose inh
-  stats <-  hGetContents outh
-  hClose outh
-  return stats
+  terminateProcess ph
 
 -- |Loads a file that was created by @omorfi-analyse.sh@ and returns its
 -- contents as an 'OmorfiFD'

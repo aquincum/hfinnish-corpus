@@ -35,7 +35,8 @@ library
                        filepath,
                        split,
                        parsec,
-                       process
+                       process,
+                       unix
 
 executable create_fds
   main-is:           create_fds.hs
@@ -86,7 +87,7 @@ test-suite testing
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
                      QuickCheck, process, filepath, split,
-                     parsec
+                     parsec, unix
   type:              exitcode-stdio-1.0
 
 test-suite testing_phonemes

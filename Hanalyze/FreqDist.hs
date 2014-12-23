@@ -12,12 +12,21 @@ module Hanalyze.FreqDist
 
          
          -- * Reading and saving FreqDists
+         -- ** Generalized for Tables
+         writeTable, saveTable,
+         -- ** Specifically for raw FreqDists
          countFreqs, multiReadCountFreqs, readCountFreqs,
-         readFreqDist, writeTable, saveTable,
+         readFreqDist,
 
          -- * Manipulating FreqDists
-         cleanupFD, filterFD, filterByFreqFD, filterFDFile, splitByFD,
-         sumFD, summarizeFD, annotateFD
+         -- ** Generalized for Tables
+         filterTable, filterByValTable,
+                                       
+         -- ** Specifically for raw FreqDists
+         cleanupFD, filterByFreqFD, filterFDFile,
+         splitByFD, sumFD,
+         -- ** Creating Tables from raw FreqDists
+         summarizeFD, annotateFD
 
 
          )
@@ -202,17 +211,22 @@ cleanupFD cleanup fd = let map = getMap fd
                          FreqDist cleaned
 
 
--- |Filters a FreqDist based on a filtering function that has the
+-- |Filters a Table based on a filtering function that has the
 -- type 'Token' -> 'Bool'
-filterFD :: (Token -> Bool) -> FreqDist -> FreqDist
-filterFD f fd = FreqDist $ Map.filterWithKey expfilt $ getMap fd
+filterTable :: Table a x => (Token -> Bool) -> a -> a
+filterTable f fd = tConstruct fd $ Map.filterWithKey expfilt $ tGetMap fd
   where
     expfilt tok _ = f tok
+
+-- |Filters a Table based on a filtering function over the values
+filterByValTable :: Table a x => (x -> Bool) -> a -> a
+filterByValTable f fd = tConstruct fd $ Map.filter f  $ tGetMap fd
+
 
 -- |Filters a FreqDist based on a filtering function that has the
 -- type 'Int' -> 'Bool', as it filters on frequency data
 filterByFreqFD :: (Int -> Bool) -> FreqDist -> FreqDist
-filterByFreqFD f fd = FreqDist $ Map.filter f  $ getMap fd
+filterByFreqFD = filterByValTable
 
 -- |Filters a Frequency Distribution file with a filter function and
 -- a cleanup function
@@ -225,7 +239,7 @@ filterFDFile f cleanup fn = do
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
-  saveTable (filterFD f. cleanupFD cleanup $ fd) savefn
+  saveTable (filterTable f. cleanupFD cleanup $ fd) savefn
 
 
 -- |Splits a 'FreqDist' into a summary 'FreqDist's based on a partitioning

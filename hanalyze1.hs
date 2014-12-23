@@ -36,9 +36,9 @@ vowelSummarySection str fd f =
 
 summarizeByC :: FreqDist -> IO ()
 summarizeByC fd = do
-  let fdLab = filterFD (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF labial, DotF $ mconcat [low,vowel]] tok) fd
-  let fdCor = filterFD (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF coronal, DotF $ mconcat [low,vowel]] tok) fd
-  let fdVel = filterFD (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF velar, DotF $ mconcat [low,vowel]] tok) fd      
+  let fdLab = filterTable (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF labial, DotF $ mconcat [low,vowel]] tok) fd
+  let fdCor = filterTable (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF coronal, DotF $ mconcat [low,vowel]] tok) fd
+  let fdVel = filterTable (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF velar, DotF $ mconcat [low,vowel]] tok) fd      
   vowelSummarySection "with labials" fdLab harmonicity
   vowelSummarySection "with coronals" fdCor harmonicity
   vowelSummarySection "with velars" fdVel harmonicity
@@ -51,9 +51,9 @@ summarizeAnderson fd = do
       funGrave tok = filterToken finnishInventory [DotF consonant, DotF vowel, AnyP gravesNotP, DotF $ mconcat [low,vowel]] tok
       funAcuteI tok = filterToken finnishInventory [DotF consonant, AnyP [l "i", l "ii", l "ei"], AnyP acutesP, DotF $ mconcat [low,vowel]] tok
       funAcuteE tok = filterToken finnishInventory [DotF consonant, AnyP [l "e", l "ee"], AnyP acutesP, DotF $ mconcat [low,vowel]] tok
-      fdGrave = filterFD funGrave fd
-      fdAcuteI = filterFD funAcuteI fd
-      fdAcuteE = filterFD funAcuteE fd
+      fdGrave = filterTable funGrave fd
+      fdAcuteI = filterTable funAcuteI fd
+      fdAcuteE = filterTable funAcuteE fd
   vowelSummarySection "with graves without [p] (Anderson: disharmonic)" fdGrave harmonicity
   vowelSummarySection "with acutes or [p] after [i(:),ei] (Anderson: disharmonic)" fdAcuteI harmonicity
   vowelSummarySection "with acutes or [p] after [e(:)] (Anderson: harmonic)" fdAcuteE harmonicity
@@ -69,7 +69,8 @@ main = do
   fd <- readFreqDist $ head args
   putStrLn "Omorfi analysis"
   om <- analyseFDOmorfi fd
-  saveTable om "omorfied.out"
+  let om' = filterByValTable (\omi -> any getKnown omi) om
+  saveTable om' "omorfied.out"
   {-
   summarySection fd
   vowelSummarySection "plain vowel structure" fd onlyVowels

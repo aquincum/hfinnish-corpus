@@ -103,7 +103,7 @@ testFilterme =
       patternSoph1 = [Star, DotF $ mconcat [labial, nasal] , Star]
       patternSoph2 = [QuestionF $ mconcat [labial], StarF $ mconcat [vowel], Star]
       patternSoph3 = [AnyP [phonA,phonB], Star]
-      filteredFd pat = filterFD (filterToken finnishInventory pat) fd
+      filteredFd pat = filterTable (filterToken finnishInventory pat) fd
       filteredMap pat = getMap $ filteredFd pat
   in
    putStrLn ("Here we go: " ++ show (filteredMap patternSoph2)) >>

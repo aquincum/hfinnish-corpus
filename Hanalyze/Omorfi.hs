@@ -50,7 +50,8 @@ data OmorfiInfo = OmorfiInfo {
   getStem :: Token,
   getKnown :: Bool,
   getOtherInfo :: OtherInfo,
-  getWeight :: Double
+  getWeight :: Double,
+  getFrequency :: Freq
   } | OmorfiInfoError Token
                 deriving (Eq,Show)
 
@@ -65,13 +66,15 @@ instance Table OmorfiFD [OmorfiInfo] where
   tPrintfun _ (mkey, mval) = mconcat $ map printOInfo mval
     where
       printOInfo oi = case oi of
-        OmorfiInfo pos stem kn othi weight -> mconcat [mkey, "\t",
-                                                       stem, "\t",
-                                                       if kn then "known" else "unknown", "\t",
-                                                       T.pack $ show $ pos, "\t",
-                                                       if othi == NoOI then "--" else getOIToken $ othi, "\t",
-                                                       T.pack $ show $ weight,
-                                                       "\n"]
+        OmorfiInfo pos stem kn othi weight freq ->
+          mconcat [mkey, "\t",
+                   stem, "\t",
+                   if kn then "known" else "unknown", "\t",
+                   T.pack $ show $ pos, "\t",
+                   if othi == NoOI then "--" else getOIToken $ othi, "\t",
+                   T.pack $ show $ weight, "\t",
+                   T.pack $ show $ freq,
+                   "\n"]
         OmorfiInfoError err -> mconcat [mkey, "\t", err]
 
 -- |Initializes an Omorfi connection by starting the interactive process
@@ -133,18 +136,20 @@ closeOmorfi (OmorfiPipe inh _ ph) = do
 analyseFDOmorfi :: FreqDist -> IO OmorfiFD
 analyseFDOmorfi fd = do
   omorfi <- initOmorfi
-  let tokens = fdKeys fd
-  progVar <- initializeProgress tokens >>= newMVar
-  let runToken tok = do
-        oanal <- getOmorfiAnalysis omorfi tok
+  let tokenfreqs = tToList fd
+  progVar <- initializeProgress tokenfreqs >>= newMVar
+  let runToken (tok, freq) = do
+        oanal <- (getOmorfiAnalysis omorfi tok)
+        let freqPerAnalysis = freq `div` (length oanal)
+            oanalfreqs = map (\x -> x{ getFrequency = freqPerAnalysis }) oanal
         progval <- takeMVar progVar
         let progval' = incrementProgress progval
         printEveryPercent progval'
         putMVar progVar progval'
-        return (tok,oanal)
-  analysed <- mapM runToken tokens
+        return (tok,oanalfreqs)
+  analysed <- mapM runToken tokenfreqs
   closeOmorfi omorfi
-  return $ OmorfiFD $ Map.fromList analysed
+  return $ tFromList analysed
       
 
 
@@ -164,7 +169,7 @@ parseFile =  do
 --  toks <- sepEndBy parseToken (endOfLine>>endOfLine)
   toks <- many parseToken
   eof
-  return $ OmorfiFD $ Map.fromList toks
+  return $ tFromList toks
   
 -- |Parser for a token's results as given by Omorfi:
 --
@@ -223,5 +228,5 @@ parseToken = do
         if fullword /= tok then
           return $ OmorfiInfoError $ mconcat [tok, "/=", fullword,  ": first field of analysis must be the token."]
         else 
-            return $ OmorfiInfo pos stem known (if leftover == "" then NoOI else OtherInfo leftover) weight
+            return $ OmorfiInfo pos stem known (if leftover == "" then NoOI else OtherInfo leftover) weight 0
 

@@ -3,13 +3,11 @@
 module Hanalyze.FreqDist
        (
          -- * Types
-         Token, Table(..), Annotation,
+         Token, Freq, Table(..), Annotation,
          FreqDist(..), SummaryTable(..), AnnotatedFreqDist(..),
 
          -- * Simple lifted Map functions
          fdEmpty, fdKeys, sdEmpty, afdEmpty,
-
-
          
          -- * Reading and saving FreqDists
          -- ** Generalized for Tables
@@ -55,11 +53,17 @@ class Eq t => Table t val | t -> val where
   tConstruct :: t -> Map.Map Token val -> t
   tGetMap :: t -> Map.Map Token val
   tPrintfun :: t -> (Token, val) -> Token
+  tToList :: t -> [(Token, val)]
+  tToList = Map.toList . tGetMap
+  tFromList :: [(Token, val)] -> t
+  tFromList l = tConstruct tEmpty (Map.fromList l)
 --  eq :: t -> t -> Bool
-  
+
+-- |Type synonym for frequency counts.
+type Freq = Int
 
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
-data FreqDist = FreqDist {getMap :: !(Map.Map Token Int)} deriving (Eq,Show)
+data FreqDist = FreqDist {getMap :: !(Map.Map Token Freq)} deriving (Eq,Show)
 
 {-
 instance NFData FreqDist where
@@ -71,7 +75,7 @@ instance Monoid FreqDist where
   mappend !left !right =  let innermap = Map.unionWith (+) (left `seq` getMap left) (right `seq` getMap right) in
     FreqDist $ innermap
 
-instance Table FreqDist Int where
+instance Table FreqDist Freq where
   tEmpty = fdEmpty
   tConstruct = \_ -> FreqDist
   tGetMap = getMap
@@ -85,9 +89,9 @@ type Annotation = Token
 -- 1. annotated information (first value in the tuple) of the type 'Annotation'
 -- 2. token frequency, as with 'FreqDist'
 --
-data AnnotatedFreqDist = AnnotatedFreqDist {getAFDMap :: Map.Map Token (Annotation, Int)} deriving (Eq, Show)
+data AnnotatedFreqDist = AnnotatedFreqDist {getAFDMap :: Map.Map Token (Annotation, Freq)} deriving (Eq, Show)
 
-instance Table AnnotatedFreqDist (Annotation, Int) where
+instance Table AnnotatedFreqDist (Annotation, Freq) where
   tEmpty = afdEmpty
   tConstruct = \_ -> AnnotatedFreqDist
   tGetMap = getAFDMap
@@ -97,9 +101,9 @@ instance Table AnnotatedFreqDist (Annotation, Int) where
 -- |Summary table of frequency distributions, where the token is probably some
 -- summing factor. The value is a tuple, where the first value is, as usual,
 -- token frequency, and the second value is the type frequency.
-data SummaryTable = SummaryTable {getSTMap :: Map.Map Token (Int, Int)} deriving (Eq, Show)
+data SummaryTable = SummaryTable {getSTMap :: Map.Map Token (Freq, Freq)} deriving (Eq, Show)
 
-instance Table SummaryTable (Int, Int) where
+instance Table SummaryTable (Freq, Freq) where
   tEmpty = sdEmpty
   tConstruct = \_ -> SummaryTable
   tGetMap = getSTMap         
@@ -164,7 +168,7 @@ readFreqDistLine line =
 
 -- |Converts a Text with the frequency info to an integer. Implemented to
 -- test different techniques
-readFrequency :: Token -> Int
+readFrequency :: Token -> Freq
 readFrequency s = case T.decimal s of
   Left _ -> -1
   Right num -> num
@@ -224,8 +228,8 @@ filterByValTable f fd = tConstruct fd $ Map.filter f  $ tGetMap fd
 
 
 -- |Filters a FreqDist based on a filtering function that has the
--- type 'Int' -> 'Bool', as it filters on frequency data
-filterByFreqFD :: (Int -> Bool) -> FreqDist -> FreqDist
+-- type 'Freq' -> 'Bool', as it filters on frequency data
+filterByFreqFD :: (Freq -> Bool) -> FreqDist -> FreqDist
 filterByFreqFD = filterByValTable
 
 -- |Filters a Frequency Distribution file with a filter function and
@@ -292,7 +296,7 @@ annotateFD funlist fd =
 
       
 -- |Simple summing function: returns the grand total frequency.
-sumFD :: FreqDist -> Int
+sumFD :: FreqDist -> Freq
 sumFD fd = Map.foldl' (+) 0 $ getMap fd
 
 

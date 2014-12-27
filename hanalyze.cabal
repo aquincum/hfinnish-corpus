@@ -63,7 +63,8 @@ executable filter_fds
   build-depends:     base ==4.6.*, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
-                     split
+                     split, parsec, process >= 1.2.0.0,
+                     unix
 
 executable stem_fds
   main-is:           stem_fds.hs

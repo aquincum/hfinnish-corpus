@@ -3,16 +3,39 @@ module Main where
 import qualified Data.Map as Map
 import System.IO
 import System.Environment
-import qualified Control.Monad as M
+import Control.Monad
 import Control.Exception
 import Hanalyze.FreqDist
 import Hanalyze.Vowels
 import Hanalyze.Process
 import Hanalyze.Progress
 import Hanalyze.Phoneme
+import Hanalyze.Pattern
+import Hanalyze.Omorfi
 import qualified Hanalyze.Token as T
 import Data.Char
-import Data.Maybe (isNothing, isJust)
+import Data.Maybe (isNothing, isJust, fromJust)
+import System.Console.GetOpt
+import System.FilePath.Posix
+
+
+-- Option parsing:
+
+data Flag = Stem deriving (Show, Eq)
+
+options :: [OptDescr Flag]
+options = [
+  Option ['s'] ["stem"] (NoArg Stem) "filter on stemmed corpus"
+  ]
+
+compileOptions :: [String] -> IO ([Flag], [String])
+compileOptions args = case getOpt Permute options args of
+  (o, n, []) -> return (o, n)
+  (_, _, errs) -> error $ "Option parsing error: " ++ concat errs ++
+                  "\n" ++ usageInfo "Usage: filter_fds [OPTION...] files" options
+
+
+
 
 -- |In my dissertation, I'll be looking at C[i,e,ie]C[a,ä] forms and more generally C[i,e,ie]CV forms.
 -- First try: C[i,e,ie,ei]C[a,ä] stems are relevant
@@ -38,13 +61,42 @@ filterTokenRelevant t = case segment finnishInventory t of
   Nothing -> False
   Just x -> relevantStem x []
 
+-- |Filter a token based on relevance -- advanced, stemmed version
+stemFilterTokenRelevant :: Token ->  Bool
+stemFilterTokenRelevant t = case segment finnishInventory t of
+  Nothing -> False
+  Just x -> filterWord x pattern
+ where
+   pattern = [StarF $ setBundle [fCons],
+              DotF $ setBundle [fFront, minus fLow, minus fRounded],
+              Star
+              ]
+   l p = fromJust $ findPhoneme finnishInventory p
+
 -- |Cleaning up non-alphanumeric symbols. Could get more complicated
 cleanupWord :: Token -> Token
 cleanupWord = T.filter (`elem` "abcdefghijklmnopqrstuvwxyzäö")
 
+stemFDFile :: FilePath -> IO ()
+stemFDFile fn = do
+  let saveprefix = "filtered2_"
+      (dirname,fname) = splitFileName fn
+      savefn = dirname </> (saveprefix ++ fname)
+  fd <- readFreqDist fn
+  let cleaned = filterTable stemFilterTokenRelevant . cleanupFD cleanupWord $ fd
+  om <- analyseFDOmorfi cleaned
+  let om' = filterByValTable (\omi -> any getKnown omi) om
+      stemmed = getStems om'
+      filteredStemmed = filterTable filterTokenRelevant stemmed
+  saveTable filteredStemmed savefn
 
 main :: IO ()
 main = do
-  fns <- getArgs
-  mapM_ (filterFDFile filterTokenRelevant cleanupWord) fns
+  args <- getArgs
+  (flags, fns) <- compileOptions args
+  when (length fns < 1) (error "No files specified")
+  let filterAction = if Stem `elem` flags
+                     then stemFDFile
+                     else (filterFDFile filterTokenRelevant cleanupWord)
+  mapM_ filterAction fns
   return ()

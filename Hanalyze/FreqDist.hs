@@ -22,7 +22,7 @@ module Hanalyze.FreqDist
                                        
          -- ** Specifically for raw FreqDists
          cleanupFD, filterByFreqFD, filterFDFile,
-         splitByFD, sumFD,
+         splitByFD, sumFD, splitListByFD,
          -- ** Creating Tables from raw FreqDists
          summarizeFD, annotateFD
 
@@ -252,9 +252,16 @@ splitByFD :: (Eq a, Show a) =>
              (Token -> a) -- ^partitioning function
              -> FreqDist  -- ^input 'FreqDist'
              -> FreqDist  -- ^summary 'FreqDist'
-splitByFD func fd =
-  let map = getMap fd
-      retvals = List.map (\(x,y) -> (func x,y)) $ Map.toList map
+splitByFD func fd = splitListByFD func (tToList fd)
+
+-- |Splits a list of ('Token', 'Freq') pairs into a summary 'FreqDist'
+-- based on a partitioning function.
+splitListByFD :: (Eq a, Show a) =>
+                 (Token -> a) -- ^partitioning function
+              -> [(Token, Freq)]  -- ^input list
+              -> FreqDist  -- ^summary 'FreqDist'
+splitListByFD func list =
+  let retvals = List.map (\(x,y) -> (func x,y)) $ list
       classes = List.nub $ List.map fst retvals
       sum classid = List.foldl' (\(x,y) (k,z) ->  y `seq` (x,if k == classid then y+z else y)) (T.pack $ show classid,0) retvals
   in

@@ -162,6 +162,20 @@ loadOmorfiFile fn = do
     Left e -> putStrLn ("Parse error: " ++ show e) >> return tEmpty
     Right omi -> return omi
 
+-- |Stems a corpus: the input 'OmorfiFD' is converted to a 'FreqDist'
+-- of stems,
+getStems :: OmorfiFD -> FreqDist
+getStems omfd =
+  let
+    tokenlist = tToList omfd
+    stemOneLine ::  (Token, [OmorfiInfo]) -> [(Token, Freq)]
+    stemOneLine oline@(tok, ois) = map (\o -> (getStem o, getFrequency o)) ois
+    stemFreqs = concat $ map (stemOneLine) tokenlist
+    flattenedfd = splitListByFD id stemFreqs
+  in
+   flattenedfd
+
+
 
 -- |Parser for an entire Omorfi analysis file
 parseFile :: Parsec Txt.Text st OmorfiFD

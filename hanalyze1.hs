@@ -59,17 +59,6 @@ summarizeAnderson fd = do
   vowelSummarySection "with acutes or [p] after [e(:)] (Anderson: harmonic)" fdAcuteE harmonicity
   return $ annotateFD [("grave", funGrave), ("acute with i", funAcuteI), ("acute with e", funAcuteE)] fd
 
-stem :: OmorfiFD -> FreqDist
-stem omfd =
-  let
-    tokenlist = tToList omfd
-    stemOneLine ::  (Token, [OmorfiInfo]) -> [(Token, Freq)]
-    stemOneLine oline@(tok, ois) = map (\o -> (getStem o, getFrequency o)) ois
-    stemFreqs = concat $ map (stemOneLine) tokenlist
-    stemfd = tFromList stemFreqs
-    flattenedfd = splitByFD id stemfd
-  in
-   flattenedfd
 
 
 main :: IO ()
@@ -83,7 +72,7 @@ main = do
   om <- analyseFDOmorfi fd
   let om' = filterByValTable (\omi -> any getKnown omi) om
   saveTable om' "omorfied.out"
-  let stemmed = stem om'
+  let stemmed = getStems om'
   saveTable stemmed "stemmed.out" -- lol
   {-
   summarySection fd

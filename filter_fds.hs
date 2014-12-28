@@ -17,7 +17,7 @@ import Data.Char
 import Data.Maybe (isNothing, isJust, fromJust)
 import System.Console.GetOpt
 import System.FilePath.Posix
-
+import Control.Concurrent
 
 -- Option parsing:
 
@@ -95,8 +95,15 @@ main = do
   args <- getArgs
   (flags, fns) <- compileOptions args
   when (length fns < 1) (error "No files specified")
+  progVar <- initializeProgress fns >>= newMVar
   let filterAction = if Stem `elem` flags
                      then stemFDFile
                      else (filterFDFile filterTokenRelevant cleanupWord)
+      runOneFile fn = do
+        filterAction fn
+        progval <- takeMVar progVar
+        let progval' = incrementProgress progval
+        printProgress progval'
+        putMVar progVar progval'
   mapM_ filterAction fns
   return ()

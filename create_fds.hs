@@ -16,7 +16,7 @@ import Hanalyze.Progress
 qsort (p:xs) = qsort [x | x<-xs, x<p] ++ [p] ++ qsort [x | x<-xs, x>=p]
 
 -- |Read one file, convert to FreqDists and output them to "freqdist_"++filename
-dealWithAFile :: FilePath -> MVar Progress -> IO ()
+dealWithAFile :: FilePath -> ProgVar -> IO ()
 dealWithAFile fn progress = do
   let saveprefix = "freqdist_"
       pruned = last $ splitOn "/" fn
@@ -25,10 +25,8 @@ dealWithAFile fn progress = do
     (\e -> (putStrLn ("Error in reading, " ++ show (e::SomeException))) >> return fdEmpty)
   --putStrLn ("File " ++ pruned ++ " read")
   saveTable fd (saveprefix ++ pruned)
-  progVar <- takeMVar progress
-  let progVarUpdated = incrementProgress progVar
-  progStr <- printProgress progVarUpdated
-  putMVar progress progVarUpdated
+  incrementProgVar progress
+  progStr <-  printWithProgVal printProgress progress
   catch (putStrLn ("Done " ++ pruned ++ ". " ++ progStr))
     (\e -> putStrLn ("Error in printing, " ++ show (e::SomeException)))
 
@@ -37,8 +35,7 @@ main :: IO ()
 main = do
   setNumCapabilities 3
   fns <- getArgs
-  progVar <- initializeProgress fns
-  progress <- newMVar progVar
+  progress <- initializeProgVar fns
   ncap <- getNumCapabilities
   putStrLn $ "Running with " ++ show ncap ++ " capabilities."
   proto <- initProcess -- :: IO Process

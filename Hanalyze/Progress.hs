@@ -4,6 +4,7 @@ module Hanalyze.Progress where
 import Data.Time.Clock
 import Control.Monad
 import System.IO
+import Control.Concurrent
 
 -- |Type indicating progress. Fields are:
 --
@@ -15,6 +16,9 @@ import System.IO
 --
 data Progress = Progress Int UTCTime Int
 
+-- |A 'Progress' variable within an 'MVar' -- keeps state in an MVar.
+type ProgVar = MVar Progress
+
 -- |Initializes a progress variable with a filename list
 initializeProgress :: [a] -- ^the list of objects to initialize nobjs from
                       -> IO Progress -- ^the new progress variable
@@ -23,9 +27,22 @@ initializeProgress fns = do
   starttime <- getCurrentTime
   return $ Progress nobjs starttime 0
 
+-- |Initializes a 'ProgVar' with a filename list. Uses 'initializeProgress'
+-- inside
+initializeProgVar :: [a] -- ^the list of objects to initialize nobjs from
+                     -> IO ProgVar -- ^the new 'ProgVar'
+initializeProgVar fns = initializeProgress fns >>= newMVar
+
 -- |Called when a process is done running.
 incrementProgress :: Progress -> Progress
 incrementProgress (Progress nf st pd) = Progress nf st (pd+1)
+
+-- |Updates the progress variable within the 'ProgVar' with
+-- 'incrementProgress'
+incrementProgVar :: ProgVar -> IO ()
+incrementProgVar pv =
+  liftM incrementProgress (takeMVar pv) >>=
+  putMVar pv
 
 -- |Formats the time elapsed in a 'Progress'
 formatElapsed :: NominalDiffTime -> String
@@ -60,4 +77,10 @@ printEveryPercent :: Progress -> IO ()
 printEveryPercent prog@(Progress nf st pd) =
   let nfpercent = nf `div` 100 in
   printEveryNth prog nfpercent
-  
+
+-- |Use the plain print functions with a 'ProgVal'. Lifts functions from
+-- 'Progress' to 'ProgVar' input.
+printWithProgVal :: (Progress -> IO a) -- ^The function to apply to the progress variable within the 'ProgVar'
+                    -> ProgVar -- ^The 'ProgVar' to work with
+                    -> IO a
+printWithProgVal printfun pv = readMVar pv >>= printfun

@@ -21,7 +21,8 @@ dealWithAFile fn progress = do
   let saveprefix = "freqdist_"
       pruned = last $ splitOn "/" fn
   --putStrLn ("Loading " ++ pruned)
-  fd <- readCountFreqs fn
+  fd <- catch (readCountFreqs fn)
+    (\e -> (putStrLn ("Error in reading, " ++ show (e::SomeException))) >> return fdEmpty)
   --putStrLn ("File " ++ pruned ++ " read")
   saveTable fd (saveprefix ++ pruned)
   progVar <- takeMVar progress
@@ -45,5 +46,4 @@ main = do
   let procs' = map (startProcess . flip dealWithAFile progress) fns
   procs'' <- mapM (\pr -> copyProcess proto >>= pr) procs'
   procs''' <-  mapM waitProcess procs''
-  _ <- takeMVar progress
   return ()

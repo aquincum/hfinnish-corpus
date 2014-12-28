@@ -45,4 +45,5 @@ main = do
   let procs' = map (startProcess . flip dealWithAFile progress) fns
   procs'' <- mapM (\pr -> copyProcess proto >>= pr) procs'
   procs''' <-  mapM waitProcess procs''
+  _ <- takeMVar progress
   return ()

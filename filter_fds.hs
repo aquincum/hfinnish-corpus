@@ -95,15 +95,13 @@ main = do
   args <- getArgs
   (flags, fns) <- compileOptions args
   when (length fns < 1) (error "No files specified")
-  progVar <- initializeProgress fns >>= newMVar
+  progVar <- initializeProgVar fns
   let filterAction = if Stem `elem` flags
                      then stemFDFile
                      else (filterFDFile filterTokenRelevant cleanupWord)
       runOneFile fn = do
         filterAction fn
-        progval <- takeMVar progVar
-        let progval' = incrementProgress progval
-        printProgress progval'
-        putMVar progVar progval'
+        incrementProgVar progVar
+        printWithProgVal printProgress progVar >>= putStrLn
   mapM_ filterAction fns
   return ()

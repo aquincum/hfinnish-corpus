@@ -137,15 +137,13 @@ analyseFDOmorfi :: FreqDist -> IO OmorfiFD
 analyseFDOmorfi fd = do
   omorfi <- initOmorfi
   let tokenfreqs = tToList fd
-  progVar <- initializeProgress tokenfreqs >>= newMVar
+  progVar <- initializeProgVar tokenfreqs
   let runToken (tok, freq) = do
         oanal <- (getOmorfiAnalysis omorfi tok)
         let freqPerAnalysis = freq `div` (length oanal)
             oanalfreqs = map (\x -> x{ getFrequency = freqPerAnalysis }) oanal
-        progval <- takeMVar progVar
-        let progval' = incrementProgress progval
-        printEveryPercent progval'
-        putMVar progVar progval'
+        incrementProgVar progVar
+        printWithProgVal printEveryPercent progVar
         return (tok,oanalfreqs)
   analysed <- mapM runToken tokenfreqs
   closeOmorfi omorfi

@@ -14,6 +14,7 @@ import System.Process.Internals (ProcessHandle(..), ProcessHandle__(..))
 import System.Posix.Terminal
 import System.Posix.IO
 import System.Posix.Signals
+import System.Timeout
 import Control.Monad
 import qualified Data.Map as Map
 import Data.Monoid
@@ -97,15 +98,19 @@ getOmorfiAnalysis :: OmorfiPipe -> Token -> IO [OmorfiInfo]
 getOmorfiAnalysis (OmorfiPipe inh outh ph) tok = do
   T.hPutStrLn inh tok
   hFlush inh
-  cont <- getUntilEmptyLine outh
-  --TxtIO.hPutStrLn stdout cont
-  case parse parseToken "omorfi" cont of
-    Left e -> (putStrLn $ "Omorfi parsing error -- " ++ show e ++ "\n" ++ Txt.unpack cont) >> return []
-    Right (tok', ofis) -> return ofis
+  cont <- timeout (1000*1000) (getUntilEmptyLine outh)
+  case cont of
+    Nothing -> do
+      putStrLn $ "Problem with " ++ (T.unpack tok)
+      return []
+    Just anal -> 
+      case parse parseToken "omorfi" anal of
+        Left e -> (putStrLn $ "Omorfi parsing error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return []
+        Right (tok', ofis) -> return ofis
 
 
--- |Internal function which does not work yet. Reads input until
--- it reaches an empty line the Omorfi prompt ">"
+-- |Internal function that reads input until
+-- it reaches an empty line before the Omorfi prompt ">"
 getUntilEmptyLine :: Handle -> IO Txt.Text
 getUntilEmptyLine h = do
   line <- Txt.strip `liftM` TxtIO.hGetLine h

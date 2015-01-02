@@ -1,0 +1,4 @@
+Dead analysis: xkn xty
+xkn: isoisoiso...is"a
+xty: bbliidejä
+0: xjn xlb xub -- all illegal byte sequences. iconv -c helped

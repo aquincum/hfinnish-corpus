@@ -11,7 +11,7 @@ import qualified Hanalyze.Token as T
 import Data.Monoid
 import qualified Test.HUnit as HU
 import Test.HUnit ((~=?), (~:), (@?))
-import Control.Monad (unless)
+import Control.Monad (unless,when)
 import System.Exit
 import System.Process
 import Control.Concurrent
@@ -192,6 +192,16 @@ giveUp :: String -> IO a
 giveUp s = putStrLn ("Error with " ++ s) >>
            exitFailure
 
+existsCommand :: String -> IO Bool
+existsCommand com = do
+  (ec,so,se) <- readProcessWithExitCode "which" [com] ""
+  return (so /= "")
+
+runIfExistsCommand :: String -> IO () -> IO ()
+runIfExistsCommand com io = do
+  ec <- existsCommand com
+  when ec io
+
 main :: IO ()
 main = do
   putStrLn "Testing."
@@ -206,6 +216,6 @@ main = do
   testHarmony >>= flip unless (giveUp "testHarmonyW")
   myCheck "Summing FDs: " prop_sum
   testOmorfiPlain >>= flip unless (giveUp "testOmorfiPlain")
-  testOmorfi >>= flip unless (giveUp "testOmorfiPlain")
+  runIfExistsCommand  "omorfi-interactive.sh" (testOmorfi >>= flip unless (giveUp "testOmorfiPlain"))
   exitSuccess
   

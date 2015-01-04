@@ -76,9 +76,7 @@ printEveryNth prog@(Progress nf st pd) n =
 printEveryPercent :: Progress -> IO ()
 printEveryPercent prog@(Progress nf st pd) =
   let nfpercent = nf `div` 100 in
-  if nfpercent == 0
-  then return ()
-  else printEveryNth prog nfpercent
+  unless (nfpercent == 0) $ printEveryNth prog nfpercent
 
 -- |Use the plain print functions with a 'ProgVal'. Lifts functions from
 -- 'Progress' to 'ProgVar' input.

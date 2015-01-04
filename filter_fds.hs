@@ -52,8 +52,8 @@ relevantStem [] _ = False
 relevantStem (h:t) l
   | isNothing $ harmonyV $ head (phonemeName h) = relevantStem t l
 relevantStem (h:t) [v1,v2] = (isNothing . harmonyV $ head (phonemeName h)) && relevantStem t [v1,v2]
-relevantStem (h:t) [v1] = ((phonemeName h) `elem` ["a","aa","ä","ää"]) && relevantStem t [v1,h] 
-relevantStem (h:t) [] = ((phonemeName h) `elem` ["e","i","ee","ii","ei","ie"]) && relevantStem t [h]
+relevantStem (h:t) [v1] = (phonemeName h `elem` ["a","aa","ä","ää"]) && relevantStem t [v1,h] 
+relevantStem (h:t) [] = (phonemeName h `elem` ["e","i","ee","ii","ei","ie"]) && relevantStem t [h]
 
 -- |Filter a token based on relevance 
 filterTokenRelevant :: Token ->  Bool
@@ -85,7 +85,7 @@ stemFDFile fn = do
   fd <- readFreqDist fn
   let cleaned = filterTable stemFilterTokenRelevant . cleanupFD cleanupWord $ fd
   om <- analyseFDOmorfi cleaned
-  let om' = filterByValTable (\omi -> any getKnown omi) om
+  let om' = filterByValTable (any getKnown) om
       stemmed = getStems om'
       filteredStemmed = filterTable filterTokenRelevant stemmed
   saveTable filteredStemmed savefn
@@ -98,7 +98,7 @@ main = do
   progVar <- initializeProgVar fns
   let filterAction = if Stem `elem` flags
                      then stemFDFile
-                     else (filterFDFile filterTokenRelevant cleanupWord)
+                     else filterFDFile filterTokenRelevant cleanupWord
       runOneFile fn = do
         filterAction fn
         incrementProgVar progVar

@@ -22,7 +22,7 @@ dealWithAFile fn progress = do
       pruned = last $ splitOn "/" fn
   --putStrLn ("Loading " ++ pruned)
   fd <- catch (readCountFreqs fn)
-    (\e -> (putStrLn ("Error in reading, " ++ show (e::SomeException))) >> return fdEmpty)
+    (\e -> putStrLn ("Error in reading, " ++ show (e::SomeException)) >> return fdEmpty)
   --putStrLn ("File " ++ pruned ++ " read")
   saveTable fd (saveprefix ++ pruned)
   incrementProgVar progress

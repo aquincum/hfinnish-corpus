@@ -89,7 +89,7 @@ data Feature = Feature { plusMinus :: PlusMinus, featureName :: String } derivin
 
 
 instance Show Feature where
-  show f = (show $ plusMinus f) ++ featureName f
+  show f = show (plusMinus f) ++ featureName f
 
 -- |'minusPM' lifted to Feature
 minus :: Feature -> Feature
@@ -181,8 +181,8 @@ mergeBundle b1 b2 = let f1 = getBundle b1
 -- |Whether the first 'FeatureBundle' is the subset of the second
 -- one
 subsetFB :: FeatureBundle -> FeatureBundle -> Bool
-subsetFB f1 f2 | getBundle f1 == [] = True
-subsetFB f1 f2 | getBundle f2 == [] = False
+subsetFB f1 f2 | null (getBundle f1) = True
+subsetFB f1 f2 | null (getBundle f2) = False
 subsetFB f1 f2 = let (firstf:tailf) = getBundle f1
                      fn = featureName firstf
                      pm = plusMinus firstf
@@ -193,7 +193,7 @@ subsetFB f1 f2 = let (firstf:tailf) = getBundle f1
                     case findInBundle fn f2 of
                       Nothing -> False
                       Just foundf ->
-                        if (plusMinus firstf) == (plusMinus foundf)
+                        if plusMinus firstf == plusMinus foundf
                         then subsetFB (Bundle tailf) f2
                         else False
 

@@ -46,14 +46,14 @@ readPattern inv s = do
                      
 -- |Output a pattern in a human-readable form
 writePattern :: [Pattern] -> String
-writePattern pat = foldl (++) [] (map write' pat)
+writePattern = concatMap write'
   where
     write' x = case x of
       Star -> "*"
       Question -> "?"
       Dot -> "."
       P y -> phonemeName y
-      AnyP plist -> "[" ++ foldl (++) "" (map (phonemeName) plist) ++ "]."
+      AnyP plist -> "[" ++ foldl (++) "" (map phonemeName plist) ++ "]."
       DotF fb -> "[" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "]."
       StarF fb -> "[" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "]*"
       QuestionF fb -> "[" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "]?"

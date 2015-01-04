@@ -36,9 +36,9 @@ vowelSummarySection str fd f =
 
 summarizeByC :: FreqDist -> IO ()
 summarizeByC fd = do
-  let fdLab = filterTable (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF labial, DotF $ mconcat [low,vowel]] tok) fd
-  let fdCor = filterTable (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF coronal, DotF $ mconcat [low,vowel]] tok) fd
-  let fdVel = filterTable (\tok -> filterToken finnishInventory [DotF consonant, DotF vowel, DotF velar, DotF $ mconcat [low,vowel]] tok) fd      
+  let fdLab = filterTable (filterToken finnishInventory [DotF consonant, DotF vowel, DotF labial, DotF $ mconcat [low,vowel]]) fd
+  let fdCor = filterTable (filterToken finnishInventory [DotF consonant, DotF vowel, DotF coronal, DotF $ mconcat [low,vowel]]) fd
+  let fdVel = filterTable (filterToken finnishInventory [DotF consonant, DotF vowel, DotF velar, DotF $ mconcat [low,vowel]]) fd      
   vowelSummarySection "with labials" fdLab harmonicity
   vowelSummarySection "with coronals" fdCor harmonicity
   vowelSummarySection "with velars" fdVel harmonicity
@@ -48,9 +48,9 @@ summarizeAnderson fd = do
   let l p = fromJust $ findPhoneme finnishInventory p
       gravesNotP = [l "k", l "g", l "kk", l "m", l "mm", l "ng", l "f", l "ff", l "v", l "vv", l "h", l "hh", l "j", l "jj"]
       acutesP = [l "p", l "pp", l "t", l "tt", l "d", l "dd", l "n", l "nn", l "s", l "ss", l "z", l "zz", l "š", l "šš", l "ž", l "žž", l "l", l "ll", l "r", l "rr"]
-      funGrave tok = filterToken finnishInventory [DotF consonant, DotF vowel, AnyP gravesNotP, DotF $ mconcat [low,vowel]] tok
-      funAcuteI tok = filterToken finnishInventory [DotF consonant, AnyP [l "i", l "ii", l "ei"], AnyP acutesP, DotF $ mconcat [low,vowel]] tok
-      funAcuteE tok = filterToken finnishInventory [DotF consonant, AnyP [l "e", l "ee"], AnyP acutesP, DotF $ mconcat [low,vowel]] tok
+      funGrave  = filterToken finnishInventory [DotF consonant, DotF vowel, AnyP gravesNotP, DotF $ mconcat [low,vowel]] 
+      funAcuteI = filterToken finnishInventory [DotF consonant, AnyP [l "i", l "ii", l "ei"], AnyP acutesP, DotF $ mconcat [low,vowel]] 
+      funAcuteE = filterToken finnishInventory [DotF consonant, AnyP [l "e", l "ee"], AnyP acutesP, DotF $ mconcat [low,vowel]] 
       fdGrave = filterTable funGrave fd
       fdAcuteI = filterTable funAcuteI fd
       fdAcuteE = filterTable funAcuteE fd

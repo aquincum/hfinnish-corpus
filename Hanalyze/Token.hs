@@ -32,6 +32,7 @@ import Data.Monoid
 import Control.DeepSeq
 import Prelude hiding (concat, filter, readFile, hPutStrLn, words, foldl, reverse)
 import Control.Monad
+import Control.Arrow
 import System.IO hiding (readFile, hPutStrLn, hGetLine)
 
 -- needed from Text: unpack, filter, pack, toLower, words, concat
@@ -55,7 +56,7 @@ instance Monoid Token where
 
 -- |Tokens can also be deepseq'd
 instance NFData Token where
-  rnf a = (unpack a) `seq` ()
+  rnf a = unpack a `seq` ()
   
 -- |Get the string out of the 'Token'
 unpack :: Token -> String
@@ -72,7 +73,7 @@ cons ch tok = Tok . Txt.cons ch $ getText tok
 -- |Deconstruct a 'Token' to its head and the tail. If the
 -- 'Token' is empty, it returns 'Nothing'
 uncons :: Token -> Maybe (Char, Token)
-uncons tok = liftM (\a -> (fst a, (Tok . snd) a)) $ Txt.uncons $ getText tok
+uncons tok = liftM (fst &&& (Tok . snd)) $ Txt.uncons $ getText tok
 
 -- |Deconstruct a 'Token' to its head, the following char
 -- and the tail. If the 'Token' is empty or has only one char,

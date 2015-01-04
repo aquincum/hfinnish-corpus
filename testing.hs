@@ -67,7 +67,7 @@ testLoading = do
         ]
 
 testHarmony :: IO Bool
-testHarmony = do
+testHarmony =
   huTest [
         "harmonyV" ~: do
            harmonyV 'a' == Just Back @? "a"
@@ -88,7 +88,7 @@ testHarmony = do
         ,
         "fullHarmonic" ~: do
            fullHarmonic "xalmax" Back @? "all back"
-           (not $ fullHarmonic "xalmex"  Back) @? "mixed"
+           not (fullHarmonic "xalmex"  Back) @? "mixed"
            fullHarmonic "xälmäz" Front @? "all front"
            fullHarmonic "xelmex" Neutral @? "all neutral"
         ,

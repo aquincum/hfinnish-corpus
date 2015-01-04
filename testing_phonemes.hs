@@ -37,7 +37,7 @@ huTest tests = do
   return (errs == 0)
 
 
-testFeatureAddition = do
+testFeatureAddition = 
   huTest [
     "mergeFeature'" ~: do
        Feature Plus "alma" `mergeFeature'` Feature Minus "alma" == Just (Feature Null "alma") @? "+ - = 0"
@@ -79,8 +79,8 @@ testFinnish =
   huTest [
     "segmenting" ~: do
        length(fromJust $ segment finnishInventory "alma") == 4 @? "simple length"
-       phonemeName ((fromJust $ segment finnishInventory "keke") !! 3) == "e" @? "simple lookup"
-       phonemeName ((fromJust $ segment finnishInventory "aalassa") !! 3) == "ss" @? "long segment lookups"
+       phonemeName (fromJust (segment finnishInventory "keke") !! 3) == "e" @? "simple lookup"
+       phonemeName (fromJust (segment finnishInventory "aalassa") !! 3) == "ss" @? "long segment lookups"
        isNothing (segment finnishInventory "jëlla") @? "returning nothing"
   ]
 

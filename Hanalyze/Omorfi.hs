@@ -20,6 +20,7 @@ import qualified Data.Map as Map
 import Data.Monoid
 import Text.Parsec
 import Control.Concurrent
+import Control.Arrow
 
 -- DEBUG: import System.IO.Unsafe
 
@@ -61,8 +62,8 @@ data OmorfiFD = OmorfiFD { getFDMap :: Map.Map Token [OmorfiInfo] } deriving Eq
 
 -- |So that 'Hanalyze.FreqDist.writeTable' can be used on 'OmorfiFD'!
 instance Table OmorfiFD [OmorfiInfo] where
-  tEmpty = OmorfiFD $ Map.empty
-  tConstruct = \_ -> OmorfiFD
+  tEmpty = OmorfiFD Map.empty
+  tConstruct = const OmorfiFD
   tGetMap = getFDMap
   tPrintfun _ (mkey, mval) = mconcat $ map printOInfo mval
     where
@@ -71,10 +72,10 @@ instance Table OmorfiFD [OmorfiInfo] where
           mconcat [mkey, "\t",
                    stem, "\t",
                    if kn then "known" else "unknown", "\t",
-                   T.pack $ show $ pos, "\t",
-                   if othi == NoOI then "--" else getOIToken $ othi, "\t",
-                   T.pack $ show $ weight, "\t",
-                   T.pack $ show $ freq,
+                   T.pack $ show  pos, "\t",
+                   if othi == NoOI then "--" else getOIToken othi, "\t",
+                   T.pack $ show weight, "\t",
+                   T.pack $ show freq,
                    "\n"]
         OmorfiInfoError err -> mconcat [mkey, "\t", err]
   
@@ -102,11 +103,11 @@ getOmorfiAnalysis (OmorfiPipe inh outh ph) tok = do
   cont <- timeout (1000*1000*1000) (getUntilEmptyLine outh)
   case cont of
     Nothing -> do
-      putStrLn $ "Problem with " ++ (T.unpack tok)
+      putStrLn $ "Problem with " ++ T.unpack tok
       return []
     Just anal -> 
       case parse parseToken "omorfi" anal of
-        Left e -> (putStrLn $ "Omorfi parsing error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return []
+        Left e -> putStrLn ("Omorfi parsing error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return []
         Right (tok', ofis) -> return ofis
 
 
@@ -145,8 +146,8 @@ analyseFDOmorfi fd = do
   let tokenfreqs = tToList fd
   progVar <- initializeProgVar tokenfreqs
   let runToken (tok, freq) = do
-        oanal <- (getOmorfiAnalysis omorfi tok)
-        let freqPerAnalysis = if length oanal == 0 then freq else (freq `div` (length oanal))
+        oanal <- getOmorfiAnalysis omorfi tok
+        let freqPerAnalysis = if null oanal then freq else freq `div` length oanal
             oanalfreqs = map (\x -> x{ getFrequency = freqPerAnalysis }) oanal
         incrementProgVar progVar
         printWithProgVal printEveryPercent progVar
@@ -173,8 +174,8 @@ getStems omfd =
   let
     tokenlist = tToList omfd
     stemOneLine ::  (Token, [OmorfiInfo]) -> [(Token, Freq)]
-    stemOneLine oline@(tok, ois) = map (\o -> (getStem o, getFrequency o)) ois
-    stemFreqs = concat $ map (stemOneLine) tokenlist
+    stemOneLine oline@(tok, ois) = map (getStem &&& getFrequency) ois
+    stemFreqs = concatMap stemOneLine tokenlist
     flattenedfd = splitListByFD id stemFreqs
   in
    flattenedfd
@@ -212,13 +213,11 @@ parseToken = do
       eol = (many (tab <|> char ' ') >> endOfLine >> return ()) <|> eof
       sep = skipMany1 (tab <|> char ' ')
       double :: Parsec Txt.Text st Double
-      double =
-        many1 (oneOf "0123456789.") >>=
-        return . fst . head . reads
+      double = liftM (fst . head . reads) (many1 (oneOf "0123456789."))
       parseOneWord :: Parsec Txt.Text st Token
       parseOneWord =  T.pack `liftM` many1 (noneOf "\n\t+? ")
       maybePrompt :: Parsec Txt.Text st ()
-      maybePrompt = (many $ string "> ") >> return ()
+      maybePrompt = void $ many (string "> ")
       firstLine :: Parsec Txt.Text st Token
       firstLine = parseOneWord
       analysisLine :: Token -> Parsec Txt.Text st OmorfiInfo

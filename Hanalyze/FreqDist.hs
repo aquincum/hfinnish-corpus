@@ -45,7 +45,7 @@ import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token)
 import Data.List.Split (splitOn)
 import System.FilePath.Posix
-
+import Control.Arrow
 
 -- |Tables that can be written out
 class Eq t => Table t val | t -> val where
@@ -73,11 +73,11 @@ instance Monoid FreqDist where
   mempty = fdEmpty
   -- |Appending two 'FreqDist's by adding up the values in keys
   mappend !left !right =  let innermap = Map.unionWith (+) (left `seq` getMap left) (right `seq` getMap right) in
-    FreqDist $ innermap
+    FreqDist innermap
 
 instance Table FreqDist Freq where
   tEmpty = fdEmpty
-  tConstruct = \_ -> FreqDist
+  tConstruct = const FreqDist
   tGetMap = getMap
   tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show mval]
 
@@ -93,7 +93,7 @@ data AnnotatedFreqDist = AnnotatedFreqDist {getAFDMap :: Map.Map Token (Annotati
 
 instance Table AnnotatedFreqDist (Annotation, Freq) where
   tEmpty = afdEmpty
-  tConstruct = \_ -> AnnotatedFreqDist
+  tConstruct = const AnnotatedFreqDist
   tGetMap = getAFDMap
   tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
   
@@ -105,7 +105,7 @@ data SummaryTable = SummaryTable {getSTMap :: Map.Map Token (Freq, Freq)} derivi
 
 instance Table SummaryTable (Freq, Freq) where
   tEmpty = sdEmpty
-  tConstruct = \_ -> SummaryTable
+  tConstruct = const SummaryTable
   tGetMap = getSTMap         
   tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
 
@@ -261,11 +261,11 @@ splitListByFD :: (Eq a, Show a) =>
               -> [(Token, Freq)]  -- ^input list
               -> FreqDist  -- ^summary 'FreqDist'
 splitListByFD func list =
-  let retvals = List.map (\(x,y) -> (func x,y)) $ list
+  let retvals = List.map (first func) list
       classes = List.nub $ List.map fst retvals
       sum classid = List.foldl' (\(x,y) (k,z) ->  y `seq` (x,if k == classid then y+z else y)) (T.pack $ show classid,0) retvals
   in
-      FreqDist . Map.fromList $ List.map (sum) classes
+      FreqDist . Map.fromList $ List.map sum classes
 
 
 -- |Similar to 'splitByFD' but creates a summary table with token *and*
@@ -276,11 +276,11 @@ summarizeFD :: (Eq a, Show a) =>
                -> SummaryTable  -- ^summary table as 'SummaryTable'
 summarizeFD func fd =
   let map = getMap fd
-      retvals = List.map (\(x,y) -> (func x,y)) $ Map.toList map
+      retvals = List.map (first func) $ Map.toList map
       classes = List.nub $ List.map fst retvals
       sum classid = List.foldl' (\(x,(y,typ)) (k,z) -> y `seq` typ `seq` (x,(if k == classid then y+z else y,if k == classid then typ + 1 else  typ))) (T.pack $ show classid,(0,0)) retvals
   in
-   SummaryTable . Map.fromList $ List.map (sum) classes
+   SummaryTable . Map.fromList $ List.map sum classes
 
 -- |Annotates a 'FreqDist' with a list of filter functions that are paired
 -- with annotation labels.
@@ -290,11 +290,9 @@ annotateFD :: [(Annotation, Token -> Bool)] -- ^a list of partitioning functions
 annotateFD funlist fd =
   let innerlist = Map.toList $ getMap fd
       getAnnotation :: (Annotation, Token -> Bool) -> Token -> Annotation
-      getAnnotation (ann,fun) tok = case fun tok of
-        False -> T.pack ""
-        True -> ann
+      getAnnotation (ann,fun) tok = if fun tok then ann else T.pack ""
       getAllAnnotations :: [(Annotation, Token -> Bool)] -> Token -> Annotation
-      getAllAnnotations annfuns tok = let anns = List.map (\f -> getAnnotation f tok) annfuns
+      getAllAnnotations annfuns tok = let anns = List.map (`getAnnotation` tok) annfuns
                                       in
                                        mconcat $ List.intercalate [T.pack ", "] [anns]
       annmap = List.map (\(x,y) -> (x, (getAllAnnotations funlist x, y))) innerlist

@@ -161,6 +161,23 @@ testOmorfiPlain = do
        getOtherInfo ((ofdmap ! "hiljaa") !! 0) == NoOI @? "hiljaa oi"
     ]
                   
+testOmorfi :: IO Bool
+testOmorfi = do
+  ofd <- readFreqDist "freqdists/omorfitest2"
+  om <- analyseFDOmorfi ofd
+  let ofdmap = tGetMap om
+  huTest [
+    "tokennames" ~: do
+       "joulu" `elem` Map.keys ofdmap @? "token joulu not found"
+       "joulun" `elem` Map.keys ofdmap @? "token joulun not found"
+       "pitkä" `elem` Map.keys ofdmap @? "token pitkä not found"
+       "vitsa" `elem` Map.keys ofdmap @? "token vitsa not found"
+    ,
+    "stems" ~: do
+       getStem ((ofdmap ! "joulun") !! 0) == "joulu" @? "joulun stem"
+       getStem ((ofdmap ! "pitkä") !! 0) == "pitkä" @? "pitkä stem"
+       getStem ((ofdmap ! "vitsa") !! 0) == "vitsa" @? "vitsa stem"
+    ]
 
 prop_sum fd = sumFD fd == List.foldl' (+) 0 (map snd (Map.toList $ getMap fd))
 
@@ -189,5 +206,6 @@ main = do
   testHarmony >>= flip unless (giveUp "testHarmonyW")
   myCheck "Summing FDs: " prop_sum
   testOmorfiPlain >>= flip unless (giveUp "testOmorfiPlain")
+  testOmorfi >>= flip unless (giveUp "testOmorfiPlain")
   exitSuccess
   

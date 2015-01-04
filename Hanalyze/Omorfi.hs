@@ -77,7 +77,7 @@ instance Table OmorfiFD [OmorfiInfo] where
                    T.pack $ show $ freq,
                    "\n"]
         OmorfiInfoError err -> mconcat [mkey, "\t", err]
-
+  
 -- |Initializes an Omorfi connection by starting the interactive process
 initOmorfi :: IO OmorfiPipe
 initOmorfi = do
@@ -91,6 +91,7 @@ initOmorfi = do
         create_group = True
         }
   (_, _, _, ph) <- createProcess oproc
+  hSetEncoding master utf8
   return $ OmorfiPipe master master ph
 
 -- |Given an Omorfi connection, analyzes a token to its possible analyses
@@ -98,7 +99,7 @@ getOmorfiAnalysis :: OmorfiPipe -> Token -> IO [OmorfiInfo]
 getOmorfiAnalysis (OmorfiPipe inh outh ph) tok = do
   T.hPutStrLn inh tok
   hFlush inh
-  cont <- timeout (1000*1000) (getUntilEmptyLine outh)
+  cont <- timeout (1000*1000*1000) (getUntilEmptyLine outh)
   case cont of
     Nothing -> do
       putStrLn $ "Problem with " ++ (T.unpack tok)
@@ -145,7 +146,7 @@ analyseFDOmorfi fd = do
   progVar <- initializeProgVar tokenfreqs
   let runToken (tok, freq) = do
         oanal <- (getOmorfiAnalysis omorfi tok)
-        let freqPerAnalysis = freq `div` (length oanal)
+        let freqPerAnalysis = if length oanal == 0 then freq else (freq `div` (length oanal))
             oanalfreqs = map (\x -> x{ getFrequency = freqPerAnalysis }) oanal
         incrementProgVar progVar
         printWithProgVal printEveryPercent progVar

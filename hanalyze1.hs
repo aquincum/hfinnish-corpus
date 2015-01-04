@@ -68,13 +68,12 @@ main = do
     progn <- getProgName
     error $ "Usage: " ++ progn ++ " freqdist_file"
   fd <- readFreqDist $ head args
-  putStrLn "Omorfi analysis"
+  {-putStrLn "Omorfi analysis"
   om <- analyseFDOmorfi fd
   let om' = filterByValTable (\omi -> any getKnown omi) om
   saveTable om' "omorfied.out"
   let stemmed = getStems om'
-  saveTable stemmed "stemmed.out" -- lol
-  {-
+  saveTable stemmed "stemmed.out" -- lol -}
   summarySection fd
   vowelSummarySection "plain vowel structure" fd onlyVowels
   vowelSummarySection "plain harmonicity" fd harmonicity
@@ -89,6 +88,5 @@ main = do
   summarizeAnderson $ filterByFreqFD (> 50) fd
   putStrLn "# ONLY >100 FREQ FD"      
   summarizeAnderson $ filterByFreqFD (> 100) fd
-  -}
   --  saveTable fd' a"test.out"
   return ()

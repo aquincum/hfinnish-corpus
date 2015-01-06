@@ -83,7 +83,7 @@ stemFDFile fn = do
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
-  let cleaned = filterTable stemFilterTokenRelevant . cleanupFD cleanupWord $ fd
+  let cleaned = filterTable stemFilterTokenRelevant . cleanupTable cleanupWord $ fd
   om <- analyseFDOmorfi cleaned
   let om' = filterByValTable (any getKnown) om
       stemmed = getStems om'

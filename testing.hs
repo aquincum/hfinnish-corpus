@@ -179,7 +179,7 @@ testOmorfi = do
        getStem ((ofdmap ! "vitsa") !! 0) == "vitsa" @? "vitsa stem"
     ]
 
-prop_sum fd = sumFD fd == List.foldl' (+) 0 (map snd (Map.toList $ getMap fd))
+prop_sum fd = sumTable fd == List.foldl' (+) 0 (map snd (Map.toList $ getMap fd))
 
 
 myCheck :: (Testable prop) => String -> prop -> IO ()

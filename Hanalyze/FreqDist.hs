@@ -19,10 +19,11 @@ module Hanalyze.FreqDist
          -- * Manipulating FreqDists
          -- ** Generalized for Tables
          filterTable, filterByValTable,
+         cleanupTable, sumTable,
                                        
          -- ** Specifically for raw FreqDists
-         cleanupFD, filterByFreqFD, filterFDFile,
-         splitByFD, sumFD, splitListByFD,
+         filterByFreqFD, filterFDFile,
+         splitByFD, splitListByFD,
          -- ** Creating Tables from raw FreqDists
          summarizeFD, annotateFD
 
@@ -49,18 +50,21 @@ import Control.Arrow
 
 -- |Tables that can be written out
 class Eq t => Table t val | t -> val where
-  tEmpty :: t
-  tConstruct :: t -> Map.Map Token val -> t
-  tGetMap :: t -> Map.Map Token val
-  tPrintfun :: t -> (Token, val) -> Token
-  tToList :: t -> [(Token, val)]
+  tEmpty :: t -- ^The empty table
+  tConstruct :: t -> Map.Map Token val -> t -- ^The constructor of the table
+  tGetMap :: t -> Map.Map Token val  -- ^The unwrapper of the inner map
+  tPrintfun :: t -> (Token, val) -> Token -- ^A function that produces a printable tab-separated line
+  tToList :: t -> [(Token, val)] -- ^Wrapper for @toList . tGetMap@
   tToList = Map.toList . tGetMap
-  tFromList :: [(Token, val)] -> t
+  tFromList :: [(Token, val)] -> t -- ^Wrapper for @tConstruct tEmpty (fromList)@
   tFromList l = tConstruct tEmpty (Map.fromList l)
 --  eq :: t -> t -> Bool
 
 -- |Type synonym for frequency counts.
 type Freq = Int
+instance Monoid Freq where
+  mappend = (+)
+  mempty = 0
 
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
 data FreqDist = FreqDist {getMap :: !(Map.Map Token Freq)} deriving (Eq,Show)
@@ -207,12 +211,12 @@ saveTable fd fn = putStrLn ("Saving " ++ fn) >>
 
 -- |Cleans up a 'Table' using the cleanup 'Token' -> 'Token' function that converts the filthy
 -- string to the cleaned up string
-cleanupFD :: (Token -> Token) -> FreqDist -> FreqDist
-cleanupFD cleanup fd = let map = getMap fd
-                           accumulate acc key val = Map.unionWith (+) acc $ Map.singleton (cleanup key) val
-                           cleaned = Map.foldlWithKey' accumulate Map.empty map
+cleanupTable :: (Table t v, Monoid v)  => (Token -> Token) -> t -> t
+cleanupTable cleanup fd = let map = tGetMap fd
+                              accumulate acc key val = Map.unionWith (mappend) acc $ Map.singleton (cleanup key) val
+                              cleaned = Map.foldlWithKey' accumulate Map.empty map
                        in
-                         FreqDist cleaned
+                         tConstruct fd cleaned
 
 
 -- |Filters a Table based on a filtering function that has the
@@ -243,10 +247,10 @@ filterFDFile f cleanup fn = do
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
-  saveTable (filterTable f. cleanupFD cleanup $ fd) savefn
+  saveTable (filterTable f. cleanupTable cleanup $ fd) savefn
 
 
--- |Splits a 'FreqDist' into a summary 'FreqDist's based on a partitioning
+-- |Splits a 'FreqDist' into a summary 'FreqDist' based on a partitioning
 -- function.
 splitByFD :: (Eq a, Show a) =>
              (Token -> a) -- ^partitioning function
@@ -301,8 +305,8 @@ annotateFD funlist fd =
 
       
 -- |Simple summing function: returns the grand total frequency.
-sumFD :: FreqDist -> Freq
-sumFD fd = Map.foldl' (+) 0 $ getMap fd
+sumTable :: (Table t v, Monoid v) => t -> v
+sumTable fd = Map.foldl' mappend mempty $ tGetMap fd
 
 
   

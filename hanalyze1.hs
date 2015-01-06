@@ -23,7 +23,7 @@ dataPointInt label val = putStrLn $ label ++ ": " ++ show val
 
 summarySection :: FreqDist -> IO ()
 summarySection fd = sectionHeader "Summary" >>
-                    dataPointInt "grand total" (sumFD fd)
+                    dataPointInt "grand total" (sumTable fd)
 
 
 vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO ()

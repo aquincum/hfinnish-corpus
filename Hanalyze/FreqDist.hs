@@ -254,20 +254,20 @@ filterFDFile f cleanup fn = do
   saveTable (filterTable f. cleanupTable cleanup $ fd) savefn
 
 
--- |Splits a 'FreqDist' into a summary 'FreqDist' based on a partitioning
+-- |Splits a 'Table' into a summary 'Table' based on a partitioning
 -- function.
 splitByTable :: (Eq a, Show a, Table t v, Monoid v) =>
                 (Token -> a) -- ^partitioning function
-                -> t  -- ^input 'FreqDist'
-                -> t  -- ^summary 'FreqDist'
+                -> t  -- ^input 'Table'
+                -> t  -- ^summary 'Table'
 splitByTable func fd = splitListByTable func (tToList fd)
 
--- |Splits a list of ('Token', 'Freq') pairs into a summary 'FreqDist'
+-- |Splits a list of ('Token', value) pairs into a summary 'Table'
 -- based on a partitioning function.
 splitListByTable :: (Eq a, Show a, Table t v, Monoid v) =>
                     (Token -> a) -- ^partitioning function
                     -> [(Token, v)]  -- ^input list
-                    -> t  -- ^summary 'FreqDist'
+                    -> t  -- ^summary 'Table'
 splitListByTable func list =
   let retvals = List.map (first func) list
       classes = List.nub $ List.map fst retvals

@@ -50,13 +50,22 @@ import Control.Arrow
 
 -- |Tables that can be written out
 class Eq t => Table t val | t -> val where
-  tEmpty :: t -- ^The empty table
-  tConstruct :: t -> Map.Map Token val -> t -- ^The constructor of the table
-  tGetMap :: t -> Map.Map Token val  -- ^The unwrapper of the inner map
-  tPrintfun :: t -> (Token, val) -> Token -- ^A function that produces a printable tab-separated line
-  tToList :: t -> [(Token, val)] -- ^Wrapper for @toList . tGetMap@
+  -- |The empty table
+  tEmpty :: t
+  -- |The constructor of the table based on a prototype to
+  -- know what kind of table should be created
+  tConstruct :: t -- ^The prototype table
+                -> Map.Map Token val
+                -> t
+  -- |The unwrapper of the inner map
+  tGetMap :: t -> Map.Map Token val
+  -- |A function that produces a printable tab-separated line
+  tPrintfun :: t -> (Token, val) -> Token
+  -- |Wrapper for @toList . tGetMap@
+  tToList :: t -> [(Token, val)]
   tToList = Map.toList . tGetMap
-  tFromList :: [(Token, val)] -> t -- ^Wrapper for @tConstruct tEmpty (fromList)@
+  -- |Wrapper for @tConstruct tEmpty (fromList)@
+  tFromList :: [(Token, val)] -> t
   tFromList l = tConstruct tEmpty (Map.fromList l)
 --  eq :: t -> t -> Bool
 

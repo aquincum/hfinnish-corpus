@@ -176,7 +176,7 @@ getStems omfd =
     stemOneLine ::  (Token, [OmorfiInfo]) -> [(Token, Freq)]
     stemOneLine oline@(tok, ois) = map (getStem &&& getFrequency) ois
     stemFreqs = concatMap stemOneLine tokenlist
-    flattenedfd = splitListByFD id stemFreqs
+    flattenedfd = splitListByTable id stemFreqs
   in
    flattenedfd
 

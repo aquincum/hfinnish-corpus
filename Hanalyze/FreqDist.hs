@@ -20,10 +20,10 @@ module Hanalyze.FreqDist
          -- ** Generalized for Tables
          filterTable, filterByValTable,
          cleanupTable, sumTable,
+         splitByTable, splitListByTable,
                                        
          -- ** Specifically for raw FreqDists
          filterFDFile,
-         splitByFD, splitListByFD,
          -- ** Creating Tables from raw FreqDists
          summarizeFD, annotateFD
 
@@ -256,27 +256,27 @@ filterFDFile f cleanup fn = do
 
 -- |Splits a 'FreqDist' into a summary 'FreqDist' based on a partitioning
 -- function.
-splitByFD :: (Eq a, Show a) =>
-             (Token -> a) -- ^partitioning function
-             -> FreqDist  -- ^input 'FreqDist'
-             -> FreqDist  -- ^summary 'FreqDist'
-splitByFD func fd = splitListByFD func (tToList fd)
+splitByTable :: (Eq a, Show a, Table t v, Monoid v) =>
+                (Token -> a) -- ^partitioning function
+                -> t  -- ^input 'FreqDist'
+                -> t  -- ^summary 'FreqDist'
+splitByTable func fd = splitListByTable func (tToList fd)
 
 -- |Splits a list of ('Token', 'Freq') pairs into a summary 'FreqDist'
 -- based on a partitioning function.
-splitListByFD :: (Eq a, Show a) =>
-                 (Token -> a) -- ^partitioning function
-              -> [(Token, Freq)]  -- ^input list
-              -> FreqDist  -- ^summary 'FreqDist'
-splitListByFD func list =
+splitListByTable :: (Eq a, Show a, Table t v, Monoid v) =>
+                    (Token -> a) -- ^partitioning function
+                    -> [(Token, v)]  -- ^input list
+                    -> t  -- ^summary 'FreqDist'
+splitListByTable func list =
   let retvals = List.map (first func) list
       classes = List.nub $ List.map fst retvals
-      sum classid = List.foldl' (\(x,y) (k,z) ->  y `seq` (x,if k == classid then y+z else y)) (T.pack $ show classid,0) retvals
+      sum classid = List.foldl' (\(x,y) (k,z) ->  y `seq` (x,if k == classid then y `mappend` z else y)) (T.pack $ show classid,mempty) retvals
   in
-      FreqDist . Map.fromList $ List.map sum classes
+      tFromList $ List.map sum classes
 
 
--- |Similar to 'splitByFD' but creates a summary table with token *and*
+-- |Similar to 'splitByTable' but creates a summary table with token *and*
 -- type frequency.
 summarizeFD :: (Eq a, Show a) =>
                (Token -> a) -- ^partitioning function

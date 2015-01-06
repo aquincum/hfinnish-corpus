@@ -22,7 +22,7 @@ module Hanalyze.FreqDist
          cleanupTable, sumTable,
                                        
          -- ** Specifically for raw FreqDists
-         filterByFreqFD, filterFDFile,
+         filterFDFile,
          splitByFD, splitListByFD,
          -- ** Creating Tables from raw FreqDists
          summarizeFD, annotateFD
@@ -239,11 +239,6 @@ filterTable f fd = tConstruct fd $ Map.filterWithKey expfilt $ tGetMap fd
 filterByValTable :: Table a x => (x -> Bool) -> a -> a
 filterByValTable f fd = tConstruct fd $ Map.filter f  $ tGetMap fd
 
-
--- |Filters a FreqDist based on a filtering function that has the
--- type 'Freq' -> 'Bool', as it filters on frequency data
-filterByFreqFD :: (Freq -> Bool) -> FreqDist -> FreqDist
-filterByFreqFD = filterByValTable
 
 -- |Filters a Frequency Distribution file with a filter function and
 -- a cleanup function

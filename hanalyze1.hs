@@ -83,10 +83,10 @@ main = do
                                               writeTable annotfd h
                                               )
   putStrLn "# ONLY >10 FREQ FD"      
-  summarizeAnderson $ filterByFreqFD (> 10) fd
+  summarizeAnderson $ filterByValTable (> 10) fd
   putStrLn "# ONLY >50 FREQ FD"      
-  summarizeAnderson $ filterByFreqFD (> 50) fd
+  summarizeAnderson $ filterByValTable (> 50) fd
   putStrLn "# ONLY >100 FREQ FD"      
-  summarizeAnderson $ filterByFreqFD (> 100) fd
+  summarizeAnderson $ filterByValTable (> 100) fd
   --  saveTable fd' a"test.out"
   return ()

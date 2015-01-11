@@ -68,7 +68,8 @@ main = do
   when (length args /= 1) $ do
     progn <- getProgName
     error $ "Usage: " ++ progn ++ " freqdist_file"
-  fd <- liftM filterVowelFinals $ readFreqDist $ head args
+--  fd <- liftM filterVowelFinals $ readFreqDist $ head args
+  fd <- readFreqDist $ head args
   {-putStrLn "Omorfi analysis"
   om <- analyseFDOmorfi fd
   let om' = filterByValTable (\omi -> any getKnown omi) om

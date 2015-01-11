@@ -71,7 +71,7 @@ stemFilterTokenRelevant t = case segment finnishInventory t of
               DotF $ setBundle [fFront, minus fLow, minus fRounded],
               Star
               ]
-   l p = fromJust $ findPhoneme finnishInventory p
+y   l p = fromJust $ findPhoneme finnishInventory p
 
 -- |Cleaning up non-alphanumeric symbols. Could get more complicated
 cleanupWord :: Token -> Token

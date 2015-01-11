@@ -20,6 +20,6 @@ main :: IO ()
 main = do
   fd <- liftM head getArgs >>= readFreqDist
   withTempFile "stemming" "nofreq." $ \tmpFile h -> do
-    sequence $ map (T.hPutStrLn h) (Map.keys $ getMap fd)
+    mapM_ (T.hPutStrLn h) (Map.keys $ getMap fd)
     runCommand $ "omorfi_analyse " ++ tmpFile
   return ()

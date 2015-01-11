@@ -38,7 +38,7 @@ summarizeByC :: FreqDist -> IO ()
 summarizeByC fd = do
   let fdLab = filterTable (filterToken finnishInventory [DotF consonant, DotF vowel, DotF labial, DotF $ mconcat [low,vowel]]) fd
   let fdCor = filterTable (filterToken finnishInventory [DotF consonant, DotF vowel, DotF coronal, DotF $ mconcat [low,vowel]]) fd
-  let fdVel = filterTable (filterToken finnishInventory [DotF consonant, DotF vowel, DotF velar, DotF $ mconcat [low,vowel]]) fd      
+  let fdVel = filterTable (filterToken finnishInventory [DotF consonant, DotF vowel, DotF velar, DotF $ mconcat [low,vowel]]) fd
   vowelSummarySection "with labials" fdLab harmonicity
   vowelSummarySection "with coronals" fdCor harmonicity
   vowelSummarySection "with velars" fdVel harmonicity
@@ -48,9 +48,9 @@ summarizeAnderson fd = do
   let l p = fromJust $ findPhoneme finnishInventory p
       gravesNotP = [l "k", l "g", l "kk", l "m", l "mm", l "ng", l "f", l "ff", l "v", l "vv", l "h", l "hh", l "j", l "jj"]
       acutesP = [l "p", l "pp", l "t", l "tt", l "d", l "dd", l "n", l "nn", l "s", l "ss", l "z", l "zz", l "š", l "šš", l "ž", l "žž", l "l", l "ll", l "r", l "rr"]
-      funGrave  = filterToken finnishInventory [DotF consonant, DotF vowel, AnyP gravesNotP, DotF $ mconcat [low,vowel]] 
-      funAcuteI = filterToken finnishInventory [DotF consonant, AnyP [l "i", l "ii", l "ei"], AnyP acutesP, DotF $ mconcat [low,vowel]] 
-      funAcuteE = filterToken finnishInventory [DotF consonant, AnyP [l "e", l "ee"], AnyP acutesP, DotF $ mconcat [low,vowel]] 
+      funGrave  = filterToken finnishInventory [DotF consonant, DotF vowel, AnyP gravesNotP, DotF $ mconcat [low,vowel]]
+      funAcuteI = filterToken finnishInventory [DotF consonant, AnyP [l "i", l "ii", l "ei"], AnyP acutesP, DotF $ mconcat [low,vowel]]
+      funAcuteE = filterToken finnishInventory [DotF consonant, AnyP [l "e", l "ee"], AnyP acutesP, DotF $ mconcat [low,vowel]]
       fdGrave = filterTable funGrave fd
       fdAcuteI = filterTable funAcuteI fd
       fdAcuteE = filterTable funAcuteE fd
@@ -59,7 +59,8 @@ summarizeAnderson fd = do
   vowelSummarySection "with acutes or [p] after [e(:)] (Anderson: harmonic)" fdAcuteE harmonicity
   return $ annotateFD [("grave", funGrave), ("acute with i", funAcuteI), ("acute with e", funAcuteE)] fd
 
-
+filterVowelFinals :: FreqDist -> FreqDist
+filterVowelFinals = filterTable $ filterToken finnishInventory [Star, DotF vowel]
 
 main :: IO ()
 main = do
@@ -67,7 +68,7 @@ main = do
   when (length args /= 1) $ do
     progn <- getProgName
     error $ "Usage: " ++ progn ++ " freqdist_file"
-  fd <- readFreqDist $ head args
+  fd <- liftM filterVowelFinals $ readFreqDist $ head args
   {-putStrLn "Omorfi analysis"
   om <- analyseFDOmorfi fd
   let om' = filterByValTable (\omi -> any getKnown omi) om
@@ -82,11 +83,11 @@ main = do
                                               annotfd <- summarizeAnderson fd
                                               writeTable annotfd h
                                               )
-  putStrLn "# ONLY >10 FREQ FD"      
+  putStrLn "# ONLY >10 FREQ FD"
   summarizeAnderson $ filterByValTable (> 10) fd
-  putStrLn "# ONLY >50 FREQ FD"      
+  putStrLn "# ONLY >50 FREQ FD"
   summarizeAnderson $ filterByValTable (> 50) fd
-  putStrLn "# ONLY >100 FREQ FD"      
+  putStrLn "# ONLY >100 FREQ FD"
   summarizeAnderson $ filterByValTable (> 100) fd
   --  saveTable fd' a"test.out"
   return ()

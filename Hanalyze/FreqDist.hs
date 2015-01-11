@@ -8,7 +8,7 @@ module Hanalyze.FreqDist
 
          -- * Simple lifted Map functions
          fdEmpty, fdKeys, sdEmpty, afdEmpty,
-         
+
          -- * Reading and saving FreqDists
          -- ** Generalized for Tables
          writeTable, saveTable,
@@ -21,7 +21,7 @@ module Hanalyze.FreqDist
          filterTable, filterByValTable,
          cleanupTable, sumTable,
          splitByTable, splitListByTable,
-                                       
+
          -- ** Specifically for raw FreqDists
          filterFDFile,
          -- ** Creating Tables from raw FreqDists
@@ -31,42 +31,45 @@ module Hanalyze.FreqDist
          )
        where
 
-import qualified Data.Map.Strict as Map
+import           Control.Applicative
+import           Control.Arrow
+import           Control.DeepSeq
+import           Control.Exception
 import qualified Control.Monad as M
-import System.IO
-import System.Environment
-import Control.Applicative
-import Data.Monoid
-import Control.DeepSeq
-import Control.Exception
 import qualified Data.ByteString.UTF8 as BUTF8
-import qualified System.IO.MMap as MMap
-import qualified Data.List as List 
+import qualified Data.List as List
+import           Data.List.Split (splitOn)
+import qualified Data.Map.Strict as Map
+import           Data.Monoid
+import           Hanalyze.Token (Token)
 import qualified Hanalyze.Token as T
-import Hanalyze.Token (Token)
-import Data.List.Split (splitOn)
-import System.FilePath.Posix
-import Control.Arrow
+import           System.Environment
+import           System.FilePath.Posix
+import           System.IO
+import qualified System.IO.MMap as MMap
+
 
 -- |Tables that can be written out
-class Eq t => Table t val | t -> val where
+class Eq t => Table t val  | t -> val where
   -- |The empty table
   tEmpty :: t
   -- |The constructor of the table based on a prototype to
   -- know what kind of table should be created
   tConstruct :: t -- ^The prototype table
-                -> Map.Map Token val
-                -> t
+             -> Map.Map Token val
+             -> t
   -- |The unwrapper of the inner map
   tGetMap :: t -> Map.Map Token val
   -- |A function that produces a printable tab-separated line
-  tPrintfun :: t -> (Token, val) -> Token
+  tPrintfun :: t -> (Token,val) -> Token
   -- |Wrapper for @toList . tGetMap@
-  tToList :: t -> [(Token, val)]
+  tToList :: t -> [(Token,val)]
   tToList = Map.toList . tGetMap
   -- |Wrapper for @tConstruct tEmpty (fromList)@
-  tFromList :: [(Token, val)] -> t
-  tFromList l = tConstruct tEmpty (Map.fromList l)
+  tFromList :: [(Token,val)] -> t
+  tFromList l =
+    tConstruct tEmpty
+               (Map.fromList l)
 --  eq :: t -> t -> Bool
 
 -- |Type synonym for frequency counts.
@@ -76,7 +79,9 @@ instance Monoid Freq where
   mempty = 0
 
 -- |The frequency distribution: it is a map where keys are types and the values show the token frequency.
-data FreqDist = FreqDist {getMap :: !(Map.Map Token Freq)} deriving (Eq,Show)
+data FreqDist =
+  FreqDist {getMap :: !(Map.Map Token Freq)}
+  deriving (Eq,Show)
 
 {-
 instance NFData FreqDist where
@@ -85,14 +90,19 @@ instance NFData FreqDist where
 instance Monoid FreqDist where
   mempty = fdEmpty
   -- |Appending two 'FreqDist's by adding up the values in keys
-  mappend !left !right =  let innermap = Map.unionWith (+) (left `seq` getMap left) (right `seq` getMap right) in
-    FreqDist innermap
+  mappend !left !right =
+    let innermap =
+          Map.unionWith (+)
+                        (left `seq` getMap left)
+                        (right `seq` getMap right)
+    in FreqDist innermap
 
 instance Table FreqDist Freq where
   tEmpty = fdEmpty
   tConstruct = const FreqDist
   tGetMap = getMap
-  tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show mval]
+  tPrintfun _ (mkey,mval) =
+    mconcat [mkey,T.pack "\t",T.pack $ show mval]
 
 -- |Annotation is just a 'Data.Text.Text', therefore a 'Token'
 type Annotation = Token
@@ -109,7 +119,7 @@ instance Table AnnotatedFreqDist (Annotation, Freq) where
   tConstruct = const AnnotatedFreqDist
   tGetMap = getAFDMap
   tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
-  
+
 
 -- |Summary table of frequency distributions, where the token is probably some
 -- summing factor. The value is a tuple, where the first value is, as usual,
@@ -119,7 +129,7 @@ data SummaryTable = SummaryTable {getSTMap :: Map.Map Token (Freq, Freq)} derivi
 instance Table SummaryTable (Freq, Freq) where
   tEmpty = sdEmpty
   tConstruct = const SummaryTable
-  tGetMap = getSTMap         
+  tGetMap = getSTMap
   tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
 
 -- |The empty 'FreqDist' map.
@@ -169,14 +179,15 @@ multiReadCountFreqs fns = do
 -- |Inside function to read in the first 2 words in a line to a pair
 readFreqDistLine :: BUTF8.ByteString -> (Token, Token)
 readFreqDistLine line =
-  let (w1,w2) =  BUTF8.break (== '\t') line
-      txt2 = case T.decodeFromUTF $ BUTF8.drop 1 w2 of
-        Left err -> T.pack "0"
-        Right x -> x
-      in
-  case T.decodeFromUTF w1 of
-    Left err -> (T.pack "UnicodeError", txt2)
-    Right txt1 -> (txt1, txt2)
+  let (w1,w2) = BUTF8.break (== '\t') line
+      txt2 =
+        case T.decodeFromUTF $
+             BUTF8.drop 1 w2 of
+          Left err -> T.pack "0"
+          Right x -> x
+  in case T.decodeFromUTF w1 of
+       Left err -> (T.pack "UnicodeError",txt2)
+       Right txt1 -> (txt1,txt2)
 
 
 -- |Converts a Text with the frequency info to an integer. Implemented to
@@ -202,7 +213,7 @@ readFreqDist fp = do
 
 
 -- |Generic 'Table' writer.
-writeTable :: (Table a x) => a -> Handle -> IO () 
+writeTable :: (Table a x) => a -> Handle -> IO ()
 writeTable fd _ | fd == tEmpty = return ()
 writeTable fd handle =
   let ((mkey, mval), mfd2) = Map.deleteFindMax (tGetMap fd) in
@@ -222,7 +233,7 @@ saveTable fd fn = putStrLn ("Saving " ++ fn) >>
 -- string to the cleaned up string
 cleanupTable :: (Table t v, Monoid v)  => (Token -> Token) -> t -> t
 cleanupTable cleanup fd = let map = tGetMap fd
-                              accumulate acc key val = Map.unionWith (mappend) acc $ Map.singleton (cleanup key) val
+                              accumulate acc key val = Map.unionWith mappend acc $ Map.singleton (cleanup key) val
                               cleaned = Map.foldlWithKey' accumulate Map.empty map
                        in
                          tConstruct fd cleaned
@@ -307,10 +318,7 @@ annotateFD funlist fd =
   in
    AnnotatedFreqDist $ Map.fromList annmap
 
-      
+
 -- |Simple summing function: returns the grand total frequency.
 sumTable :: (Table t v, Monoid v) => t -> v
 sumTable fd = Map.foldl' mappend mempty $ tGetMap fd
-
-
-  

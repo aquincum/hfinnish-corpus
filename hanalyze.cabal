@@ -24,7 +24,7 @@ library
                      Hanalyze.Process, Hanalyze.Progress,
                      Hanalyze.Token, Hanalyze.Phoneme,
                      Hanalyze.Pattern, Hanalyze.Omorfi
-  build-depends:       base ==4.6.*,
+  build-depends:       base >=4.6,
                        containers, 
                        text,
                        time,
@@ -41,7 +41,7 @@ library
 executable create_fds
   main-is:           create_fds.hs
   ghc-options:	     -threaded -rtsopts
-  build-depends:     base ==4.6.*,
+  build-depends:     base >=4.6,
                      containers, 
                      text,
                      split,
@@ -52,7 +52,7 @@ executable create_fds
 executable merge_fds
   main-is:           merge_fds.hs
   ghc-options:       -threaded -rtsopts -O2
-  build-depends:     base ==4.6.*, containers, hanalyze, 
+  build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split
@@ -60,7 +60,7 @@ executable merge_fds
 executable filter_fds
   main-is:           filter_fds.hs
   ghc-options:       -rtsopts -O2
-  build-depends:     base ==4.6.*, containers, hanalyze, 
+  build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split, parsec, process >= 1.2.0.0,
@@ -69,7 +69,7 @@ executable filter_fds
 executable stem_fds
   main-is:           stem_fds.hs
   ghc-options:       -rtsopts -O2
-  build-depends:     base ==4.6.*, containers, hanalyze, 
+  build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split, temporary, process >= 1.2.0.0
@@ -77,14 +77,14 @@ executable stem_fds
 executable hanalyze1
   main-is:           hanalyze1.hs
   ghc-options:       -rtsopts -O2
-  build-depends:     base ==4.6.*, containers, hanalyze, 
+  build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split, parsec, process >= 1.2.0.0, unix
 
 test-suite testing
   main-is:           testing.hs
-  build-depends:     base ==4.6.*, containers, hanalyze, 
+  build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
                      QuickCheck, process >= 1.2.0.0, filepath, split,
@@ -93,7 +93,7 @@ test-suite testing
 
 test-suite testing_phonemes
   main-is:           testing_phonemes.hs
-  build-depends:     base ==4.6.*, containers, hanalyze, 
+  build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
                      QuickCheck, process >= 1.2.0.0, split, filepath

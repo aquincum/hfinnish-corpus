@@ -314,6 +314,11 @@ findPhoneme [] _ = Nothing
 findPhoneme (x:xs) s = if phonemeName x == s
                        then Just x
                        else findPhoneme xs s
+                            
+-- |Picks out a set of phonemes based on features
+pickByFeature :: PhonemicInventory -> FeatureBundle -> [Phoneme]
+pickByFeature pi fb = filter (\p -> fb `subsetFB` featureBundle p) pi
+
 
 -- |Segment a token, so far only with *digraphs*
 segment :: PhonemicInventory -> Token -> Maybe [Phoneme]

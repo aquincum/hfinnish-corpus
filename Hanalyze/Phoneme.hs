@@ -105,7 +105,7 @@ underspecified (Feature pm fn) = Feature Null fn
 -- |A feature bundle. Will be used as a monoid.
 newtype FeatureBundle = Bundle {
   innerBundle :: [Feature]
-} deriving (Show)
+} deriving (Show, Eq)
 
 emptyBundle :: FeatureBundle
 emptyBundle = Bundle []
@@ -203,7 +203,7 @@ subsetFB f1 f2 = let (firstf:tailf) = getBundle f1
 data Phoneme = Phoneme {
   phonemeName :: String,
   featureBundle :: FeatureBundle
-} deriving (Show)
+} deriving (Show, Eq)
 
 type PhonemicInventory = [Phoneme] 
 

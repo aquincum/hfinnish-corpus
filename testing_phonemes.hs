@@ -105,9 +105,18 @@ testFilterme =
       patternSoph3 = [AnyP [phonA,phonB], Star]
       filteredFd pat = filterTable (filterToken finnishInventory pat) fd
       filteredMap pat = getMap $ filteredFd pat
+      ppattern = readPattern finnishInventory
   in
    putStrLn ("Here we go: " ++ show (filteredMap patternSoph2)) >>
    huTest [
+     "pattern reading" ~: do
+        pattern == (fromJust $ ppattern "p*p") @? "reading pattern 1"
+        pattern2 == (fromJust $ ppattern "*p*") @? "reading pattern 2"
+        pattern3 == (fromJust $ ppattern "*p?") @? "reading pattern 3"
+        pattern4 == (fromJust $ ppattern "*p") @? "reading pattern 4"
+        pattern5 == (fromJust $ ppattern "*p.") @? "reading pattern 5"
+        patternSoph3 == (fromJust $ ppattern "[a,b]*") @? "reading sophisticated pattern 3"
+     ,
      "p*p" ~: do
         size (filteredMap pattern) == 1 @? "size " ++ show (filteredMap pattern)
         member "pep" (filteredMap pattern) @? "found " ++ show (filteredMap pattern)

@@ -51,6 +51,9 @@ summarizeAnderson fd = do
       funGrave  = filterToken finnishInventory [DotF consonant, DotF vowel, AnyP gravesNotP, DotF $ mconcat [low,vowel]]
       funAcuteI = filterToken finnishInventory [DotF consonant, AnyP [l "i", l "ii", l "ei"], AnyP acutesP, DotF $ mconcat [low,vowel]]
       funAcuteE = filterToken finnishInventory [DotF consonant, AnyP [l "e", l "ee"], AnyP acutesP, DotF $ mconcat [low,vowel]]
+
+      -- todo: QuestionF
+      
       fdGrave = filterTable funGrave fd
       fdAcuteI = filterTable funAcuteI fd
       fdAcuteE = filterTable funAcuteE fd

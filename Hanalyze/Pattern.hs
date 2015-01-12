@@ -13,6 +13,10 @@ import Hanalyze.Phoneme
 import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token, pack, unpack)
 import Data.List (intersperse)
+import Text.Parsec
+
+
+type PattParser st x = Parsec String st x
 
 -- |A pattern for filtering
 data Pattern = P Phoneme -- ^Matches a given phoneme based on its label
@@ -23,26 +27,17 @@ data Pattern = P Phoneme -- ^Matches a given phoneme based on its label
              | DotF FeatureBundle -- ^Matches a feature bundle
              | StarF FeatureBundle -- ^Matches 0 or more phonemes that match the feature bundle
              | QuestionF FeatureBundle -- ^Matches 0 or 1 phonemes that match the feature bundle
+               deriving (Eq)
 
 instance Show Pattern where
   show patt = writePattern [patt]
 
--- |Read in a pattern based on a phonemic inventory. Need a better parser; use with caution!!
+
+-- |Read in a pattern based on a phonemic inventory. Now with quality parsing!
 readPattern :: PhonemicInventory -> Token -> Maybe [Pattern]
-readPattern inv s = do
-  let inv' = inv ++ [
-        Phoneme "*" emptyBundle,
-        Phoneme "?" emptyBundle,
-        Phoneme "." emptyBundle
-        ]
-  seg <- segment inv' s
-  let patt = map (\p -> case phonemeName p of
-                     "*" -> Star
-                     "." -> Dot
-                     "?" -> Question
-                     s -> P p
-                 ) seg
-  return patt
+readPattern inv s = case parse (parsePatterns inv) "pattern reading" (T.unpack s) of
+  Left e -> Nothing
+  Right x -> Just x
                      
 -- |Output a pattern in a human-readable form
 writePattern :: [Pattern] -> String
@@ -54,9 +49,52 @@ writePattern = concatMap write'
       Dot -> "."
       P y -> phonemeName y
       AnyP plist -> "[" ++ foldl (++) "" (map phonemeName plist) ++ "]."
-      DotF fb -> "[" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "]."
-      StarF fb -> "[" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "]*"
-      QuestionF fb -> "[" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "]?"
+      DotF fb -> "{" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "}."
+      StarF fb -> "{" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "}*"
+      QuestionF fb -> "{" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "}?"
+
+parsePatterns :: PhonemicInventory -> PattParser st [Pattern]
+parsePatterns pi = many1 $ parsePattern pi
+
+parsePattern :: PhonemicInventory -> PattParser st Pattern
+parsePattern pi = try digraph <|> star <|> question <|> dot <|>
+                  p <|> anyp <|>
+                  (do
+                      fl <- featlist
+                      (char '.' >> return (DotF fl)) <|>
+                        (char '?' >> return (QuestionF fl)) <|>
+                        (char '*' >> return (StarF fl))
+                    ) <|>
+                  ( digit >> unexpected "Number in pattern" ) <|>
+                  ( space >> unexpected "Whitespace in pattern" ) <|>
+                  ( noneOf "" >> fail "Unexpected character")
+  where
+    anyp = between (char '[') (char ']') (sepBy (try digraph <|> p) (char ',')) >>= \list -> 
+      return $ AnyP $ foldl (\acc (P x) -> (acc++[x])) [] list
+    featlist = between (char '{') (char '}') featureSpecifications >>= \features ->
+      return $ setBundle features
+    star = char '*' >> return Star
+    question = char '?' >> return Question
+    dot = char '.' >> return Dot
+    p = letter >>= \l -> phoneme [l]
+    digraph = letter >>= \a -> letter >>= \b -> phoneme [a,b]
+    phoneme p = case findPhoneme pi p of
+      Just x -> return $ P x
+      Nothing -> unexpected $ "No such phoneme " ++ p
+    parsePM = (char '+' >> return Plus) <|>
+              (char '-' >> return Minus) <|>
+              (char '0' >> return Null) <|>
+              return Plus -- ?
+    featureSpecifications :: PattParser st [Feature]
+    featureSpecifications = sepBy featureSpecification (char ',')
+    featureSpecification :: PattParser st Feature
+    featureSpecification = do
+      pm <- parsePM
+      fn <- many1 (noneOf ",{}")
+      return $ Feature pm fn
+
+--    getPhoneme p = 
+
 
 -- |Filter a word as a list of phonemes based on a pattern
 filterWord :: [Phoneme] -> [Pattern] -> Bool

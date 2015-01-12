@@ -96,5 +96,6 @@ test-suite testing_phonemes
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
-                     QuickCheck, process >= 1.2.0.0, split, filepath
+                     QuickCheck, process >= 1.2.0.0, split, filepath,
+                     parsec
   type:              exitcode-stdio-1.0

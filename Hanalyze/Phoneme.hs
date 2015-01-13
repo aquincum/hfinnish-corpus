@@ -52,7 +52,7 @@ import Data.Maybe
 import Control.Monad
 import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token)
-import Data.List (delete)
+import Data.List (delete,nub)
 
 -- |Plus or minus of a binary feature
 data PlusMinus = Plus | Minus | Null deriving (Eq)
@@ -318,6 +318,62 @@ findPhoneme (x:xs) s = if phonemeName x == s
 -- |Picks out a set of phonemes based on features
 pickByFeature :: PhonemicInventory -> FeatureBundle -> [Phoneme]
 pickByFeature pi fb = filter (\p -> fb `subsetFB` featureBundle p) pi
+
+-- |Lists all the feature names in an inventory
+listFeatures :: PhonemicInventory -> [String]
+-- pi >>= getBundle . featureBundle === join $ map (getBundle . featureBundle) pi
+-- in the [] monad
+-- so we start unique the featurenames from the flattened feature bundles from the
+-- phonemic inventory
+listFeatures  = nub . (map featureName) . (>>= getBundle . featureBundle)
+
+-- |Lists all bundles with a maximum length of @n@ that is valid in a phonemic
+-- inventory
+listBundles :: PhonemicInventory  -- ^the inventory
+               -> Int             -- ^@n@
+               -> [FeatureBundle] -- ^all bundles
+listBundles pi maxn =
+  let allfeats = listFeatures pi
+      allns n = do
+        x <- replicateM maxn allfeats
+        guard $ length (nub x) == maxn -- no repet.
+        return x
+      allupto = [1..maxn] >>= allns
+      allsubsets = mapM (\t -> [Feature Plus t, Feature Minus t])
+  in
+   map setBundle (join (map allsubsets allupto))
+
+-- |Selects those bundles for an inventory that pick out a proper non-empty subset
+-- of phonemes in that inventory
+selectRelevantBundles pi maxn =
+  let
+    nphonemes = length pi
+    relevant bundle = let x = length $ pickByFeature pi bundle
+                      in
+                       x > 0 && x < nphonemes
+  in
+   filter relevant (listBundles pi maxn)
+
+
+  {-let allpossfeats = listFeatures pi >>=
+                                      (`fmap` [Plus, Minus, Null]) . flip Feature
+                       allsubsets = do
+                         sub <- filterM (const [True, False]) allpossfeats
+                         guard (length sub == 1)
+                         guard (nub sub == sub)
+                         return $ setBundle sub
+                   in
+                    allsubsets -}
+
+{-
+listFeatures pi = let feats = map (getBundle . featureBundle) pi
+                      allfeats = join feats
+                      allfnames = map featureName allfeats
+                      uniqfnames = nub allfnames
+                  in
+                   uniqfnames
+-}
+
 
 
 -- |Segment a token, so far only with *digraphs*

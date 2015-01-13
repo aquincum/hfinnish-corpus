@@ -69,10 +69,12 @@ parsePattern pi = try digraph <|> star <|> question <|> dot <|>
                   ( space >> unexpected "Whitespace in pattern" ) <|>
                   ( noneOf "" >> fail "Unexpected character")
   where
-    anyp = between (char '[') (char ']') (sepBy (try digraph <|> p) (char ',')) >>= \list -> 
-      return $ AnyP $ foldl (\acc (P x) -> (acc++[x])) [] list
-    featlist = between (char '{') (char '}') featureSpecifications >>= \features ->
-      return $ setBundle features
+    anyp = (AnyP . foldl (\acc (P x) -> (acc++[x])) [])
+           `fmap`
+           between (char '[') (char ']') (sepBy (try digraph <|> p) (char ','))
+    featlist = setBundle
+               `fmap`
+               between (char '{') (char '}') featureSpecifications
     star = char '*' >> return Star
     question = char '?' >> return Question
     dot = char '.' >> return Dot

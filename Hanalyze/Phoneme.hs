@@ -22,6 +22,7 @@ module Hanalyze.Phoneme
 
          -- * Segmenting
          segment,
+
                        
          -- * Feature system
          -- ** basic features
@@ -43,7 +44,8 @@ module Hanalyze.Phoneme
          high, mid, low, rounded, unrounded, front, back, vowel,
 
          -- * Inventories
-         finnishInventory
+         finnishInventory, selectRelevantBundles, listBundles,
+         pickByFeature
 
          ) where
 
@@ -105,7 +107,11 @@ underspecified (Feature pm fn) = Feature Null fn
 -- |A feature bundle. Will be used as a monoid.
 newtype FeatureBundle = Bundle {
   innerBundle :: [Feature]
-} deriving (Show, Eq)
+} deriving (Eq)
+
+
+instance Show FeatureBundle where
+  show = show . innerBundle
 
 emptyBundle :: FeatureBundle
 emptyBundle = Bundle []
@@ -341,7 +347,7 @@ listBundles pi maxn =
       allupto = [1..maxn] >>= allns
       allsubsets = mapM (\t -> [Feature Plus t, Feature Minus t])
   in
-   map setBundle (join (map allsubsets allupto))
+   map Bundle (allupto >>= allsubsets)
 
 -- |Selects those bundles for an inventory that pick out a proper non-empty subset
 -- of phonemes in that inventory

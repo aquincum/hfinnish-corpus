@@ -69,29 +69,31 @@ main :: IO ()
 main = do
   args <- getArgs
   when (length args /= 1) $ do
-    progn <- getProgName
-    error $ "Usage: " ++ progn ++ " freqdist_file"
---  fd <- liftM filterVowelFinals $ readFreqDist $ head args
-  fd <- readFreqDist $ head args
-  {-putStrLn "Omorfi analysis"
-  om <- analyseFDOmorfi fd
-  let om' = filterByValTable (\omi -> any getKnown omi) om
-  saveTable om' "omorfied.out"
-  let stemmed = getStems om'
-  saveTable stemmed "stemmed.out" -- lol -}
-  summarySection fd
-  vowelSummarySection "plain vowel structure" fd onlyVowels
-  vowelSummarySection "plain harmonicity" fd harmonicity
-  putStrLn "# MAIN FD"
-  withFile "summary_annot_fd.txt" WriteMode (\h -> do
-                                              annotfd <- summarizeAnderson fd
-                                              writeTable annotfd h
+    -- something different
+    let relb = selectRelevantBundles finnishInventory 2
+        phonemes = map (pickByFeature finnishInventory) relb
+        phnames = (map . map) phonemeName phonemes
+        outputzip = zip relb phnames
+    mapM_ (\zline -> putStr (show $ fst zline) >>
+                     putStr ": " >>
+                     mapM_ (\ph -> putStr (ph ++ " ")) (snd zline) >>
+                     putStrLn "") outputzip
+  unless (length args /= 1) $ do
+    --  fd <- liftM filterVowelFinals $ readFreqDist $ head args    fd <- readFreqDist $ head args
+    fd <- readFreqDist $ head args
+    summarySection fd
+    vowelSummarySection "plain vowel structure" fd onlyVowels
+    vowelSummarySection "plain harmonicity" fd harmonicity
+    putStrLn "# MAIN FD"
+    withFile "summary_annot_fd.txt" WriteMode (\h -> do
+                                                  annotfd <- summarizeAnderson fd
+                                                  writeTable annotfd h
                                               )
-  putStrLn "# ONLY >10 FREQ FD"
-  summarizeAnderson $ filterByValTable (> 10) fd
-  putStrLn "# ONLY >50 FREQ FD"
-  summarizeAnderson $ filterByValTable (> 50) fd
-  putStrLn "# ONLY >100 FREQ FD"
-  summarizeAnderson $ filterByValTable (> 100) fd
-  --  saveTable fd' a"test.out"
-  return ()
+    putStrLn "# ONLY >10 FREQ FD"
+    summarizeAnderson $ filterByValTable (> 10) fd
+    putStrLn "# ONLY >50 FREQ FD"
+    summarizeAnderson $ filterByValTable (> 50) fd
+    putStrLn "# ONLY >100 FREQ FD"
+    summarizeAnderson $ filterByValTable (> 100) fd
+    --  saveTable fd' a"test.out"
+    return ()

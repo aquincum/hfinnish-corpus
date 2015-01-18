@@ -1,10 +1,10 @@
 #!/bin/bash
 
-cabal install --only-dependencies --enable-tests --with-gcc=g++
-cabal configure --enable-tests   && cabal build --with-gcc=g++
+cabal install --only-dependencies --enable-tests
+cabal configure --enable-tests   && cabal build
 
 
-if (! cabal test --with-gcc=g++) then
+if (! cabal test) then
     cat dist/test/*.log
     exit 1
 fi

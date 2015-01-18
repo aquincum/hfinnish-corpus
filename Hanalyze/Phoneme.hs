@@ -54,7 +54,8 @@ import Data.Maybe
 import Control.Monad
 import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token)
-import Data.List (delete,nub)
+import Data.List (delete,nub,sortBy,minimumBy,groupBy)
+import Data.Function (on)
 
 -- |Plus or minus of a binary feature
 data PlusMinus = Plus | Minus | Null deriving (Eq)
@@ -341,24 +342,41 @@ listBundles :: PhonemicInventory  -- ^the inventory
 listBundles pi maxn =
   let allfeats = listFeatures pi
       allns n = do
-        x <- replicateM maxn allfeats
-        guard $ length (nub x) == maxn -- no repet.
+        x <- replicateM n allfeats
+        guard $ length (nub x) == n -- no repet.
         return x
       allupto = [1..maxn] >>= allns
       allsubsets = mapM (\t -> [Feature Plus t, Feature Minus t])
+      allvariants = allupto >>= allsubsets
+      uniqued = nub $ map (sortBy (compare `on` featureName)) allvariants
   in
-   map Bundle (allupto >>= allsubsets)
+   map Bundle uniqued
 
 -- |Selects those bundles for an inventory that pick out a proper non-empty subset
 -- of phonemes in that inventory
+selectRelevantBundles :: PhonemicInventory   -- ^the inventory
+                         -> Int              -- ^maximum @n@ of features in a bundle
+                         -> [FeatureBundle]  -- ^the resulting bundle
 selectRelevantBundles pi maxn =
   let
+    pick b = pickByFeature pi b
     nphonemes = length pi
-    relevant bundle = let x = length $ pickByFeature pi bundle
+    relevant bundle = let x = length $ pick bundle
                       in
                        x > 0 && x < nphonemes
+    allrelevant = filter relevant (listBundles pi maxn)
+    getAllPhonemes bundle = concat (map phonemeName (pick bundle))
+    picked :: [FeatureBundle]
+    picked = sortBy (compare `on` getAllPhonemes) allrelevant
+    grouped :: [[FeatureBundle]]
+    grouped = groupBy (\x y -> pick x == pick y) picked
+    leastFeatures :: FeatureBundle -> FeatureBundle -> Ordering
+    leastFeatures = compare `on` (length . getBundle)
+    uniteGroup :: [FeatureBundle] -> FeatureBundle
+    uniteGroup  = minimumBy leastFeatures
+    united = map uniteGroup grouped
   in
-   filter relevant (listBundles pi maxn)
+   united
 
 
   {-let allpossfeats = listFeatures pi >>=

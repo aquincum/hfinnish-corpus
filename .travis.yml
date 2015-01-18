@@ -8,7 +8,7 @@ before_install:
   - gunzip Cabal-1.22.0.0.tar.gz
   - tar xf Cabal-1.22.0.0.tar
   - cd Cabal-1.22.0.0
-  - cabal install
+  - sudo cabal install
   - cd ..
   - cabal --version
   - sudo apt-get install libboost-math-dev

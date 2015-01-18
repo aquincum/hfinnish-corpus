@@ -3,11 +3,4 @@ script: ./buildit.sh
 ghc: 7.8
 
 before_install:
-  - wget "https://www.haskell.org/cabal/release/cabal-1.22.0.0/Cabal-1.22.0.0.tar.gz"
-  - gunzip Cabal-1.22.0.0.tar.gz
-  - tar xf Cabal-1.22.0.0.tar
-  - cd Cabal-1.22.0.0
-  - sudo cabal install
-  - cd ..
-  - cabal --version
   - sudo apt-get install libboost-math-dev

@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Main where
 
@@ -13,7 +14,88 @@ import Hanalyze.Omorfi
 import Control.Monad
 import Data.Monoid
 import Data.Maybe
+-- import Data.Data
 import qualified Hanalyze.Token as T
+import System.Console.GetOpt
+
+data Task = AnalyzeFile | AnalyzeInventory deriving (Show, Eq)
+data Flag = Task Task
+          | MaxN Int
+          | FileName FilePath
+            deriving (Show, Eq)
+
+options :: [OptDescr Flag]
+options = [
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory)",
+  Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
+  Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile task"
+  ]
+
+optGetTask :: String -> Flag
+optGetTask s = case s of
+  "analyzeinventory" -> Task AnalyzeInventory
+  _ -> Task AnalyzeFile
+
+compileOptions :: [String] -> IO ([Flag])
+compileOptions args = case getOpt Permute options args of
+  (o, n, []) -> do
+    let hasMaxn  = any (\fl -> case fl of
+                           MaxN _ -> True
+                           _ -> False) o
+        hasFn = any (\fl -> case fl of
+                           FileName _ -> True
+                           _ -> False) o
+        hasTi = (Task AnalyzeInventory) `elem` o
+        hasTf = (Task AnalyzeFile) `elem` o
+    when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
+    when (hasMaxn && hasTf) (myError ["both maxn and analyzefilename, ambiguous task"])
+    when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
+    let retval = if hasMaxn
+                 then if (not hasTi)
+                      then Task AnalyzeInventory:o
+                      else o
+                 else if hasTi
+                      then MaxN 2:o
+                      else if (not hasTf)
+                           then Task AnalyzeFile:o
+                           else o
+    let retval' = if (Task AnalyzeFile) `elem` retval
+                  then if (not hasFn)
+                       then if (not $ null n)
+                            then FileName (head n):retval
+                            else myError ["no FILE given either with -n or otherwise"]
+                       else retval
+                  else retval
+    return retval'
+  (_, _, errs) -> myError errs
+ where
+  myError errs = error $ "Option parsing error: " ++ concat errs ++
+                  "\n" ++ usageInfo "Usage: hanalyze1 [OPTIONS...] [FILE]" options
+
+flagGetMaxn :: [Flag] -> Int
+flagGetMaxn [] = error "No maxn in flags"
+flagGetMaxn (h:f) = case h of
+  MaxN x -> x
+  _ -> flagGetMaxn f
+
+flagGetFn :: [Flag] -> String
+flagGetFn [] = error "No filename in flags"
+flagGetFn (h:f) = case h of
+  FileName x -> x
+  _ -> flagGetFn f
+
+{- too complicated
+flagGet :: [Flag] -> String -> Flag
+flagGet flags s = case readConstr (dataTypeOf (MaxN 4)) s of
+  Nothing -> error $ "No such flag as " ++ s
+  Just f -> go flags f
+ where
+   go [] _ = error $ "No " ++ s ++ " in flags"
+   go (h:f) c = if toConstr h == c
+                then h
+                else go f c
+-}
+
 
 sectionHeader :: String -> IO ()
 sectionHeader s = putStrLn s >> putStrLn "========"
@@ -68,9 +150,10 @@ filterVowelFinals = filterTable $ filterToken finnishInventory [Star, DotF vowel
 main :: IO ()
 main = do
   args <- getArgs
-  when (length args /= 1) $ do
+  flags <- compileOptions args
+  when ((Task AnalyzeInventory) `elem` flags) $ do
     -- something different
-    let relb = selectRelevantBundles finnishInventory 2
+    let relb = selectRelevantBundles finnishInventory (flagGetMaxn flags)
         phonemes = map (pickByFeature finnishInventory) relb
         phnames = (map . map) phonemeName phonemes
         outputzip = zip relb phnames
@@ -78,9 +161,9 @@ main = do
                      putStr ": " >>
                      mapM_ (\ph -> putStr (ph ++ " ")) (snd zline) >>
                      putStrLn "") outputzip
-  unless (length args /= 1) $ do
+  when ((Task AnalyzeFile) `elem` flags) $ do
     --  fd <- liftM filterVowelFinals $ readFreqDist $ head args    fd <- readFreqDist $ head args
-    fd <- readFreqDist $ head args
+    fd <- readFreqDist $ flagGetFn flags
     summarySection fd
     vowelSummarySection "plain vowel structure" fd onlyVowels
     vowelSummarySection "plain harmonicity" fd harmonicity

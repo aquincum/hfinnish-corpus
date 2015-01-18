@@ -9,3 +9,4 @@ before_install:
   - cd Cabal-1.22.0.0
   - cabal install
   - cd ..
+  - cabal --version

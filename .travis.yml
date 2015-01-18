@@ -10,3 +10,4 @@ before_install:
   - cabal install
   - cd ..
   - cabal --version
+  - sudo apt-get install libboost-math-dev

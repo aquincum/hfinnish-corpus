@@ -1,4 +1,11 @@
 language: haskell
 script: ./buildit.sh
-ghc: 7.8.2
-cabal: 1.22.0.0
+ghc: 7.8
+
+before-install:
+  - wget "https://www.haskell.org/cabal/release/cabal-1.22.0.0/Cabal-1.22.0.0.tar.gz"
+  - gunzip Cabal-1.22.0.0.tar.gz
+  - tar xf Cabal-1.22.0.0.tar
+  - cd Cabal-1.22.0.0
+  - cabal install
+  - cd ..

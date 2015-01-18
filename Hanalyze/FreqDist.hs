@@ -73,7 +73,7 @@ class Eq t => Table t val  | t -> val where
 --  eq :: t -> t -> Bool
 
 -- |Type synonym for frequency counts.
-type Freq = Int
+type Freq = Int 
 instance Monoid Freq where
   mappend = (+)
   mempty = 0
@@ -131,6 +131,17 @@ instance Table SummaryTable (Freq, Freq) where
   tConstruct = const SummaryTable
   tGetMap = getSTMap
   tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
+
+{-
+data AnyTable = AnyTable {getATMap :: Map.Map Token [Float]} deriving (Eq, Show)
+
+instance Table AnyTable [Float] where
+  tEmpty = AnyTable Map.empty
+  tConstruct = const AnyTable
+  tGetMap = getATMap
+  tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t",
+                                      mconcat $ mconcat (map (\n -> [T.pack $ show n, T.pack "\t"]) mval)]
+  -}
 
 -- |The empty 'FreqDist' map.
 fdEmpty :: FreqDist

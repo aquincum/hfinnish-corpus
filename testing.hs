@@ -4,6 +4,7 @@ import Test.QuickCheck.Monadic
 import Hanalyze.FreqDist
 import Hanalyze.Vowels
 import Hanalyze.Omorfi
+import Hanalyze.Chisq
 import Control.Applicative ((<$>))
 import qualified Data.Map as Map
 import Data.Map ((!))
@@ -181,6 +182,8 @@ testOmorfi = do
 
 prop_sum fd = sumTable fd == List.foldl' (+) 0 (map snd (Map.toList $ getMap fd))
 
+prop_ffi :: Int -> Bool
+prop_ffi int = (mytest int) == int + 1
 
 myCheck :: (Testable prop) => String -> prop -> IO ()
 myCheck s pr = putStr s >> quickCheckResult pr >>= \res ->
@@ -209,6 +212,7 @@ main = do
   myCheck "Monoid law II: " prop_monoid_ii
   myCheck "Monoid law III: " prop_monoid_iii
   myCheck "Monoid law IV: " prop_monoid_iv
+  myCheck "ffi" prop_ffi
   testLoading >>= flip unless (giveUp "testLoading")
   -- doesn't work because laziness :/ writing does not start before reading
   -- myCheck "Saving and loading: " prop_saveLoad

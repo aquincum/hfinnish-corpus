@@ -14,11 +14,12 @@ import Hanalyze.Omorfi
 import Control.Monad
 import Data.Monoid
 import Data.Maybe
+import Text.Printf
 -- import Data.Data
 import qualified Hanalyze.Token as T
 import System.Console.GetOpt
 
-data Task = AnalyzeFile | AnalyzeInventory deriving (Show, Eq)
+data Task = AnalyzeFile | AnalyzeInventory | Anderson deriving (Show, Eq)
 data Flag = Task Task
           | MaxN Int
           | FileName FilePath
@@ -26,14 +27,16 @@ data Flag = Task Task
 
 options :: [OptDescr Flag]
 options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory)",
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson)",
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
-  Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile task"
+  Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
+  Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory"
   ]
 
 optGetTask :: String -> Flag
 optGetTask s = case s of
   "analyzeinventory" -> Task AnalyzeInventory
+  "anderson" -> Task Anderson
   _ -> Task AnalyzeFile
 
 compileOptions :: [String] -> IO ([Flag])
@@ -47,19 +50,23 @@ compileOptions args = case getOpt Permute options args of
                            _ -> False) o
         hasTi = (Task AnalyzeInventory) `elem` o
         hasTf = (Task AnalyzeFile) `elem` o
+        hasTa = (Task Anderson) `elem` o
     when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
-    when (hasMaxn && hasTf) (myError ["both maxn and analyzefilename, ambiguous task"])
+    when (hasMaxn && hasTa) (myError ["both maxn and anderson, ambiguous task"])
     when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
+    -- UGLY AS HELL, FIX SOON
     let retval = if hasMaxn
-                 then if (not hasTi)
-                      then Task AnalyzeInventory:o
+                 then if (not hasTi && not hasTf && not hasTa)
+                      then Task AnalyzeFile:o
                       else o
-                 else if hasTi
-                      then MaxN 2:o
-                      else if (not hasTf)
-                           then Task AnalyzeFile:o
-                           else o
-    let retval' = if (Task AnalyzeFile) `elem` retval
+                 else if hasTa
+                      then o
+                      else if hasTi
+                           then MaxN 2:o
+                           else if (not hasTf)
+                                then Task AnalyzeFile:MaxN 2: o
+                                else MaxN 2: o
+    let retval' = if ((Task AnalyzeFile) `elem` retval || (Task Anderson) `elem` retval)
                   then if (not hasFn)
                        then if (not $ null n)
                             then FileName (head n):retval
@@ -108,13 +115,22 @@ summarySection fd = sectionHeader "Summary" >>
                     dataPointInt "grand total" (sumTable fd)
 
 
-vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO ()
+vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO (Map.Map Token [Double])
 vowelSummarySection str fd f =
   sectionHeader ("Vowel structure summary -- " ++ str)  >>
-  writeTable summedfd stdout >>
-  putStrLn ""
+  writeout >>
+  putStrLn "" >>
+  return (Map.fromList tokenperc)
   where
-    summedfd = summarizeFD f fd
+    summedMap = Map.toList $ tGetMap $ summarizeFD f fd -- (Int, Int) ~ (token, type)
+    allToken = fromIntegral $ foldr ((+) . fst . snd) 0 summedMap
+    allType = fromIntegral $  foldr ((+) . snd . snd) 0 summedMap
+    tokenperc = map (\(t, (a,b)) -> (t, [(fromIntegral a),(fromIntegral b),(fromIntegral a) / allToken * 100.0, (fromIntegral b) / allType * 100.0])) summedMap
+    writeout = mapM (\(t, list) -> putStr (T.unpack t) >>
+                                   putStr "\t" >>
+                                   mapM (\x -> printf "%d\t" ((round x)::Int)) (take 2 list) >>
+                                   mapM (\x -> printf "%.2f%%\t" (x::Double)) (drop 2 list) >>
+                                   putStr "\n") tokenperc
 
 summarizeByC :: FreqDist -> IO ()
 summarizeByC fd = do
@@ -124,6 +140,7 @@ summarizeByC fd = do
   vowelSummarySection "with labials" fdLab harmonicity
   vowelSummarySection "with coronals" fdCor harmonicity
   vowelSummarySection "with velars" fdVel harmonicity
+  return ()
 
 summarizeAnderson :: FreqDist -> IO AnnotatedFreqDist
 summarizeAnderson fd = do
@@ -144,6 +161,20 @@ summarizeAnderson fd = do
   vowelSummarySection "with acutes or [p] after [e(:)] (Anderson: harmonic)" fdAcuteE harmonicity
   return $ annotateFD [("grave", funGrave), ("acute with i", funAcuteI), ("acute with e", funAcuteE)] fd
 
+
+summarizeByPattern :: FreqDist -> PhonemicInventory -> [Pattern] -> IO AnnotatedFreqDist
+summarizeByPattern fd inv patt = do
+  let funFits = filterToken inv patt
+      funDoesntfit = not . funFits
+      fdFits = filterTable funFits fd
+      fdDoesntfit = filterTable funDoesntfit fd
+  putStrLn $ " ========*** " ++ writePattern patt ++ " ***========"
+  vowelSummarySection ("fitting pattern " ++ writePattern patt) fdFits harmonicity
+  vowelSummarySection ("not fitting pattern " ++ writePattern patt) fdDoesntfit harmonicity
+  return $ annotateFD [(T.pack ("fits_"++writePattern patt), funFits),
+                       (T.pack ("fitsnot_"++writePattern patt), funDoesntfit)] fd
+
+
 filterVowelFinals :: FreqDist -> FreqDist
 filterVowelFinals = filterTable $ filterToken finnishInventory [Star, DotF vowel]
 
@@ -161,7 +192,7 @@ main = do
                      putStr ": " >>
                      mapM_ (\ph -> putStr (ph ++ " ")) (snd zline) >>
                      putStrLn "") outputzip
-  when ((Task AnalyzeFile) `elem` flags) $ do
+  when ((Task Anderson) `elem` flags) $ do
     --  fd <- liftM filterVowelFinals $ readFreqDist $ head args    fd <- readFreqDist $ head args
     fd <- readFreqDist $ flagGetFn flags
     summarySection fd
@@ -180,3 +211,15 @@ main = do
     summarizeAnderson $ filterByValTable (> 100) fd
     --  saveTable fd' a"test.out"
     return ()
+  when ((Task AnalyzeFile) `elem` flags) $ do
+    fd <- readFreqDist $ flagGetFn flags
+    summarySection fd
+    -- get relevant bundles for vowels
+    let vowels = filterInventoryByBundle finnishInventory vowel
+        vowelRelevants = selectRelevantBundles vowels (flagGetMaxn flags)
+        patternGenerator fb = [StarF consonant, DotF fb, StarF consonant, StarF vowel]
+        patterns = map patternGenerator vowelRelevants
+    mapM_ (summarizeByPattern fd finnishInventory) patterns
+        
+    -- explore
+    

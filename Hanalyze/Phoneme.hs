@@ -45,7 +45,7 @@ module Hanalyze.Phoneme
 
          -- * Inventories
          finnishInventory, selectRelevantBundles, listBundles,
-         pickByFeature
+         pickByFeature, filterInventory, filterInventoryByBundle
 
          ) where
 
@@ -313,6 +313,15 @@ finnishInventory = mapWith testInv short ++ mapWith doubledInv long ++ [
     mapWith inv feat = map (\phon -> Phoneme (phonemeName phon) (mconcat [featureBundle phon, feat]) ) inv
     doubledInv = map (\phon -> let n = phonemeName phon in
                        Phoneme (n ++ if n == "ng" then "" else n) (featureBundle phon)) testInv
+
+-- |Filters an Inventory according to a general predicate
+filterInventory :: PhonemicInventory -> (Phoneme -> Bool) -> PhonemicInventory
+filterInventory pi pred = filter pred pi
+
+-- |Filters an Inventory according to a feature bundle that phonemes
+-- have to match on to get in the resulting inventory
+filterInventoryByBundle :: PhonemicInventory -> FeatureBundle -> PhonemicInventory
+filterInventoryByBundle pi bund = filterInventory pi (subsetFB bund . featureBundle)
 
 
 -- |Locates a phoneme in a phonemic inventory

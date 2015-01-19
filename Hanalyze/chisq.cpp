@@ -44,6 +44,13 @@ double getChiSq(double **table, int x, int y, int yates){
   return chisq;
 }
 
+double chiSqTest(int x, int y, double chiSq){
+  int df = (x - 1) * (y - 1);
+  chi_squared dist(df);
+  double p = cdf(dist, chiSq);
+  return p;
+}
+
 
 int exmain (){
   chi_squared dist(1.0);

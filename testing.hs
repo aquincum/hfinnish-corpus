@@ -188,10 +188,14 @@ prop_ffi int = (mytest int) == int + 1
 testChisq :: IO Bool
 testChisq = do
   let table = [[12.0,7.0],[5.0,7.0]]
-      chisq = getChiSq table True
+      mchisq = getChiSq table True
+      chitest = runChiSqTest table True
   huTest [
     "chi^2" ~: do
-       chisq > 0.64 && chisq < 0.65 @? ("chisq is not 0.64--0.65, it is" ++ (show chisq))
+       mchisq > 0.64 && mchisq < 0.65 @? ("chisq is not 0.64--0.65, it is" ++ (show mchisq))
+       chisq chitest == mchisq @? "chisq accessor"
+       p chitest > 0.576 && p chitest < 0.577 @? ("p is not 0.576--0.577, it is" ++ (show $ p chitest))
+       not (sig chitest) @? "significance"
     ]
 
 myCheck :: (Testable prop) => String -> prop -> IO ()

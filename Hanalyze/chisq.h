@@ -6,4 +6,5 @@ extern "C" {
   EXPORT void getPeripherals(double **, int, int, double**, double**, double*);
   EXPORT double getChiSq(double**, int, int, int);
   EXPORT int test(int);
+  EXPORT double chiSqTest(int, int, double);
 }

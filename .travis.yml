@@ -3,7 +3,4 @@ script: ./buildit.sh
 ghc: 7.8
 
 before_install:
-  - sudo apt-get update
   - sudo apt-get install libboost-math-dev
-  - sudo apt-get upgrade automake
-  - ./getomorfi.sh

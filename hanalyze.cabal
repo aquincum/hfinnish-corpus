@@ -99,6 +99,11 @@ test-suite testing
                      parsec, unix
   type:              exitcode-stdio-1.0
   extra-libraries:     stdc++
+  c-sources:           Hanalyze/chisq.cpp
+  cc-options:          -Wall -O2
+  include-dirs:        Hanalyze
+  includes:            Hanalyze/chisq.h
+  install-includes:    Hanalyze/chisq.h
 
 test-suite testing_phonemes
   main-is:           testing_phonemes.hs

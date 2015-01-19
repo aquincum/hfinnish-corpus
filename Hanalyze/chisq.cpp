@@ -1,6 +1,8 @@
 #include <boost/math/distributions/chi_squared.hpp>
 #include <iostream>
+extern "C"{
 #include "chisq.h"
+}
 
 using namespace boost::math;
 using namespace std;
@@ -27,7 +29,7 @@ int test(int x){
 }
 
 
-double getChiSq(double **table, int x, int y, bool yates = false){
+double getChiSq(double **table, int x, int y, int yates){
   double *rowsums, *colsums, grandtotal, chisq = 0.0;
   getPeripherals(table, x, y, &rowsums, &colsums, &grandtotal);
   for (int i = 0; i < x; i ++){
@@ -53,13 +55,9 @@ int exmain (){
   testdata[1][0] = 5.0;
   testdata[1][1] = 7.0;
 
-  double testchsq = getChiSq(testdata, 2, 2);
+  double testchsq = getChiSq(testdata, 2, 2, 0);
   cout << "\n" << testdata[1][1] << "\n" ;
-  double testchsqyat = getChiSq(testdata, 2, 2, true);
-  double x = getChiSq(testdata,2,2);
-  x = getChiSq(testdata,2,2);
-  x = getChiSq(testdata,2,2);
-  x = getChiSq(testdata,2,2);
+  double testchsqyat = getChiSq(testdata, 2, 2, 1);
   double p_lower = quantile(dist,0.025);
   double p_upper = quantile(dist,0.975);
   double p = cdf(dist, testchsq);

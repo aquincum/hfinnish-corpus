@@ -1,8 +1,9 @@
 #include <boost/math/distributions/chi_squared.hpp>
 #include <iostream>
+#define EXPORT __attribute__ ((visibility ("default")))
 
 extern "C" {
-void getPeripherals(double **, int, int, double**, double**, double*);
-double getChiSq(double**, int, int, bool);
-int test(int);
+  EXPORT void getPeripherals(double **, int, int, double**, double**, double*);
+  EXPORT double getChiSq(double**, int, int, int);
+  EXPORT int test(int);
 }

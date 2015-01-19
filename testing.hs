@@ -185,6 +185,15 @@ prop_sum fd = sumTable fd == List.foldl' (+) 0 (map snd (Map.toList $ getMap fd)
 prop_ffi :: Int -> Bool
 prop_ffi int = (mytest int) == int + 1
 
+testChisq :: IO Bool
+testChisq = do
+  let table = [[12.0,7.0],[5.0,7.0]]
+      chisq = getChiSq table True
+  huTest [
+    "chi^2" ~: do
+       chisq > 0.64 && chisq < 0.65 @? ("chisq is not 0.64--0.65, it is" ++ (show chisq))
+    ]
+
 myCheck :: (Testable prop) => String -> prop -> IO ()
 myCheck s pr = putStr s >> quickCheckResult pr >>= \res ->
   case res of
@@ -213,6 +222,7 @@ main = do
   myCheck "Monoid law III: " prop_monoid_iii
   myCheck "Monoid law IV: " prop_monoid_iv
   myCheck "ffi" prop_ffi
+  testChisq  >>= flip unless (giveUp "chiSq")
   testLoading >>= flip unless (giveUp "testLoading")
   -- doesn't work because laziness :/ writing does not start before reading
   -- myCheck "Saving and loading: " prop_saveLoad

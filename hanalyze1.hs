@@ -4,6 +4,7 @@
 module Main where
 
 import System.IO
+import Control.Exception
 import System.Environment
 import qualified Data.Map as Map
 import Hanalyze.FreqDist
@@ -11,6 +12,7 @@ import Hanalyze.Vowels
 import Hanalyze.Pattern
 import Hanalyze.Phoneme
 import Hanalyze.Omorfi
+import Hanalyze.Chisq
 import Control.Monad
 import Data.Monoid
 import Data.Maybe
@@ -169,8 +171,15 @@ summarizeByPattern fd inv patt = do
       fdFits = filterTable funFits fd
       fdDoesntfit = filterTable funDoesntfit fd
   putStrLn $ " ========*** " ++ writePattern patt ++ " ***========"
-  vowelSummarySection ("fitting pattern " ++ writePattern patt) fdFits harmonicity
-  vowelSummarySection ("not fitting pattern " ++ writePattern patt) fdDoesntfit harmonicity
+  fitMap       <- vowelSummarySection ("fitting pattern " ++ writePattern patt) fdFits harmonicity
+  doesntfitMap <- vowelSummarySection ("not fitting pattern " ++ writePattern patt) fdDoesntfit harmonicity
+  let getTypeFreqs m = map ((!! 1) .snd) (Map.toList m)
+      table = [getTypeFreqs fitMap, getTypeFreqs doesntfitMap]
+  putStrLn $ show table
+  catch (do
+            let xsqtest = runChiSqTest table True
+            putStrLn $ "\nChi Sq = " ++ show (chisq xsqtest) ++ ", p = " ++ show (p xsqtest) ++ ", " ++ if sig xsqtest then "*SIGNIFICANT*" else "n.s."
+        ) (\err -> putStrLn $"No chi square test available, " ++ (show (err::SomeException)))
   return $ annotateFD [(T.pack ("fits_"++writePattern patt), funFits),
                        (T.pack ("fitsnot_"++writePattern patt), funDoesntfit)] fd
 
@@ -217,9 +226,10 @@ main = do
     -- get relevant bundles for vowels
     let vowels = filterInventoryByBundle finnishInventory vowel
         vowelRelevants = selectRelevantBundles vowels (flagGetMaxn flags)
+        fd' = filterTable (filterToken finnishInventory [StarF consonant, DotF vowel, StarF consonant, StarF vowel]) fd
         patternGenerator fb = [StarF consonant, DotF fb, StarF consonant, StarF vowel]
         patterns = map patternGenerator vowelRelevants
-    mapM_ (summarizeByPattern fd finnishInventory) patterns
+    mapM_ (summarizeByPattern fd' finnishInventory) patterns
         
     -- explore
     

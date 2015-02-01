@@ -14,7 +14,6 @@ copyright:           (c) 2014 Daniel Szeredi
 category:            Text
 build-type:          Simple
 cabal-version:       >=1.8
-extra-source-files:  Hanalyze/chisq.*
 
 source-repository head
   type:              git
@@ -38,13 +37,8 @@ library
                        split,
                        parsec,
                        process >= 1.2.0.0,
-                       unix
-  c-sources:           Hanalyze/chisq.cpp
-  cc-options:          -Wall -O2
-  include-dirs:        Hanalyze
-  includes:            Hanalyze/chisq.h
-  install-includes:    Hanalyze/chisq.h
-  extra-libraries:     stdc++
+                       unix,
+                       statistics
 
 executable create_fds
   main-is:           create_fds.hs
@@ -88,7 +82,8 @@ executable hanalyze1
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
-                     split, parsec, process >= 1.2.0.0, unix
+                     split, parsec, process >= 1.2.0.0, unix,
+                     statistics
 
 test-suite testing
   main-is:           testing.hs
@@ -96,14 +91,8 @@ test-suite testing
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
                      QuickCheck, process >= 1.2.0.0, filepath, split,
-                     parsec, unix
+                     parsec, unix, statistics
   type:              exitcode-stdio-1.0
-  extra-libraries:     stdc++
-  c-sources:           Hanalyze/chisq.cpp
-  cc-options:          -Wall -O2
-  include-dirs:        Hanalyze
-  includes:            Hanalyze/chisq.h
-  install-includes:    Hanalyze/chisq.h
 
 test-suite testing_phonemes
   main-is:           testing_phonemes.hs

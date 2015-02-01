@@ -3,27 +3,9 @@
 
 module Hanalyze.Chisq where
 
-import Foreign
-import Foreign.C.Types
-import System.IO.Unsafe
-import Unsafe.Coerce
 import Data.List
-
-foreign import ccall unsafe "test"
-  c_test :: CInt -> CInt
-
-foreign import ccall unsafe "getChiSq"
-  c_getChiSq :: Ptr (Ptr CDouble) -- ^double **table
-                -> CInt           -- ^int x
-                -> CInt           -- ^int y
-                -> CInt           -- ^int yates (bool)
-                -> IO CDouble     -- ^result
-
-foreign import ccall unsafe "chiSqTest"
-  c_chiSqTest :: CInt             -- ^int x
-              -> CInt             -- ^int y
-              -> CDouble          -- ^double chiSq
-              -> CDouble          -- ^@p@
+import Statistics.Distribution.ChiSquared
+import Statistics.Distribution
 
 data ChiTest = ChiTest {
   chisq :: Double,
@@ -48,33 +30,34 @@ getChiSq :: [[Double]] -- ^The matrix
 getChiSq table yates =
   let
     (rowl, coll) = getMatrixSize table
-  in unsafePerformIO $ do
-          let ctable = (map . map) unsafeCoerce table
-          rowptrs <- mapM newArray ctable
-          fullptr <- newArray rowptrs
-          let x = fromIntegral rowl
-              y = fromIntegral coll
-              yatesint = if yates
-                         then (fromIntegral 1)
-                         else (fromIntegral 0)
-          res <- c_getChiSq fullptr x y yatesint
-          return (unsafeCoerce res)
-     
+    rowsum = map sum table
+    colsum = map sum $ transpose table
+    grandsum = sum rowsum
+    xrc = zip3 (concat table)  -- values
+               (concat $ map (replicate rowl) rowsum) -- row sums for each value
+               (concat $ replicate coll colsum) -- col sums for each value
+    getChiSqForValue (val, row, col) =
+      let expected = (row / grandsum) * (col / grandsum) * grandsum
+          oe = abs (val - expected) - if yates then 0.5 else 0
+      in
+       oe * oe / expected
+    chisq = sum $ map getChiSqForValue xrc
+  in 
+   chisq
+
+
 runChiSqTest :: [[Double]] -- ^The matrix
              -> Bool       -- ^Use Yates correction?
              -> ChiTest
 runChiSqTest table yates =
-  let (rowl, coll) = getMatrixSize table
-      savChisq = getChiSq table yates
-      savP = unsafeCoerce $ c_chiSqTest (fromIntegral rowl) (fromIntegral coll) (unsafeCoerce savChisq)
-      savSig = case savP of
-        x | x < 0.025 -> True
-          | x > 0.975 -> True
-        _ -> False
+  let
+    (rowl, coll) = getMatrixSize table
+    savChisq = getChiSq table yates
+    df = (rowl - 1) * (coll - 1)
+    savP = cumulative (chiSquared df) savChisq
+    savSig = case savP of
+      x | x < 0.025 -> True
+        | x > 0.975 -> True
+      _ -> False
   in
-    ChiTest savChisq savP savSig
-
-mytest :: Int -> Int
-mytest x = fromIntegral(c_test (fromIntegral x))
-
-la = 2
+   ChiTest savChisq savP savSig

@@ -182,8 +182,8 @@ testOmorfi = do
 
 prop_sum fd = sumTable fd == List.foldl' (+) 0 (map snd (Map.toList $ getMap fd))
 
-prop_ffi :: Int -> Bool
-prop_ffi int = (mytest int) == int + 1
+-- prop_ffi :: Int -> Bool
+-- prop_ffi int = (mytest int) == int + 1
 
 testChisq :: IO Bool
 testChisq = do
@@ -225,7 +225,7 @@ main = do
   myCheck "Monoid law II: " prop_monoid_ii
   myCheck "Monoid law III: " prop_monoid_iii
   myCheck "Monoid law IV: " prop_monoid_iv
-  myCheck "ffi" prop_ffi
+--  myCheck "ffi" prop_ffi
   testChisq  >>= flip unless (giveUp "chiSq")
   testLoading >>= flip unless (giveUp "testLoading")
   -- doesn't work because laziness :/ writing does not start before reading

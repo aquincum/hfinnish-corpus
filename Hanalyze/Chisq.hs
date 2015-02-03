@@ -1,6 +1,3 @@
-{-# LANGUAGE ForeignFunctionInterface #-}
-{-# LANGUAGE CPP #-}
-
 module Hanalyze.Chisq where
 
 import Data.List

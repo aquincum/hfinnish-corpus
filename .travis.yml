@@ -1,6 +1,3 @@
 language: haskell
 script: ./buildit.sh
 ghc: 7.8
-
-before_install:
-  - sudo apt-get install libboost-math-dev

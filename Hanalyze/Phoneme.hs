@@ -44,8 +44,9 @@ module Hanalyze.Phoneme
          high, mid, low, rounded, unrounded, front, back, vowel,
 
          -- * Inventories
-         finnishInventory, selectRelevantBundles, listBundles,
-         pickByFeature, filterInventory, filterInventoryByBundle
+         finnishInventory, selectRelevantBundles, listFeatures,
+         listBundles, pickByFeature, filterInventory,
+         filterInventoryByBundle
 
          ) where
 

@@ -21,7 +21,7 @@ import Text.Printf
 import qualified Hanalyze.Token as T
 import System.Console.GetOpt
 
-data Task = AnalyzeFile | AnalyzeInventory | Anderson deriving (Show, Eq)
+data Task = AnalyzeFile | AnalyzeInventory | Anderson | SplitFD deriving (Show, Eq)
 data Flag = Task Task
           | MaxN Int
           | FileName FilePath
@@ -39,6 +39,7 @@ optGetTask :: String -> Flag
 optGetTask s = case s of
   "analyzeinventory" -> Task AnalyzeInventory
   "anderson" -> Task Anderson
+  "split" -> Task SplitFD
   _ -> Task AnalyzeFile
 
 compileOptions :: [String] -> IO ([Flag])
@@ -53,28 +54,24 @@ compileOptions args = case getOpt Permute options args of
         hasTi = (Task AnalyzeInventory) `elem` o
         hasTf = (Task AnalyzeFile) `elem` o
         hasTa = (Task Anderson) `elem` o
+        hasSp = (Task SplitFD) `elem` o
     when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
     when (hasMaxn && hasTa) (myError ["both maxn and anderson, ambiguous task"])
     when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
-    -- UGLY AS HELL, FIX SOON
-    let retval = if hasMaxn
-                 then if (not hasTi && not hasTf && not hasTa)
-                      then Task AnalyzeFile:o
-                      else o
-                 else if hasTa
-                      then o
-                      else if hasTi
-                           then MaxN 2:o
-                           else if (not hasTf)
-                                then Task AnalyzeFile:MaxN 2: o
-                                else MaxN 2: o
-    let retval' = if ((Task AnalyzeFile) `elem` retval || (Task Anderson) `elem` retval)
-                  then if (not hasFn)
-                       then if (not $ null n)
-                            then FileName (head n):retval
-                            else myError ["no FILE given either with -n or otherwise"]
-                       else retval
-                  else retval
+
+    let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
+               | hasSp = o
+               | not hasMaxn && hasTi = MaxN 2:o
+               | not hasMaxn && not hasTa && not hasTi && not hasTf = Task AnalyzeFile:MaxN 2:o
+               | not hasMaxn && not hasTa && not hasTi && hasTf = MaxN 2:o
+               | otherwise = o
+
+        needsFile = (Task AnalyzeFile) `elem` retval || (Task Anderson) `elem` retval || (Task SplitFD) `elem` retval
+    
+        retval' | needsFile && not hasFn && not (null n) = FileName (head n):retval
+                | needsFile && not hasFn && null n = myError ["no FILE given either with -n or otherwise"]
+                | otherwise = retval
+
     return retval'
   (_, _, errs) -> myError errs
  where
@@ -191,6 +188,14 @@ main :: IO ()
 main = do
   args <- getArgs
   flags <- compileOptions args
+
+  when ((Task SplitFD) `elem` flags) $ do 
+    fd <- readFreqDist $ flagGetFn flags
+    let front = filterTable (\t -> harmonicity t == FrontNeutral) fd
+        back = filterTable (\t -> harmonicity t == BackNeutral) fd
+    saveTable front (flagGetFn flags ++ "_front")
+    saveTable back (flagGetFn flags ++ "_back")
+
   when ((Task AnalyzeInventory) `elem` flags) $ do
     -- something different
     let relb = selectRelevantBundles finnishInventory (flagGetMaxn flags)

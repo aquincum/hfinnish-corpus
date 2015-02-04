@@ -42,7 +42,7 @@ library
 
 executable create_fds
   main-is:           create_fds.hs
-  ghc-options:	     -threaded -rtsopts
+  ghc-options:	     -threaded -rtsopts 
   build-depends:     base >=4.6,
                      containers, 
                      text,
@@ -53,7 +53,7 @@ executable create_fds
 
 executable merge_fds
   main-is:           merge_fds.hs
-  ghc-options:       -threaded -rtsopts -O2
+  ghc-options:       -threaded -rtsopts -O2 
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
@@ -61,7 +61,7 @@ executable merge_fds
 
 executable filter_fds
   main-is:           filter_fds.hs
-  ghc-options:       -rtsopts -O2
+  ghc-options:       -rtsopts -O2 
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
@@ -70,7 +70,7 @@ executable filter_fds
 
 executable stem_fds
   main-is:           stem_fds.hs
-  ghc-options:       -rtsopts -O2
+  ghc-options:       -rtsopts -O2 
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
@@ -78,7 +78,7 @@ executable stem_fds
 
 executable hanalyze1
   main-is:           hanalyze1.hs
-  ghc-options:       -rtsopts -O2
+  ghc-options:       -rtsopts -O2 
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
@@ -87,7 +87,7 @@ executable hanalyze1
 
 executable toUCLAP
   main-is:           toUCLAP.hs
-  ghc-options:       -rtsopts -O2
+  ghc-options:       -rtsopts -O2 
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
@@ -102,12 +102,5 @@ test-suite testing
                      QuickCheck, process >= 1.2.0.0, filepath, split,
                      parsec, unix, statistics
   type:              exitcode-stdio-1.0
+  ghc-options:       -fhpc
 
-test-suite testing_phonemes
-  main-is:           testing_phonemes.hs
-  build-depends:     base >=4.6, containers, hanalyze, 
-                     text, time, deepseq, parallel, mmap, 
-                     utf8-string, bytestring, HUnit >=1.2.5.2,
-                     QuickCheck, process >= 1.2.0.0, split, filepath,
-                     parsec
-  type:              exitcode-stdio-1.0

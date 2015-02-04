@@ -64,7 +64,7 @@ convertCorpusFile pi infn outfn = do
 
 
 usage = "USAGE: toUCLAP <corpus file>\n" ++
-        "outputs a UCLAP-compatible Features.txt and Training.txt based on a" ++
+        "outputs a UCLAPL-compatible Features.txt and Training.txt based on a" ++
         "frequency distribution file (and the Finnish inventory)\n" ++
         "corpus file = a frequency distribution file\n"
 

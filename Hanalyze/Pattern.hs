@@ -149,13 +149,13 @@ matchWord phall@(phtop:phrest) pattall@(pattop:pattrest) = case pattop of
   Question -> case matchWord phrest pattrest of
     Nothing -> matchWord phall pattrest
     Just succ -> return (phtop:succ)
-  Star -> case matchWord phall pattrest of
-    Nothing -> matchWord phrest pattall >>= \x -> return (phtop:x)
-    Just succ -> return succ
-  StarF fb -> case matchWord phall pattrest of
-    Nothing | subsetFB fb (featureBundle phtop) -> matchWord phrest pattall >>= \x -> return (phtop:x)
-            | otherwise -> Nothing
-    Just succ -> return succ
+  Star -> case matchWord phrest pattall of
+    Nothing -> matchWord phall pattrest
+    Just succ -> return (phtop:succ)
+  StarF fb -> case matchWord phrest pattall of
+    Just succ | subsetFB fb (featureBundle phtop) -> return (phtop:succ)
+              | otherwise -> matchWord phall pattrest
+    Nothing -> matchWord phall pattrest
   QuestionF fb -> case matchWord phall pattrest of
     Nothing -> case matchWord phrest pattrest of
       Just x | subsetFB fb (featureBundle phtop) -> return (phtop:x)
@@ -169,7 +169,7 @@ testmatch =
         Just x -> x
       a = case findPhoneme finnishInventory "a" of
         Just x -> x
-      pattern = [StarF labial, P a]
+      pattern = [StarF labial]
       -- Star = matches none if nothing left
       res = case matchWord testWord pattern of
         Just phons -> concatMap phonemeName phons

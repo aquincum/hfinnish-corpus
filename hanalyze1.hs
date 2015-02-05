@@ -21,7 +21,14 @@ import Text.Printf
 import qualified Hanalyze.Token as T
 import System.Console.GetOpt
 
-data Task = AnalyzeFile | AnalyzeInventory | Anderson | SplitFD deriving (Show, Eq)
+
+-- |Flag for tasks to run with the executable
+data Task = AnalyzeFile -- ^do the big analysis
+          | AnalyzeInventory -- ^analyze the phonemic inventory: display relevant natural classes
+          | Anderson -- ^Do the Anderson (1980) replication
+          | SplitFD -- ^Split a frequency distribution file to frontneutral and backneutral stems
+          | SplitCut -- ^Do the 'SplitFD' task and cut the words until the last segment before the 2nd vowel
+          deriving (Show, Eq)
 data Flag = Task Task
           | MaxN Int
           | FileName FilePath
@@ -29,7 +36,7 @@ data Flag = Task Task
 
 options :: [OptDescr Flag]
 options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson)",
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, split, splitcut)",
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
   Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
   Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory"
@@ -40,6 +47,7 @@ optGetTask s = case s of
   "analyzeinventory" -> Task AnalyzeInventory
   "anderson" -> Task Anderson
   "split" -> Task SplitFD
+  "splitcut" -> Task SplitCut
   _ -> Task AnalyzeFile
 
 compileOptions :: [String] -> IO ([Flag])
@@ -189,12 +197,15 @@ main = do
   args <- getArgs
   flags <- compileOptions args
 
-  when ((Task SplitFD) `elem` flags) $ do 
+  when ((Task SplitFD) `elem` flags || (Task SplitCut) `elem` flags) $ do 
     fd <- readFreqDist $ flagGetFn flags
     let front = filterTable (\t -> harmonicity t == FrontNeutral) fd
         back = filterTable (\t -> harmonicity t == BackNeutral) fd
-    saveTable front (flagGetFn flags ++ "_front")
-    saveTable back (flagGetFn flags ++ "_back")
+    when ((Task SplitCut) `elem` flags) $ do
+      let front' = 
+    when ((Task SplitFd) `elem` flags) $ do
+      saveTable front (flagGetFn flags ++ "_front")
+      saveTable back (flagGetFn flags ++ "_back")
 
   when ((Task AnalyzeInventory) `elem` flags) $ do
     -- something different

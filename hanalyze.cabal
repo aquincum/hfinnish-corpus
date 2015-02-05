@@ -39,6 +39,7 @@ library
                        process >= 1.2.0.0,
                        unix,
                        statistics
+  ghc-options:       -fhpc
 
 executable create_fds
   main-is:           create_fds.hs

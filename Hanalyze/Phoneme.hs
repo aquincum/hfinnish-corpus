@@ -222,6 +222,8 @@ fVelar = Feature Plus "velar"
 fGlottal = Feature Plus "glottal"
 fPalatal = Feature Plus "palatal"
 
+fAnterior = Feature Plus "anterior"
+
 fContinuant = Feature Plus "continuant"
 fSonorant =  Feature Plus "sonorant"
 fCons = Feature Plus "consonantal"
@@ -243,6 +245,9 @@ coronal = Bundle [underspecified fLabial,  fCoronal, underspecified fVelar, fCon
 velar = Bundle [underspecified fLabial, underspecified fCoronal,  fVelar, fCons]
 glottal = Bundle [fGlottal, fCons]
 palatal = mconcat [Bundle [fPalatal], Bundle $ map underspecified [fLabial, fVelar, fGlottal, fCoronal]]
+anterior = Bundle [fAnterior]
+posterior = Bundle [minus fAnterior]
+
 
 voiced = Bundle [fVoiced, fCons]
 voiceless = Bundle [minus fVoiced, fCons]
@@ -271,27 +276,28 @@ unrounded = Bundle [minus fRounded, fVowel]
 front = Bundle [fFront, fVowel]
 back = Bundle [minus fFront, fVowel]
 
+diphthong = Bundle [Feature Plus "diphthong"]
+
 -- |Testing with a mock Finnish inventory
 testInv :: PhonemicInventory
 testInv = [
   Phoneme "p" (mconcat [voiceless, labial, stop]),
   Phoneme "b" (mconcat [voiced, labial, stop]),
-  Phoneme "t" (mconcat [voiceless, coronal, stop]),
-  Phoneme "d" (mconcat [voiced, coronal, stop]),
+  Phoneme "t" (mconcat [voiceless, coronal, stop, anterior]),
+  Phoneme "d" (mconcat [voiced, coronal, stop, anterior]),
   Phoneme "k" (mconcat [voiceless, velar, stop]),
   Phoneme "g" (mconcat [voiced, velar, stop]),
   Phoneme "m" (mconcat [nasal, labial]),
-  Phoneme "n" (mconcat [nasal, coronal]),
-  Phoneme "ng" (mconcat [nasal, velar]),
+  Phoneme "n" (mconcat [nasal, coronal, anterior]),
   Phoneme "f" (mconcat [fricative, voiceless, labial]),
   Phoneme "v" (mconcat [fricative, voiced, labial]),
-  Phoneme "s" (mconcat [fricative, voiceless, coronal]),
-  Phoneme "z" (mconcat [fricative, voiced, coronal]),
-  Phoneme "š" (mconcat [fricative, voiceless, coronal]),
-  Phoneme "ž" (mconcat [fricative, voiced, coronal]),
+  Phoneme "s" (mconcat [fricative, voiceless, coronal, anterior]),
+  Phoneme "z" (mconcat [fricative, voiced, coronal, anterior]),
+  Phoneme "š" (mconcat [fricative, voiceless, coronal, posterior]),
+  Phoneme "ž" (mconcat [fricative, voiced, coronal, posterior]),
   Phoneme "h" (mconcat [fricative, glottal, voiceless]),
-  Phoneme "l" (mconcat [approximant, lateral, coronal]),
-  Phoneme "r" (mconcat [approximant, trill, coronal]),
+  Phoneme "l" (mconcat [approximant, lateral, coronal, anterior]),
+  Phoneme "r" (mconcat [approximant, trill, coronal, anterior]),
   Phoneme "j" (mconcat [approximant, palatal]),
   Phoneme "a" (mconcat [back, low, unrounded]), 
   Phoneme "o" (mconcat [back, mid, rounded]),
@@ -307,13 +313,14 @@ testInv = [
 -- |Produces more or less the relevant Finnish phonemic inventory.
 finnishInventory :: PhonemicInventory
 finnishInventory = mapWith testInv short ++ mapWith doubledInv long ++ [
-  Phoneme "ie" (mconcat [front, high, unrounded, long]),
-  Phoneme "ei" (mconcat [front, mid, unrounded, long])
+  Phoneme "ie" (mconcat [front, high, unrounded, long, diphthong]),
+  Phoneme "ei" (mconcat [front, mid, unrounded, long, diphthong]),
+  Phoneme "ng" (mconcat [nasal, velar, long])
   ]
   where
     mapWith inv feat = map (\phon -> Phoneme (phonemeName phon) (mconcat [featureBundle phon, feat]) ) inv
     doubledInv = map (\phon -> let n = phonemeName phon in
-                       Phoneme (n ++ if n == "ng" then "" else n) (featureBundle phon)) testInv
+                       Phoneme (n ++ n) (featureBundle phon)) testInv
 
 -- |Filters an Inventory according to a general predicate
 filterInventory :: PhonemicInventory -> (Phoneme -> Bool) -> PhonemicInventory

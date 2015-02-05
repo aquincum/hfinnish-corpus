@@ -129,6 +129,54 @@ filterWord phall@(phtop:phrest) pattall@(pattop:pattrest) = case pattop of
                | subsetFB fb (featureBundle phtop) && filterWord phrest pattrest -> True
                | otherwise -> False
   
+-- |Go as far in a word as possible to match
+matchWord :: [Phoneme] -> [Pattern] -> Maybe [Phoneme]
+matchWord _ [] = Just []
+matchWord [] patt = case head patt of
+  Question -> matchWord [] (tail patt)
+  Star -> matchWord [] (tail patt)
+  QuestionF _ -> matchWord [] (tail patt)
+  StarF _ -> matchWord [] (tail patt)
+  _ -> Nothing
+matchWord phall@(phtop:phrest) pattall@(pattop:pattrest) = case pattop of
+  P phon | phonemeName phon == phonemeName phtop -> matchWord phrest pattrest >>= \x -> return (phtop:x)
+         | otherwise -> Nothing
+  AnyP phons | length (filter (\p -> phonemeName p==phonemeName phtop) phons) > 0 -> matchWord phrest pattrest >>= \x -> return (phtop:x)
+             | otherwise -> Nothing
+  DotF fb | subsetFB fb (featureBundle phtop) -> matchWord phrest pattrest >>= \x -> return (phtop:x)
+          | otherwise -> Nothing
+  Dot -> matchWord phrest pattrest >>= \x -> return (phtop:x)
+  Question -> case matchWord phrest pattrest of
+    Nothing -> matchWord phall pattrest
+    Just succ -> return (phtop:succ)
+  Star -> case matchWord phall pattrest of
+    Nothing -> matchWord phrest pattall >>= \x -> return (phtop:x)
+    Just succ -> return succ
+  StarF fb -> case matchWord phall pattrest of
+    Nothing | subsetFB fb (featureBundle phtop) -> matchWord phrest pattall >>= \x -> return (phtop:x)
+            | otherwise -> Nothing
+    Just succ -> return succ
+  QuestionF fb -> case matchWord phall pattrest of
+    Nothing -> case matchWord phrest pattrest of
+      Just x | subsetFB fb (featureBundle phtop) -> return (phtop:x)
+      otherwise -> Nothing
+    Just succ -> return succ
+
+
+testmatch :: IO ()
+testmatch = 
+  let testWord = case segment finnishInventory (T.pack "bbbbabi") of
+        Just x -> x
+      a = case findPhoneme finnishInventory "a" of
+        Just x -> x
+      pattern = [StarF labial, P a]
+      -- Star = matches none if nothing left
+      res = case matchWord testWord pattern of
+        Just phons -> concatMap phonemeName phons
+        Nothing -> "no match"
+  in
+    putStrLn res
+
 
 -- |Filter a word as a 'Token' based on a pattern
 filterToken :: PhonemicInventory -> [Pattern] -> Token -> Bool

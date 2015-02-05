@@ -343,7 +343,42 @@ testFilterme =
        member "apää" (filteredMap patternSoph2) @? "found apää " ++ show (filteredMap patternSoph3)
        member "belme" (filteredMap patternSoph2) @? "found belme " ++ show (filteredMap patternSoph3)        
      ]
-       
+
+testMatchme :: IO Bool
+testMatchme =
+  let testmatch str patt = 
+        let testWord = case segment finnishInventory (T.pack str) of
+              Just x -> x
+              _ -> []
+      -- Star = matches none if nothing left
+            p = case readPattern finnishInventory patt of
+              Nothing -> error "pattern reading fail"
+              Just x -> x
+            res = case matchWord testWord p of
+              Just phons -> concatMap phonemeName phons
+              Nothing -> "no match"
+        in
+         res
+  in 
+   huTest [
+     "consonants" ~: do
+        testmatch "labda" "{+consonantal}*" == "l" @? "l-abda"
+        testmatch "lkrabda" "{+consonantal}*" == "lkr" @? "lkr-abda"
+        testmatch "abda" "{+consonantal}*" == "no match" @? "0-abda"
+     ,
+     "until first V no diphthongs" ~: do
+       testmatch "akia" "{+consonantal}*{-consonantal}.{+consonantal}*" == "ak" @? "akia"
+       testmatch "kala" "{+consonantal}*{-consonantal}.{+consonantal}*" == "kal" @? "kala"
+       testmatch "sprispra" "{+consonantal}*{-consonantal}.{+consonantal}*" == "sprispr" @? "sprispra"
+       testmatch "aikia" "{+consonantal}*{-consonantal}.{+consonantal}*" == "a" @? "aikia"
+     ,
+     "until first V yes diphthongs" ~: do
+       testmatch "aikia" "{+consonantal}*{-consonantal}.{-consonantal}*{+consonantal}*" == "aik" @? "aikia"
+       testmatch "kaila" "{+consonantal}*{-consonantal}.{-consonantal}*{+consonantal}*" == "kail" @? "kaila"
+       testmatch "sprispra" "{+consonantal}*{-consonantal}.{-consonantal}*{+consonantal}*" == "sprispr" @? "sprispra"
+    ]
+
+
 
 myCheck :: (Testable prop) => String -> prop -> IO ()
 myCheck s pr = putStr s >> quickCheckResult pr >>= \res ->

@@ -6,7 +6,10 @@ module Hanalyze.Pattern (
   readPattern, writePattern,
 
   -- * Filtering
-  filterWord, filterToken
+  filterWord, filterToken,
+
+  -- * Matching
+  matchWord
   ) where
 
 import Hanalyze.Phoneme
@@ -163,19 +166,6 @@ matchWord phall@(phtop:phrest) pattall@(pattop:pattrest) = case pattop of
     Just succ -> return succ
 
 
-testmatch :: IO ()
-testmatch = 
-  let testWord = case segment finnishInventory (T.pack "bbbbabi") of
-        Just x -> x
-      a = case findPhoneme finnishInventory "a" of
-        Just x -> x
-      pattern = [StarF labial]
-      -- Star = matches none if nothing left
-      res = case matchWord testWord pattern of
-        Just phons -> concatMap phonemeName phons
-        Nothing -> "no match"
-  in
-    putStrLn res
 
 
 -- |Filter a word as a 'Token' based on a pattern

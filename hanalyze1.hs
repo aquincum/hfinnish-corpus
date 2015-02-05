@@ -63,18 +63,22 @@ compileOptions args = case getOpt Permute options args of
         hasTf = (Task AnalyzeFile) `elem` o
         hasTa = (Task Anderson) `elem` o
         hasSp = (Task SplitFD) `elem` o
+        hasSc = (Task SplitCut) `elem` o
     when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
     when (hasMaxn && hasTa) (myError ["both maxn and anderson, ambiguous task"])
     when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
 
     let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
-               | hasSp = o
+               | hasSp || hasSc = o
                | not hasMaxn && hasTi = MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && not hasTf = Task AnalyzeFile:MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && hasTf = MaxN 2:o
                | otherwise = o
 
-        needsFile = (Task AnalyzeFile) `elem` retval || (Task Anderson) `elem` retval || (Task SplitFD) `elem` retval
+        needsFile =    (Task AnalyzeFile) `elem` retval
+                    || (Task Anderson) `elem` retval
+                    || (Task SplitFD) `elem` retval
+                    || (Task SplitCut) `elem` retval
     
         retval' | needsFile && not hasFn && not (null n) = FileName (head n):retval
                 | needsFile && not hasFn && null n = myError ["no FILE given either with -n or otherwise"]
@@ -202,8 +206,8 @@ main = do
     let front = filterTable (\t -> harmonicity t == FrontNeutral) fd
         back = filterTable (\t -> harmonicity t == BackNeutral) fd
     when ((Task SplitCut) `elem` flags) $ do
-      let front' = 
-    when ((Task SplitFd) `elem` flags) $ do
+      undefined
+    when ((Task SplitFD) `elem` flags) $ do
       saveTable front (flagGetFn flags ++ "_front")
       saveTable back (flagGetFn flags ++ "_back")
 

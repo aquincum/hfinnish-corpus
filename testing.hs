@@ -355,7 +355,7 @@ testMatchme =
               Nothing -> error "pattern reading fail"
               Just x -> x
             res = case matchWord testWord p of
-              Just phons -> concatMap phonemeName phons
+              Just phons -> T.unpack $ spellout phons
               Nothing -> "no match"
         in
          res

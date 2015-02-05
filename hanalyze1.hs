@@ -206,7 +206,18 @@ main = do
     let front = filterTable (\t -> harmonicity t == FrontNeutral) fd
         back = filterTable (\t -> harmonicity t == BackNeutral) fd
     when ((Task SplitCut) `elem` flags) $ do
-      undefined
+      let patt = case readPattern finnishInventory "{+consonantal}*{-consonantal}.{-consonantal}*{+consonantal}*" of
+            Nothing -> error "readpattern"
+            Just p -> p
+      let takeUntil2ndV tok = case segment finnishInventory tok of
+            Nothing -> T.pack ""
+            Just seg -> case matchWord seg patt of
+              Nothing -> T.pack "no match"
+              Just matched -> spellout matched
+      let front' = tMap takeUntil2ndV front 
+      let back' = tMap takeUntil2ndV back
+      saveTable front' (flagGetFn flags ++ "_front_cut")
+      saveTable back' (flagGetFn flags ++ "_back_cut")
     when ((Task SplitFD) `elem` flags) $ do
       saveTable front (flagGetFn flags ++ "_front")
       saveTable back (flagGetFn flags ++ "_back")

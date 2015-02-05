@@ -1,6 +1,8 @@
 Hanalyze library and tools
 ==========================
 
+![travis](https://travis-ci.org/aquincum/hfinnish-corpus.svg)
+
 ## What is this?
 
 Hanalyze as well as the tools in the main directory are Haskell programs for corpus analysis. The main goal is to get some analysis done, and for me to learn Haskell!

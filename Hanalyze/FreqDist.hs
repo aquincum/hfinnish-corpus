@@ -70,6 +70,9 @@ class Eq t => Table t val  | t -> val where
   tFromList l =
     tConstruct tEmpty
                (Map.fromList l)
+  -- |A map over the keys of the table
+  tMap :: (Token -> Token) -> t -> t
+  tMap fun tab = tConstruct tab $ Map.mapKeys fun $ tGetMap tab
 --  eq :: t -> t -> Bool
 
 -- |Type synonym for frequency counts.
@@ -103,6 +106,7 @@ instance Table FreqDist Freq where
   tGetMap = getMap
   tPrintfun _ (mkey,mval) =
     mconcat [mkey,T.pack "\t",T.pack $ show mval]
+
 
 -- |Annotation is just a 'Data.Text.Text', therefore a 'Token'
 type Annotation = Token

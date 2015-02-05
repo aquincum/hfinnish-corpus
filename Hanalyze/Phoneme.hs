@@ -21,7 +21,7 @@ module Hanalyze.Phoneme
          findInBundle, findPhoneme,
 
          -- * Segmenting
-         segment,
+         segment, spellout,
 
                        
          -- * Feature system
@@ -440,3 +440,6 @@ segment inv t = innersegment (T.unpack t)
          Nothing -> Nothing
          Just ph -> liftM2 (:) (Just ph)  (innersegment rest)
 
+-- |Inverse of 'segment': creates a Token from phonemes
+spellout :: [Phoneme] -> Token
+spellout phs = T.pack $ concatMap phonemeName phs

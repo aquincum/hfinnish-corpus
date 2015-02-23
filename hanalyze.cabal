@@ -93,7 +93,7 @@ executable toUCLAP
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split, parsec, process >= 1.2.0.0, unix,
-                     statistics
+                     statistics, mtl
 
 test-suite testing
   main-is:           testing.hs

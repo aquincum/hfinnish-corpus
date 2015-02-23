@@ -2,7 +2,7 @@
 -- that we can change its actual implementation to, say, a 'ByteString' etc., anytime!
 module Hanalyze.Token (
   -- * Constructing, packing, unpacking
-  Token, pack, unpack,
+  Token(..), pack, unpack,
 
   -- * cons'ing
   cons, uncons, uncons2,

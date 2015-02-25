@@ -23,6 +23,8 @@ module Hanalyze.Phoneme
          -- * Segmenting
          segment, spellout,
 
+         -- * Generating
+         generatePattern,
                        
          -- * Feature system
          -- ** basic features
@@ -443,3 +445,26 @@ segment inv t = innersegment (T.unpack t)
 -- |Inverse of 'segment': creates a Token from phonemes
 spellout :: [Phoneme] -> Token
 spellout phs = T.pack $ concatMap phonemeName phs
+
+
+
+{-
+GENERATING
+-}
+
+-- |Generates lists of phonemes based on a given pattern built by feature bundles.
+-- E.g.
+--
+-- >>>  map spellout $ generatePattern finnishInventory [labial,velar]
+--
+generatePattern :: PhonemicInventory -> [FeatureBundle] -> [[Phoneme]]
+generatePattern pi (fb:[]) = map (\x->[x]) $ filterInventoryByBundle pi fb
+generatePattern pi (fb:fbs) =
+  let
+    x = generatePattern pi fbs
+    myphonemes = filterInventoryByBundle pi fb
+  in
+    [ b:a | a <- x, b <- myphonemes]
+
+
+

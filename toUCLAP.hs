@@ -2,6 +2,7 @@
 -- usable by the Hayes and Wilson's UCLA Phonotactic Learner
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
 module Main where
 
@@ -9,6 +10,8 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Hanalyze.Phoneme
 import Hanalyze.FreqDist
+import Hanalyze.Pattern
+import Text.Parsec
 import qualified Hanalyze.Token as Tkn
 import Control.Monad (when)
 import Control.Monad.Writer
@@ -17,7 +20,11 @@ import System.Environment
 
 -- need a features file and a training file
 
+type UCLAParser st x = Parsec T.Text st x
 
+-- Need this for GHCi
+instance (Monad m) => Stream T.Text m Char where
+    uncons = return . T.uncons
 
 convertFeatures :: PhonemicInventory -> T.Text
 convertFeatures pi =
@@ -81,6 +88,32 @@ usage = "USAGE: toUCLAP <corpus file>\n" ++
         "frequency distribution file (and the Finnish inventory)\n" ++
         "corpus file = a frequency distribution file\n"
 
+
+parseUCLAPConstraint :: T.Text -> [Pattern]
+parseUCLAPConstraint txt = case parse doParseUCLAPConstraint "UCLA constraint reading" txt of
+  Left e -> []
+  Right x -> x
+
+doParseUCLAPConstraint :: UCLAParser st [Pattern]
+doParseUCLAPConstraint = do
+  char '*'
+  many1 doParseOneConstraint
+
+doParseOneConstraint :: UCLAParser st Pattern
+doParseOneConstraint = do
+  char '['
+  feats <- sepBy1 doParseOneFeature (char ',')
+  char ']'
+  return $ DotF $ setBundle feats
+  
+
+doParseOneFeature :: UCLAParser st Feature
+doParseOneFeature = do
+  pm <- char '+' <|> char '-'
+  fn <- many1 $ noneOf "[,]"
+  return $ Feature (if pm == '+' then Plus else Minus) fn
+
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -88,3 +121,7 @@ main = do
   let infn = head args
   convertFeaturesFile finnishInventory "Features.txt"
   convertCorpusFile finnishInventory infn "Training.txt"
+
+
+
+  

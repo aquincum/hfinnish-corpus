@@ -9,7 +9,10 @@ module Hanalyze.Pattern (
   filterWord, filterToken,
 
   -- * Matching
-  matchWord
+  matchWord,
+
+  -- * Merging
+  mergeDotPatterns
   ) where
 
 import Hanalyze.Phoneme
@@ -173,3 +176,37 @@ filterToken :: PhonemicInventory -> [Pattern] -> Token -> Bool
 filterToken inv patt tok = case segment inv tok of
   Nothing -> False
   Just x -> filterWord x patt
+
+-- |Merge two patterns with Dots or DotF's only ~ get the intersection
+-- of two strictly local grammars
+mergeDotPatterns :: [Pattern] -- ^Pattern 1
+                    -> [Pattern] -- ^Pattern 2
+                    -> Maybe [Pattern]  -- ^The intersection, if the patterns conformed the Dottiness
+mergeDotPatterns [] [] = Just []
+mergeDotPatterns ps1 [] = Just ps1
+mergeDotPatterns [] ps2 = Just ps2
+mergeDotPatterns (p1:ps1) (p2:ps2) =
+  case (p1,p2) of
+    (Dot, Dot) -> mergeDotPatterns ps1 ps2 >>= \x -> Just (Dot:x)
+    (DotF f1, Dot) -> mergeDotPatterns ps1 ps2 >>= \x -> Just (DotF f1:x)
+    (Dot, DotF f2) -> mergeDotPatterns ps1 ps2 >>= \x -> Just (DotF f2:x)
+    (DotF f1, DotF f2) -> mergeDotPatterns ps1 ps2 >>= \x -> Just (DotF (mergeBundle f1 f2):x)
+    (_,_) -> Nothing
+
+
+-- |Generates all possible strings based on a dot pattern.
+generatePattern :: PhonemicInventory -- ^The inventory
+                   ->  [Pattern] -- ^The pattern
+                   -> Maybe [[Phoneme]] -- ^The words!
+generatePattern pi patt =
+  case sequence $ generatedFBs patt of
+    Nothing -> Nothing
+    Just fbs -> Just $ generateFromFBs pi fbs
+  where
+    generatedFBs :: [Pattern] -> [Maybe FeatureBundle]
+    generatedFBs [] = []
+    generatedFBs (p:ps) = myFB p:(generatedFBs ps)
+    myFB p = case p of
+      DotF fb -> Just fb
+      Dot -> Just $ setBundle []
+      _ -> Nothing

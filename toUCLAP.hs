@@ -2,6 +2,7 @@
 -- usable by the Hayes and Wilson's UCLA Phonotactic Learner
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
 module Main where
@@ -22,9 +23,12 @@ import System.Environment
 
 type UCLAParser st x = Parsec T.Text st x
 
+
+#ifndef CABAL_INSTALL
 -- Need this for GHCi
 instance (Monad m) => Stream T.Text m Char where
     uncons = return . T.uncons
+#endif
 
 convertFeatures :: PhonemicInventory -> T.Text
 convertFeatures pi =
@@ -112,6 +116,7 @@ doParseOneFeature = do
   pm <- char '+' <|> char '-'
   fn <- many1 $ noneOf "[,]"
   return $ Feature (if pm == '+' then Plus else Minus) fn
+
 
 
 main :: IO ()

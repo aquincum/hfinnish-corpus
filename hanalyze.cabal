@@ -89,6 +89,7 @@ executable hanalyze1
 executable toUCLAP
   main-is:           toUCLAP.hs
   ghc-options:       -rtsopts -O2 
+  cpp-options:       -DCABAL_INSTALL
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,

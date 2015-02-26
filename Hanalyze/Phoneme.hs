@@ -24,13 +24,13 @@ module Hanalyze.Phoneme
          segment, spellout,
 
          -- * Generating
-         generatePattern,
+         generateFromFBs,
                        
          -- * Feature system
          -- ** basic features
          -- *** consonants
          fLabial, fCoronal, fVelar, fGlottal, fPalatal, fContinuant,
-         fSonorant, fCons, fVoiced, fVoiceless,
+         fSonorant, fCons, fVoiced, fVoiceless, fWordBoundary,
 
          -- *** vowels
          fVowel, fHigh, fLow,
@@ -45,10 +45,17 @@ module Hanalyze.Phoneme
          -- *** vowels
          high, mid, low, rounded, unrounded, front, back, vowel,
 
+         -- *** boundaries
+         word_boundary,
+
          -- * Inventories
          finnishInventory, selectRelevantBundles, listFeatures,
          listBundles, pickByFeature, filterInventory,
-         filterInventoryByBundle
+         filterInventoryByBundle,
+
+         -- ** Added word boundary
+         finnishInventoryWithEdges, augmentWord
+         
 
          ) where
 
@@ -241,6 +248,8 @@ fRounded = Feature Plus "rounded"
 fFront = Feature Plus "front"
 fLong = Feature Plus "long"
 
+fWordBoundary = Feature Plus "word_boundary"
+
 
 labial = Bundle [fLabial, underspecified fCoronal, underspecified fVelar, fCons]
 coronal = Bundle [underspecified fLabial,  fCoronal, underspecified fVelar, fCons]
@@ -280,6 +289,11 @@ back = Bundle [minus fFront, fVowel]
 
 diphthong = Bundle [Feature Plus "diphthong"]
 
+-- other
+
+word_boundary = Bundle [fWordBoundary]
+phoneme = Bundle [minus fWordBoundary]
+
 -- |Testing with a mock Finnish inventory
 testInv :: PhonemicInventory
 testInv = [
@@ -311,18 +325,30 @@ testInv = [
   Phoneme "y" (mconcat [front, high, rounded])
  ]
 
+-- |Maps a feature on a whole inventory
+mapWithFeat :: [Phoneme] -> FeatureBundle -> [Phoneme]
+mapWithFeat inv feat = map (\phon -> Phoneme (phonemeName phon) (mconcat [featureBundle phon, feat]) ) inv
+
 
 -- |Produces more or less the relevant Finnish phonemic inventory.
 finnishInventory :: PhonemicInventory
-finnishInventory = mapWith testInv short ++ mapWith doubledInv long ++ [
+finnishInventory = mapWithFeat testInv short ++ mapWithFeat doubledInv long ++ [
   Phoneme "ie" (mconcat [front, high, unrounded, long, diphthong]),
   Phoneme "ei" (mconcat [front, mid, unrounded, long, diphthong]),
   Phoneme "ng" (mconcat [nasal, velar, long])
   ]
   where
-    mapWith inv feat = map (\phon -> Phoneme (phonemeName phon) (mconcat [featureBundle phon, feat]) ) inv
     doubledInv = map (\phon -> let n = phonemeName phon in
                        Phoneme (n ++ n) (featureBundle phon)) testInv
+
+
+finnishInventoryWithEdges :: PhonemicInventory
+finnishInventoryWithEdges =
+  mapWithFeat finnishInventory phoneme  ++ [
+    Phoneme "#" word_boundary
+    ]
+
+
 
 -- |Filters an Inventory according to a general predicate
 filterInventory :: PhonemicInventory -> (Phoneme -> Bool) -> PhonemicInventory
@@ -457,14 +483,22 @@ GENERATING
 --
 -- >>>  map spellout $ generatePattern finnishInventory [labial,velar]
 --
-generatePattern :: PhonemicInventory -> [FeatureBundle] -> [[Phoneme]]
-generatePattern pi (fb:[]) = map (\x->[x]) $ filterInventoryByBundle pi fb
-generatePattern pi (fb:fbs) =
+generateFromFBs :: PhonemicInventory -> [FeatureBundle] -> [[Phoneme]]
+generateFromFBs pi (fb:[]) = map (\x->[x]) $ filterInventoryByBundle pi fb
+generateFromFBs pi (fb:fbs) =
   let
-    x = generatePattern pi fbs
+    x = generateFromFBs pi fbs
     myphonemes = filterInventoryByBundle pi fb
   in
     [ b:a | a <- x, b <- myphonemes]
 
 
-
+-- |Augment a word with a word boundary on either edge
+augmentWord :: [Phoneme] -- ^The original, non-augmented word
+               -> (Maybe Phoneme, Maybe Phoneme) -- ^A tuple with the boundaries. If you don't want to augment on either side, just pass Nothing here
+               -> [Phoneme] -- ^The resulting word
+augmentWord wd (left, right) = aug left ++ wd ++ aug right
+  where
+    aug bound = case bound of
+      Nothing -> []
+      Just x -> [x]

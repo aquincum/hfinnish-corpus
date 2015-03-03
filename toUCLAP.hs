@@ -16,8 +16,9 @@ import Text.Parsec
 import qualified Hanalyze.Token as Tkn
 import Control.Monad (when)
 import Control.Monad.Writer
-import Data.Maybe (isNothing)
+import Data.Maybe (isNothing, mapMaybe)
 import System.Environment
+import System.Random
 
 -- need a features file and a training file
 
@@ -117,6 +118,20 @@ doParseOneFeature = do
   fn <- many1 $ noneOf "[,]"
   return $ Feature (if pm == '+' then Plus else Minus) fn
 
+
+-- |Too much
+generateUCLAWugs :: [Pattern] -> [[Phoneme]]
+generateUCLAWugs up =
+  let 
+    patt1 = [DotF vowel, DotF consonant, DotF vowel]
+    patt2 = [DotF vowel, DotF consonant, DotF consonant, DotF vowel]
+    patt3 = [DotF vowel, DotF consonant, DotF vowel, DotF consonant]
+    patt4 = [DotF vowel, DotF consonant, DotF consonant, DotF vowel, DotF consonant]
+    vPatts = [patt1, patt2, patt3, patt4]
+    patts = vPatts ++ map (DotF consonant:) vPatts
+    wds = concatMap (generateOverlappedPatterns finnishInventory up) vPatts
+  in
+   wds
 
 
 main :: IO ()

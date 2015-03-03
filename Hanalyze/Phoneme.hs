@@ -15,7 +15,7 @@ module Hanalyze.Phoneme
          emptyBundle, setBundle, getBundle,
 
          -- * Merging features and bundles
-         mergeFeature, mergeFeature', mergeBundle, subsetFB,
+         mergeFeature, mergeFeature', mergeBundle, intersectBundle, subsetFB,
 
          -- * Lookup functions
          findInBundle, findPhoneme,
@@ -180,20 +180,65 @@ findInBundle s fb = case getBundle fb of
             then Just x
             else findInBundle s (Bundle xs) -- ugly
                
+-- |Abstract internal merging function, will be specialized based on the
+-- different uniting functions.
+uniteBundle :: (Feature -> Feature -> Maybe Feature) -- ^A function merging two features
+               -> FeatureBundle -- ^FB1
+               -> FeatureBundle -- ^FB2
+               -> Maybe FeatureBundle -- ^result
+uniteBundle unite b1 b2 = do
+  let f1 = getBundle b1
+      f2 = getBundle b2
+{-
+      
+      allinf1 = foldr (\feat list ->
+                        let foundfeat = findInBundle (featureName feat) b2 in
+                        case foundfeat of
+                          Just x -> case unite feat x of
+                            Just united -> Just united : list
+                            Nothing -> Nothing
+                          Nothing -> Just feat : list
+                      ) [] f1
+
+-}
+      notinf1 = filter (\feat -> isNothing $ findInBundle (featureName feat) b1) f2
+  allinf1 <- foldM (\list feat -> 
+                        let foundfeat = findInBundle (featureName feat) b2
+                        in
+                         case foundfeat of
+                           Just x -> do
+                             united <- unite feat x
+                             return $ united : list
+                           Nothing -> Just $ feat : list
+                      ) [] f1
+
+  return $ Bundle $ allinf1 ++ notinf1
+
+
 -- |Merges two bundles so that there is no duplication. It might fail if a
 -- feature with an empty string name  is used -- please don't do that!
 mergeBundle :: FeatureBundle -> FeatureBundle -> FeatureBundle
-mergeBundle b1 b2 = let f1 = getBundle b1
-                        f2 = getBundle b2
-                        allinf1 = foldr (\feat list ->
-                                                      let foundfeat = findInBundle (featureName feat) b2 in
-                                                      case foundfeat of
-                                                        Just x -> fromJust (mergeFeature' feat x) : list -- I can use fromJust as I know it will be the same
-                                                        Nothing -> feat : list
-                                                    ) [] f1
-                        notinf1 = filter (\feat -> isNothing $ findInBundle (featureName feat) b1) f2
-                    in
-                     Bundle $ allinf1 ++ notinf1
+mergeBundle b1 b2 = fromJust (uniteBundle mergeFeature' b1 b2)
+
+
+-- | Merges two bundles so that a Plus and a Minus extinguish each other!
+-- While 'mergeBundle' generalizes, this one intersects.
+intersectBundle :: FeatureBundle -> FeatureBundle -> Maybe FeatureBundle
+intersectBundle = uniteBundle intersectFeature
+  where
+    intersectFeature f1 f2 =
+      let fname = featureName f1 in
+      if fname /= featureName f2
+      then Nothing
+      else case (plusMinus f1, plusMinus f2) of
+        (Plus, Plus) -> Just $ Feature Plus fname
+        (Minus, Minus) -> Just $ Feature Minus fname
+        (Plus, Null) -> Just $ Feature Plus fname
+        (Minus, Null) -> Just $ Feature Minus fname
+        (Null, Plus) -> Just $ Feature Plus fname
+        (Null, Minus) -> Just $ Feature Minus fname
+        (Null, Null) -> Just $ Feature Null fname
+        (_,_) -> Nothing
 
 -- |Whether the first 'FeatureBundle' is the subset of the second
 -- one

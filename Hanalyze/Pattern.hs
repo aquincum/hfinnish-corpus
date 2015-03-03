@@ -12,7 +12,10 @@ module Hanalyze.Pattern (
   matchWord,
 
   -- * Merging
-  mergeDotPatterns
+  mergeDotPatterns,
+
+  -- * Generating
+  generatePattern, generateOverlappedPatterns
   ) where
 
 import Hanalyze.Phoneme
@@ -20,7 +23,7 @@ import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token, pack, unpack)
 import Data.List (intersperse)
 import Text.Parsec
-
+import Data.Maybe (mapMaybe)
 
 type PattParser st x = Parsec String st x
 
@@ -177,6 +180,8 @@ filterToken inv patt tok = case segment inv tok of
   Nothing -> False
   Just x -> filterWord x patt
 
+
+
 -- |Merge two patterns with Dots or DotF's only ~ get the intersection
 -- of two strictly local grammars
 mergeDotPatterns :: [Pattern] -- ^Pattern 1
@@ -186,11 +191,15 @@ mergeDotPatterns [] [] = Just []
 mergeDotPatterns ps1 [] = Just ps1
 mergeDotPatterns [] ps2 = Just ps2
 mergeDotPatterns (p1:ps1) (p2:ps2) =
+  -- Problem with 0's
   case (p1,p2) of
     (Dot, Dot) -> mergeDotPatterns ps1 ps2 >>= \x -> Just (Dot:x)
     (DotF f1, Dot) -> mergeDotPatterns ps1 ps2 >>= \x -> Just (DotF f1:x)
     (Dot, DotF f2) -> mergeDotPatterns ps1 ps2 >>= \x -> Just (DotF f2:x)
-    (DotF f1, DotF f2) -> mergeDotPatterns ps1 ps2 >>= \x -> Just (DotF (mergeBundle f1 f2):x)
+    (DotF f1, DotF f2) -> do
+      x <- mergeDotPatterns ps1 ps2
+      intersection <- intersectBundle f1 f2
+      return $ DotF intersection:x
     (_,_) -> Nothing
 
 
@@ -210,3 +219,22 @@ generatePattern pi patt =
       DotF fb -> Just fb
       Dot -> Just $ setBundle []
       _ -> Nothing
+
+generateOverlappedPatterns :: PhonemicInventory
+                          -> [Pattern]
+                          -> [Pattern]
+                          -> [[Phoneme]]
+generateOverlappedPatterns pi p1 p2 =
+  let
+    (shorter, longer) = if length p1 < length p2 then (p1,p2) else (p2,p1)
+    pad patt len start = let pattlen = length patt
+                             padend = len - start - pattlen
+                         in
+                          replicate start Dot ++ patt ++ replicate padend Dot
+    npatterns = length longer - length shorter
+    paddedshorts = map (pad shorter (length longer)) [0..npatterns]
+    mergeds = mapMaybe (mergeDotPatterns longer) paddedshorts
+    wordsGenerated = mapMaybe (generatePattern pi) mergeds
+  in
+   concat wordsGenerated
+

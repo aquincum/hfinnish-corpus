@@ -18,7 +18,6 @@ import Control.Monad (when)
 import Control.Monad.Writer
 import Data.Maybe (isNothing, mapMaybe)
 import System.Environment
-import System.Random
 
 -- need a features file and a training file
 

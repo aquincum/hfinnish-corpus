@@ -292,6 +292,7 @@ fRounded = Feature Plus "rounded"
 
 fFront = Feature Plus "front"
 fLong = Feature Plus "long"
+fGeminate = Feature Plus "geminate"
 
 fWordBoundary = Feature Plus "word_boundary"
 
@@ -316,11 +317,14 @@ approximant = Bundle [fContinuant, fSonorant, fCons, fVoiced]
 lateral = Bundle [Feature Plus "lateral"]
 trill = Bundle [Feature Plus "trill"]
 
-short = Bundle [minus fLong]
-long = Bundle [fLong]
 consonant = Bundle [fCons]
 
+singleton = Bundle [minus fGeminate]
+geminate = Bundle [fGeminate]
+
 -- vowels
+short = Bundle [minus fLong]
+long = Bundle [fLong]
 vowel = Bundle [fVowel]
 high = Bundle [fHigh, minus fLow, fVowel]
 mid = Bundle [minus fHigh, minus fLow, fVowel]
@@ -339,9 +343,9 @@ diphthong = Bundle [Feature Plus "diphthong"]
 word_boundary = Bundle [fWordBoundary]
 phoneme = Bundle [minus fWordBoundary]
 
--- |Testing with a mock Finnish inventory
-testInv :: PhonemicInventory
-testInv = [
+-- |Testing with a mock Finnish inventory. These are the consonants
+testInvConsonants :: PhonemicInventory
+testInvConsonants = [
   Phoneme "p" (mconcat [voiceless, labial, stop]),
   Phoneme "b" (mconcat [voiced, labial, stop]),
   Phoneme "t" (mconcat [voiceless, coronal, stop, anterior]),
@@ -359,16 +363,22 @@ testInv = [
   Phoneme "h" (mconcat [fricative, glottal, voiceless]),
   Phoneme "l" (mconcat [approximant, lateral, coronal, anterior]),
   Phoneme "r" (mconcat [approximant, trill, coronal, anterior]),
-  Phoneme "j" (mconcat [approximant, palatal]),
-  Phoneme "a" (mconcat [back, low, unrounded]), 
-  Phoneme "o" (mconcat [back, mid, rounded]),
-  Phoneme "u" (mconcat [back, high, rounded]),
-  Phoneme "ä" (mconcat [front, low, unrounded]),
-  Phoneme "e" (mconcat [front, mid, unrounded]),
-  Phoneme "i" (mconcat [front, high, unrounded]),
-  Phoneme "ö" (mconcat [front, mid, rounded]),
-  Phoneme "y" (mconcat [front, high, rounded])
- ]
+  Phoneme "j" (mconcat [approximant, palatal])
+  ]
+                    
+-- |Testing with a mock Finnish inventory. These are the vowels
+testInvVowels = [
+               Phoneme "a" (mconcat [back, low, unrounded]), 
+               Phoneme "o" (mconcat [back, mid, rounded]),
+               Phoneme "u" (mconcat [back, high, rounded]),
+               Phoneme "ä" (mconcat [front, low, unrounded]),
+               Phoneme "e" (mconcat [front, mid, unrounded]),
+               Phoneme "i" (mconcat [front, high, unrounded]),
+               Phoneme "ö" (mconcat [front, mid, rounded]),
+               Phoneme "y" (mconcat [front, high, rounded])
+               ]
+
+testInv = testInvConsonants ++ testInvVowels
 
 -- |Maps a feature on a whole inventory
 mapWithFeat :: [Phoneme] -> FeatureBundle -> [Phoneme]
@@ -377,14 +387,20 @@ mapWithFeat inv feat = map (\phon -> Phoneme (phonemeName phon) (mconcat [featur
 
 -- |Produces more or less the relevant Finnish phonemic inventory.
 finnishInventory :: PhonemicInventory
-finnishInventory = mapWithFeat testInv short ++ mapWithFeat doubledInv long ++ [
+finnishInventory = mapWithFeat testInvVowels short ++
+                   mapWithFeat testInvConsonants singleton ++
+                   mapWithFeat doubledInvVowels long ++
+                   mapWithFeat doubledInvConsonants geminate ++
+                   [
   Phoneme "ie" (mconcat [front, high, unrounded, long, diphthong]),
   Phoneme "ei" (mconcat [front, mid, unrounded, long, diphthong]),
-  Phoneme "ng" (mconcat [nasal, velar, long])
+  Phoneme "ng" (mconcat [nasal, velar, geminate])
   ]
   where
-    doubledInv = map (\phon -> let n = phonemeName phon in
-                       Phoneme (n ++ n) (featureBundle phon)) testInv
+    doubledInvVowels = map (\phon -> let n = phonemeName phon in
+                             Phoneme (n ++ n) (featureBundle phon)) testInvVowels
+    doubledInvConsonants = map (\phon -> let n = phonemeName phon in
+                                 Phoneme (n ++ n) (featureBundle phon)) testInvConsonants
 
 
 finnishInventoryWithEdges :: PhonemicInventory

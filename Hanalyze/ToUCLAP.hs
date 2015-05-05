@@ -5,7 +5,12 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
-module Main where
+module Hanalyze.ToUCLAP (
+  convertFeatures, convertFeaturesFile,
+  convertCorpus, convertCorpusFile,
+  createNatClassFile
+  )
+       where
 
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
@@ -18,17 +23,18 @@ import Control.Monad (when)
 import Control.Monad.Writer
 import Data.Maybe (isNothing, mapMaybe)
 import System.Environment
+import System.Console.GetOpt
 
 -- need a features file and a training file
 
 type UCLAParser st x = Parsec T.Text st x
-
 
 #ifndef CABAL_INSTALL
 -- Need this for GHCi
 instance (Monad m) => Stream T.Text m Char where
     uncons = return . T.uncons
 #endif
+
 
 convertFeatures :: PhonemicInventory -> T.Text
 convertFeatures pi =
@@ -87,11 +93,6 @@ convertCorpusFile pi infn outfn = do
   putStrLn (T.unpack problems)
 
 
-usage = "USAGE: toUCLAP <corpus file>\n" ++
-        "outputs a UCLAPL-compatible Features.txt and Training.txt based on a" ++
-        "frequency distribution file (and the Finnish inventory)\n" ++
-        "corpus file = a frequency distribution file\n"
-
 
 parseUCLAPConstraint :: T.Text -> [Pattern]
 parseUCLAPConstraint txt = case parse doParseUCLAPConstraint "UCLA constraint reading" txt of
@@ -132,15 +133,35 @@ generateUCLAWugs up =
   in
    wds
 
+createNatClassFile :: PhonemicInventory -> FilePath -> IO ()
+createNatClassFile pi fp = 
+  let natclasses = selectRelevantBundles pi 4
+      str = T.concat $ map (\x -> "Novel of size " `T.append` T.pack (show (length x)) `T.append` ": " `T.append` T.intercalate (T.pack ",") (map (T.pack . show) x)) (map getBundle natclasses)
+  in
+   TIO.writeFile fp str
 
+{-
 main :: IO ()
 main = do
   args <- getArgs
   when (length args /= 1) (error usage)
   let infn = head args
-  convertFeaturesFile finnishInventory "Features.txt"
+  convertFeaturesFile finnishInventoryWithEdges "Features.txt"
   convertCorpusFile finnishInventory infn "Training.txt"
+  createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
+-}
+{-
+Plan to automatize:
 
-
-
-  
+- do features/training
++ ä > ae
++ create temp files
+  + tempFeatureList = simple list of features
+  + tempFeatureChart = simple description of inv
+  + NatClassesFile.txt = HARDER, need natclasses
+  + tempLearningFile = simple freqdist w one
+  + tempTestingFile.tmp = simple list
+  + tempTierGramSizeFile.tmp = "3" mondjuk
++ run baby 10 times
++ merge
+-}

@@ -24,7 +24,8 @@ library
                      Hanalyze.Process, Hanalyze.Progress,
                      Hanalyze.Token, Hanalyze.Phoneme,
                      Hanalyze.Pattern, Hanalyze.Omorfi,
-                     Hanalyze.Chisq
+                     Hanalyze.Chisq, Hanalyze.ToUCLAP
+  cpp-options:         -DCABAL_INSTALL
   build-depends:       base >=4.6,
                        containers, 
                        text,
@@ -38,7 +39,8 @@ library
                        parsec,
                        process >= 1.2.0.0,
                        unix,
-                       statistics
+                       statistics,
+                       mtl
   ghc-options:       -fhpc
 
 executable create_fds
@@ -68,6 +70,7 @@ executable filter_fds
                      utf8-string, bytestring, filepath,
                      split, parsec, process >= 1.2.0.0,
                      unix
+  cpp-options:       -DCABAL_INSTALL
 
 executable stem_fds
   main-is:           stem_fds.hs
@@ -84,17 +87,9 @@ executable hanalyze1
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split, parsec, process >= 1.2.0.0, unix,
-                     statistics
-
-executable toUCLAP
-  main-is:           toUCLAP.hs
-  ghc-options:       -rtsopts -O2 
-  cpp-options:       -DCABAL_INSTALL
-  build-depends:     base >=4.6, containers, hanalyze, 
-                     text, time, deepseq, parallel, mmap, 
-                     utf8-string, bytestring, filepath,
-                     split, parsec, process >= 1.2.0.0, unix,
                      statistics, mtl
+  cpp-options:       -DCABAL_INSTALL
+
 
 test-suite testing
   main-is:           testing.hs
@@ -105,4 +100,5 @@ test-suite testing
                      parsec, unix, statistics
   type:              exitcode-stdio-1.0
   ghc-options:       -fhpc
+  cpp-options:       -DCABAL_INSTALL
 

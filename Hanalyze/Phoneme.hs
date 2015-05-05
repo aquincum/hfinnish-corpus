@@ -484,6 +484,33 @@ selectRelevantBundles pi maxn =
   in
    united
 
+-- |Should do the same as 'selectRelevantBundles'. In a better way!
+-- Still shit, 30128 nat.classes? need to do better :(
+getNaturalClasses :: PhonemicInventory  -- ^the inventory we start from
+                  -> FeatureBundle      -- ^the feature bundle we already have
+                  -> [[Phoneme]]        -- ^phoneme sets we've already done
+                  -> [FeatureBundle]    -- ^the resulting bundle
+getNaturalClasses pi fb dones =
+  let
+    picked = pickByFeature pi fb: dones
+    exploreBundle featName =
+      if featName `elem` map featureName (getBundle fb)
+      then []
+      else let
+        newfbp = Bundle $ Feature Plus featName:getBundle fb
+        newfbm = Bundle $ Feature Minus featName:getBundle fb
+        plusphs  = pickByFeature pi newfbp
+        minusphs = pickByFeature pi newfbm
+        in
+         addAndExplore newfbp plusphs ++ addAndExplore newfbm minusphs
+    addAndExplore b p =
+      case length p of
+        0 -> []
+        _ -> if p `elem` picked
+             then []
+             else b:getNaturalClasses pi b picked
+  in
+   concatMap exploreBundle (listFeatures pi)
 
   {-let allpossfeats = listFeatures pi >>=
                                       (`fmap` [Plus, Minus, Null]) . flip Feature

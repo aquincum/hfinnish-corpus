@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE CPP #-}
 
 module Main where
 
@@ -20,6 +21,9 @@ import Text.Printf
 -- import Data.Data
 import qualified Hanalyze.Token as T
 import System.Console.GetOpt
+import Hanalyze.ToUCLAP
+
+
 
 
 -- |Flag for tasks to run with the executable
@@ -28,6 +32,8 @@ data Task = AnalyzeFile -- ^do the big analysis
           | Anderson -- ^Do the Anderson (1980) replication
           | SplitFD -- ^Split a frequency distribution file to frontneutral and backneutral stems
           | SplitCut -- ^Do the 'SplitFD' task and cut the words until the last segment before the 2nd vowel
+          | UCLAPL -- ^Produce input files for the UCLA Phonotactic Learner
+          | Sublexical -- ^Produce input files for Becker's sublexical analyzer
           deriving (Show, Eq)
 data Flag = Task Task
           | MaxN Int
@@ -36,7 +42,7 @@ data Flag = Task Task
 
 options :: [OptDescr Flag]
 options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, split, splitcut)",
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, split, splitcut, uclapl, sublexical)",
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
   Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
   Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory"
@@ -48,6 +54,8 @@ optGetTask s = case s of
   "anderson" -> Task Anderson
   "split" -> Task SplitFD
   "splitcut" -> Task SplitCut
+  "uclapl" -> Task UCLAPL
+  "sublexical" -> Task Sublexical
   _ -> Task AnalyzeFile
 
 compileOptions :: [String] -> IO ([Flag])
@@ -64,12 +72,14 @@ compileOptions args = case getOpt Permute options args of
         hasTa = (Task Anderson) `elem` o
         hasSp = (Task SplitFD) `elem` o
         hasSc = (Task SplitCut) `elem` o
+        hasUC = (Task UCLAPL) `elem` o
+        hasSl = (Task Sublexical) `elem` o
     when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
     when (hasMaxn && hasTa) (myError ["both maxn and anderson, ambiguous task"])
     when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
 
     let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
-               | hasSp || hasSc = o
+               | hasSp || hasSc || hasUC || hasSl = o
                | not hasMaxn && hasTi = MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && not hasTf = Task AnalyzeFile:MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && hasTf = MaxN 2:o
@@ -79,6 +89,8 @@ compileOptions args = case getOpt Permute options args of
                     || (Task Anderson) `elem` retval
                     || (Task SplitFD) `elem` retval
                     || (Task SplitCut) `elem` retval
+                    || (Task UCLAPL) `elem` retval
+                    || (Task Sublexical) `elem` retval
     
         retval' | needsFile && not hasFn && not (null n) = FileName (head n):retval
                 | needsFile && not hasFn && null n = myError ["no FILE given either with -n or otherwise"]
@@ -222,6 +234,13 @@ main = do
       saveTable front (flagGetFn flags ++ "_front")
       saveTable back (flagGetFn flags ++ "_back")
 
+  when ((Task UCLAPL) `elem` flags) $ do
+    let infn = flagGetFn flags
+    convertFeaturesFile finnishInventoryWithEdges "Features.txt"
+    convertCorpusFile finnishInventory infn "Training.txt"
+    createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
+
+  
   when ((Task AnalyzeInventory) `elem` flags) $ do
     -- something different
     let relb = selectRelevantBundles finnishInventory (flagGetMaxn flags)

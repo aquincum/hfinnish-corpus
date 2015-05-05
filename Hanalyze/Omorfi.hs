@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances, OverloadedStrings, DoAndIfThenElse #-}
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances, OverloadedStrings, DoAndIfThenElse, CPP #-}
 -- |This module is responsible for communication with Omorfi, a stemmer for Finnish 
 module Hanalyze.Omorfi where
 
@@ -21,6 +21,14 @@ import Data.Monoid
 import Text.Parsec
 import Control.Concurrent
 import Control.Arrow
+
+#ifndef CABAL_INSTALL
+-- Need this for GHCi
+import qualified Data.Text as Txt
+instance (Monad m) => Stream Txt.Text m Char where
+    uncons = return . Txt.uncons
+#endif
+
 
 -- DEBUG: import System.IO.Unsafe
 

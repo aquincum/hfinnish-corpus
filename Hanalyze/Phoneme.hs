@@ -590,3 +590,5 @@ augmentWord wd (left, right) = aug left ++ wd ++ aug right
     aug bound = case bound of
       Nothing -> []
       Just x -> [x]
+
+

@@ -8,6 +8,7 @@
 module Hanalyze.ToUCLAP (
   convertFeatures, convertFeaturesFile,
   convertCorpus, convertCorpusFile,
+  convertCorpusFileSublexical,
   createNatClassFile
   )
        where
@@ -18,10 +19,11 @@ import Hanalyze.Phoneme
 import Hanalyze.FreqDist
 import Hanalyze.Pattern
 import Text.Parsec
+import qualified Data.Map.Strict as Map
 import qualified Hanalyze.Token as Tkn
 import Control.Monad (when)
 import Control.Monad.Writer
-import Data.Maybe (isNothing, mapMaybe)
+import Data.Maybe (isNothing, mapMaybe, fromJust)
 import System.Environment
 import System.Console.GetOpt
 
@@ -63,22 +65,25 @@ convertFeaturesFile pi fn = (TIO.writeFile fn $ convertFeatures pi) >>
                             putStrLn ("Features file " ++ fn ++ " saved.")
 
 
+segmentWords :: PhonemicInventory -> [Token] -> Writer T.Text ([Maybe [Phoneme]])
+segmentWords pi tokens = mapM (\tok -> do
+                                  let seg = segment pi tok
+                                  when (isNothing seg) $ tell (Tkn.getText tok)
+                                  return seg
+                              ) tokens
+
+strToken :: Maybe [Phoneme] -> T.Text
+strToken mp = case mp of
+  Just phs -> T.intercalate " " (map (T.pack . phonemeName) phs)
+  Nothing ->  ""
+
+
 convertCorpus :: PhonemicInventory -> FreqDist -> Writer T.Text T.Text
 convertCorpus pi fd =
   let
     tokens = fdKeys fd
-    msegmenteds :: Writer T.Text ([Maybe [Phoneme]])
-    msegmenteds = mapM (\tok -> do
-                           let seg = segment pi tok
-                           when (isNothing seg) $ tell (Tkn.getText tok)
-                           return seg
-                      ) tokens
-    strToken :: Maybe [Phoneme] -> T.Text
-    strToken mp = case mp of
-      Just phs -> T.intercalate " " (map (T.pack . phonemeName) phs)
-      Nothing ->  ""
     lines = do
-      segmenteds <- msegmenteds
+      segmenteds <- segmentWords pi tokens
       return $ filter (not . T.null) (map strToken segmenteds)
   in
    lines >>= return . (T.intercalate "\n")
@@ -92,7 +97,28 @@ convertCorpusFile pi infn outfn = do
   putStrLn $ "Corpus (training) file " ++ outfn ++ " saved.\n\nProblems:\n"
   putStrLn (T.unpack problems)
 
-
+convertCorpusFileSublexical :: PhonemicInventory -> FilePath -> FilePath -> IO ()
+convertCorpusFileSublexical pi infn outfn = do
+  fd <- readFreqDist infn
+{-  let finaltable = annotateFD [(Tkn.pack "a", \t -> T.last (Tkn.getText t) == 'a'),
+                               (Tkn.pack "ae", \t -> T.last (Tkn.getText t) == 'ä')]
+                               fd
+      withnofinaltable = AnnotatedFreqDist $ Map.mapKeys (Tkn.Tok . T.init . Tkn.getText) (tGetMap finaltable)
+      allnonfinal = filterWithAnnotation (\a -> Tkn.length a > 0) withnofinaltable
+      (txtnofinal, problems) = runWriter $ convertCorpus pi (dropAnnotation allnonfinal)-}
+  let wds = fdKeys fd
+      (segmap, problems) = runWriter $ segmentWords pi wds
+  when (problems /= "") $ putStrLn "Problems:\n" >> putStrLn (T.unpack problems)
+  -- |Below: only final vowels.
+  let monlyvfinalmap = filter (\mphons -> case mphons of
+                                 Just phons -> phonemeName (last phons) `elem` ["a", "aa", "ä", "ää"]
+                                 _ -> False) segmap
+      onlyvfinalmap = map fromJust monlyvfinalmap
+      nofinalvmap = map init onlyvfinalmap
+      zipped = zip nofinalvmap onlyvfinalmap
+      txt = T.unlines $ map (\(a,b) -> T.concat [strToken (Just a), T.pack "\t",strToken (Just b)]) zipped
+  putStrLn $ "Corpus (training) file " ++ outfn ++ " saved."
+  TIO.writeFile outfn txt
 
 parseUCLAPConstraint :: T.Text -> [Pattern]
 parseUCLAPConstraint txt = case parse doParseUCLAPConstraint "UCLA constraint reading" txt of

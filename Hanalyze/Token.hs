@@ -10,7 +10,7 @@ module Hanalyze.Token (
   -- * Other needed functions to lift
   --  for append, concat -- use Monoid functions
   words, toLower, filter, reverse,
-  decodeFromUTF, decimal,
+  decodeFromUTF, decimal, length,
 
   -- * Folds, maps
   foldl,
@@ -30,7 +30,7 @@ import qualified Data.Text.Read as TxtR
 import qualified Data.String as String
 import Data.Monoid
 import Control.DeepSeq
-import Prelude hiding (concat, filter, readFile, hPutStrLn, words, foldl, reverse)
+import Prelude hiding (concat, filter, readFile, hPutStrLn, words, foldl, reverse,length)
 import Control.Monad
 import Control.Arrow
 import System.IO hiding (readFile, hPutStrLn, hGetLine)
@@ -107,6 +107,9 @@ filter func t = Tok . Txt.filter func $ getText t
 -- |Reverses a token
 reverse :: Token -> Token
 reverse = Tok . Txt.reverse . getText
+
+length :: Token -> Int
+length = Txt.length . getText
 
 -- |Decodes from UTF8, returns either an error on the Left, or the
 -- token on the RIght

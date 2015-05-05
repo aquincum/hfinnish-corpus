@@ -24,6 +24,8 @@ module Hanalyze.FreqDist
 
          -- ** Specifically for raw FreqDists
          filterFDFile,
+         -- ** Specifically for AnnotatedFreqDists
+         dropAnnotation, filterWithAnnotation,
          -- ** Creating Tables from raw FreqDists
          summarizeFD, annotateFD
 
@@ -333,6 +335,13 @@ annotateFD funlist fd =
   in
    AnnotatedFreqDist $ Map.fromList annmap
 
+-- |Drops the annotation  from an annotated freqdist, creating a plain 'FreqDist'.
+dropAnnotation :: AnnotatedFreqDist -> FreqDist
+dropAnnotation annfd = FreqDist $ Map.map (\(a,f) -> f) (getAFDMap annfd)
+
+-- |Filters an 'AnnotatedFreqDist' based on its annotation
+filterWithAnnotation :: (Annotation -> Bool) ->AnnotatedFreqDist -> AnnotatedFreqDist
+filterWithAnnotation pred annfd = AnnotatedFreqDist $ Map.filter (\(a,_) -> pred a) (getAFDMap annfd)
 
 -- |Simple summing function: returns the grand total frequency.
 sumTable :: (Table t v, Monoid v) => t -> v

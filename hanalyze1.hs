@@ -240,6 +240,11 @@ main = do
     convertCorpusFile finnishInventory infn "Training.txt"
     createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
 
+  when ((Task Sublexical) `elem` flags) $ do
+    let infn = flagGetFn flags
+    --    createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
+    convertCorpusFileSublexical finnishInventory infn "sublex-training.txt"
+
   
   when ((Task AnalyzeInventory) `elem` flags) $ do
     -- something different

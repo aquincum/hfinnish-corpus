@@ -21,11 +21,12 @@ import Control.Concurrent
 
 -- Option parsing:
 
-data Flag = Stem deriving (Show, Eq)
+data Flag = Stem | Omorfi deriving (Show, Eq)
 
 options :: [OptDescr Flag]
 options = [
-  Option ['s'] ["stem"] (NoArg Stem) "filter on stemmed corpus"
+  Option ['s'] ["stem"] (NoArg Stem) "stem and filter corpus",
+  Option ['o'] ["omorfi"] (NoArg Omorfi) "only stem the corpus with Omorfi"
   ]
 
 compileOptions :: [String] -> IO ([Flag], [String])
@@ -77,9 +78,26 @@ y   l p = fromJust $ findPhoneme finnishInventory p
 cleanupWord :: Token -> Token
 cleanupWord = T.filter (`elem` "abcdefghijklmnopqrstuvwxyzäö")
 
-stemFDFile :: FilePath -> IO ()
-stemFDFile fn = do
+stemFDFile :: Flag -- ^Input flag -- Omorfi or Stem
+              -> FilePath -- ^Input file
+              -> IO ()
+stemFDFile fl fn = do
   let saveprefix = "filtered2_"
+      (dirname,fname) = splitFileName fn
+      savefn = dirname </> (saveprefix ++ fname)
+  fd <- readFreqDist fn
+  let cleaned = filterTable stemFilterTokenRelevant . cleanupTable cleanupWord $ fd
+  om <- analyseFDOmorfi cleaned
+  let om' = filterByValTable (any getKnown) om
+      stemmed = getStems om'
+      filteredStemmed | fl == Stem = filterTable filterTokenRelevant stemmed
+                      | otherwise = stemmed
+  saveTable filteredStemmed savefn
+
+
+omorfFDFile :: FilePath -> IO ()
+omorfFDFile fn = do
+  let saveprefix = "filtered3_"
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
@@ -90,15 +108,17 @@ stemFDFile fn = do
       filteredStemmed = filterTable filterTokenRelevant stemmed
   saveTable filteredStemmed savefn
 
+
 main :: IO ()
 main = do
   args <- getArgs
   (flags, fns) <- compileOptions args
   when (length fns < 1) (error "No files specified")
+  when (Stem `elem` flags && Omorfi `elem` flags) (error "Choose either -s or -o")
   progVar <- initializeProgVar fns
-  let filterAction = if Stem `elem` flags
-                     then stemFDFile
-                     else filterFDFile filterTokenRelevant cleanupWord
+  let filterAction | Stem `elem` flags = stemFDFile Stem
+                   | Omorfi `elem` flags = stemFDFile Stem
+                   | otherwise = filterFDFile filterTokenRelevant cleanupWord
       runOneFile fn = do
         filterAction fn
         incrementProgVar progVar

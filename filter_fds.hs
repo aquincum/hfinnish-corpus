@@ -82,7 +82,7 @@ stemFDFile :: Flag -- ^Input flag -- Omorfi or Stem
               -> FilePath -- ^Input file
               -> IO ()
 stemFDFile fl fn = do
-  let saveprefix = "filtered2_"
+  let saveprefix = if fl == Stem then "filtered2_" else "filtered3_"
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
@@ -95,20 +95,6 @@ stemFDFile fl fn = do
   saveTable filteredStemmed savefn
 
 
-omorfFDFile :: FilePath -> IO ()
-omorfFDFile fn = do
-  let saveprefix = "filtered3_"
-      (dirname,fname) = splitFileName fn
-      savefn = dirname </> (saveprefix ++ fname)
-  fd <- readFreqDist fn
-  let cleaned = filterTable stemFilterTokenRelevant . cleanupTable cleanupWord $ fd
-  om <- analyseFDOmorfi cleaned
-  let om' = filterByValTable (any getKnown) om
-      stemmed = getStems om'
-      filteredStemmed = filterTable filterTokenRelevant stemmed
-  saveTable filteredStemmed savefn
-
-
 main :: IO ()
 main = do
   args <- getArgs
@@ -117,7 +103,7 @@ main = do
   when (Stem `elem` flags && Omorfi `elem` flags) (error "Choose either -s or -o")
   progVar <- initializeProgVar fns
   let filterAction | Stem `elem` flags = stemFDFile Stem
-                   | Omorfi `elem` flags = stemFDFile Stem
+                   | Omorfi `elem` flags = stemFDFile Omorfi
                    | otherwise = filterFDFile filterTokenRelevant cleanupWord
       runOneFile fn = do
         filterAction fn

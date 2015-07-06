@@ -72,7 +72,6 @@ stemFilterTokenRelevant t = case segment finnishInventory t of
               DotF $ setBundle [fFront, minus fLow, minus fRounded],
               Star
               ]
-y   l p = fromJust $ findPhoneme finnishInventory p
 
 -- |Cleaning up non-alphanumeric symbols. Could get more complicated
 cleanupWord :: Token -> Token
@@ -86,12 +85,20 @@ stemFDFile fl fn = do
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
-  let cleaned = filterTable stemFilterTokenRelevant . cleanupTable cleanupWord $ fd
-  om <- analyseFDOmorfi cleaned
+  putStrLn $ "FreqDist read, " ++ (show $ tSize fd) ++ " tokens."
+  let cleaned = cleanupTable cleanupWord $ fd
+  putStrLn $ "FreqDist cleaned, " ++ (show $ tSize cleaned) ++ " tokens."
+  let cleaned' = if fl == Stem then filterTable stemFilterTokenRelevant cleaned else cleaned
+  when (fl == Stem) $ putStrLn $ "First filtering done, " ++ (show $ tSize cleaned') ++ " tokens."
+  om <- analyseFDOmorfi cleaned'
+  putStrLn $ "Omorfi analysis done, " ++ (show $ tSize om) ++ " tokens."
   let om' = filterByValTable (any getKnown) om
-      stemmed = getStems om'
-      filteredStemmed | fl == Stem = filterTable filterTokenRelevant stemmed
+  putStrLn $ "Unknown stems thrown away, " ++ (show $ tSize om') ++ " tokens."
+  let stemmed = getStems om'
+  putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."
+  let filteredStemmed | fl == Stem = filterTable filterTokenRelevant stemmed
                       | otherwise = stemmed
+  when (fl == Stem) $ putStrLn $ "Relevance determined, " ++ (show $ tSize filteredStemmed) ++ " tokens."
   saveTable filteredStemmed savefn
 
 

@@ -75,6 +75,8 @@ class Eq t => Table t val  | t -> val where
   -- |A map over the keys of the table
   tMap :: (Token -> Token) -> t -> t
   tMap fun tab = tConstruct tab $ Map.mapKeys fun $ tGetMap tab
+  tSize :: t -> Int
+  tSize = length . tToList
 --  eq :: t -> t -> Bool
 
 -- |Type synonym for frequency counts.

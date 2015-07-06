@@ -135,16 +135,22 @@ prop_saveLoad fd = monadicIO $ do
                        assert (fd == fd2 && x)
                    
 
-testFilter :: IO Bool
-testFilter =
-  runCommand "../dist/build/filter_fds/filter_fds freqdist_xaaa" >>=
+runWithDiff :: FilePath -> FilePath -> IO Bool
+runWithDiff toRun output = 
+  runCommand toRun >>=
   waitForProcess >>
-  runCommand "diff -q filtered_freqdist_xaaa filtered_freqdist_xaaa_testagainst" >>=
+  runCommand ("diff -q " ++ output ++ " " ++ output ++ "_testagainst") >>=
   waitForProcess >>= \excode ->
   if excode == ExitSuccess then
     return True
   else
     return False
+
+testFilter :: IO Bool
+testFilter = runWithDiff "../dist/build/filter_fds/filter_fds freqdist_xaaa" "filtered_freqdist_xaaa"
+
+testStemming :: IO Bool
+testStemming = runWithDiff "../dist/build/filter_fds/filter_fds -o test_corp" "filtered3_test_corp"
 
 testOmorfiPlain :: IO Bool
 testOmorfiPlain = do
@@ -189,6 +195,7 @@ testOmorfi = do
        getStem ((ofdmap ! "pitkä") !! 0) == "pitkä" @? "pitkä stem"
        getStem ((ofdmap ! "vitsa") !! 0) == "vitsa" @? "vitsa stem"
     ]
+
 
 prop_sum fd = sumTable fd == List.foldl' (+) 0 (map snd (Map.toList $ getMap fd))
 
@@ -420,6 +427,7 @@ main = do
   myCheck "Summing FDs: " prop_sum
   testOmorfiPlain >>= flip unless (giveUp "testOmorfiPlain")
   runIfExistsCommand  "omorfi-interactive.sh" (testOmorfi >>= flip unless (giveUp "testOmorfiPlain"))
+  runIfExistsCommand  "omorfi-interactive.sh" (testStemming >>= flip unless (giveUp "testOmorfiPlain"))
 -- ex-testing_phonemes
   putStrLn "Testing phonemes."
   testFeatureAddition >>= flip unless (giveUp "testFeatureAddition")

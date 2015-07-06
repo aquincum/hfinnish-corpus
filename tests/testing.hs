@@ -18,6 +18,7 @@ import Test.HUnit ((~=?), (~:), (@?))
 import Control.Monad 
 import System.Exit
 import System.Process
+import System.Posix.Directory
 import Control.Concurrent
 import qualified Data.List as List (foldl')
 
@@ -136,9 +137,9 @@ prop_saveLoad fd = monadicIO $ do
 
 testFilter :: IO Bool
 testFilter =
-  runCommand "dist/build/filter_fds/filter_fds freqdists/freqdist_xaaa" >>=
+  runCommand "../dist/build/filter_fds/filter_fds freqdist_xaaa" >>=
   waitForProcess >>
-  runCommand "diff -q freqdists/filtered_freqdist_xaaa freqdists/filtered_freqdist_xaaa_testagainst" >>=
+  runCommand "diff -q filtered_freqdist_xaaa filtered_freqdist_xaaa_testagainst" >>=
   waitForProcess >>= \excode ->
   if excode == ExitSuccess then
     return True
@@ -147,7 +148,7 @@ testFilter =
 
 testOmorfiPlain :: IO Bool
 testOmorfiPlain = do
-  ofd <- loadOmorfiFile "freqdists/omorfitest_analyzed"
+  ofd <- loadOmorfiFile "omorfitest_analyzed"
   let ofdmap = tGetMap ofd
   huTest [
     "tokennames" ~: do
@@ -173,7 +174,7 @@ testOmorfiPlain = do
                   
 testOmorfi :: IO Bool
 testOmorfi = do
-  ofd <- readFreqDist "freqdists/omorfitest2"
+  ofd <- readFreqDist "omorfitest2"
   om <- analyseFDOmorfi ofd
   let ofdmap = tGetMap om
   huTest [
@@ -402,6 +403,8 @@ runIfExistsCommand com io = do
 
 main :: IO ()
 main = do
+  changeWorkingDirectory "tests"
+  runCommand "pwd"
   putStrLn "Testing."
   myCheck "Monoid law I: " prop_monoid_i
   myCheck "Monoid law II: " prop_monoid_ii

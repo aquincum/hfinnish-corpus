@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances, OverloadedStrings, DoAndIfThenElse, CPP #-}
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances, OverloadedStrings, DoAndIfThenElse, CPP, RecordWildCards #-}
 -- |This module is responsible for communication with Omorfi, a stemmer for Finnish 
 module Hanalyze.Omorfi where
 
@@ -153,10 +153,14 @@ analyseFDOmorfi fd = do
   omorfi <- initOmorfi
   let tokenfreqs = tToList fd
   progVar <- initializeProgVar tokenfreqs
-  let runToken (tok, freq) = do
+  let runToken (tok, freq) = if T.length tok == 0 then return (T.pack "", [OmorfiInfoError $ T.pack "Empty token"]) else
+        do
         oanal <- getOmorfiAnalysis omorfi tok
         let freqPerAnalysis = if null oanal then freq else freq `div` length oanal
-            oanalfreqs = map (\x -> x{ getFrequency = freqPerAnalysis }) oanal
+            oanalfreqs = map (\x -> case x of
+                                 OmorfiInfo{..} -> x { getFrequency = freqPerAnalysis }
+                                 OmorfiInfoError x -> OmorfiInfoError x
+                             ) oanal
         incrementProgVar progVar
         printWithProgVal printEveryPercent progVar
         return (tok,oanalfreqs)
@@ -164,7 +168,13 @@ analyseFDOmorfi fd = do
   closeOmorfi omorfi
   return $ tFromList analysed
       
-
+clearErrors :: OmorfiFD -> OmorfiFD
+clearErrors o = OmorfiFD $ Map.map removeErrors (getFDMap o)
+  where
+    removeErrors ois = filter isError ois
+    isError oi = case oi of
+      OmorfiInfo {..} -> True
+      OmorfiInfoError _ -> False
 
 -- |Loads a file that was created by @omorfi-analyse.sh@ and returns its
 -- contents as an 'OmorfiFD'

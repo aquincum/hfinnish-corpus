@@ -86,13 +86,17 @@ stemFDFile fl fn = do
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
   putStrLn $ "FreqDist read, " ++ (show $ tSize fd) ++ " tokens."
+  -- putStrLn $ show $ tToList fd
   let cleaned = cleanupTable cleanupWord $ fd
   putStrLn $ "FreqDist cleaned, " ++ (show $ tSize cleaned) ++ " tokens."
+  -- putStrLn $ show $ tToList cleaned
   let cleaned' = if fl == Stem then filterTable stemFilterTokenRelevant cleaned else cleaned
   when (fl == Stem) $ putStrLn $ "First filtering done, " ++ (show $ tSize cleaned') ++ " tokens."
   om <- analyseFDOmorfi cleaned'
   putStrLn $ "Omorfi analysis done, " ++ (show $ tSize om) ++ " tokens."
-  let om' = filterByValTable (any getKnown) om
+  let noError = clearErrors om
+  putStrLn $ "Errors removed, " ++ (show $ tSize noError) ++ " tokens."
+  let om' = filterByValTable (any getKnown) noError
   putStrLn $ "Unknown stems thrown away, " ++ (show $ tSize om') ++ " tokens."
   let stemmed = getStems om'
   putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."

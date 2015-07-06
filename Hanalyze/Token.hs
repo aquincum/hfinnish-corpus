@@ -11,6 +11,7 @@ module Hanalyze.Token (
   --  for append, concat -- use Monoid functions
   words, toLower, filter, reverse,
   decodeFromUTF, decimal, length,
+  split,
 
   -- * Folds, maps
   foldl,
@@ -138,3 +139,7 @@ hPutStrLn h t = TxtIO.hPutStrLn h $ getText t
 -- |Simple left fold on a token
 foldl :: (a -> Char -> a) -> a -> Token -> a
 foldl func init tok = Txt.foldl func init $ getText tok
+
+-- |Split, based on 'Data.Text.split'
+split :: (Char -> Bool) -> Token -> [Token]
+split pr inp = map Tok (Txt.split pr $ getText inp)

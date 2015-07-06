@@ -182,7 +182,12 @@ getStems omfd =
   let
     tokenlist = tToList omfd
     stemOneLine ::  (Token, [OmorfiInfo]) -> [(Token, Freq)]
-    stemOneLine oline@(tok, ois) = map (getStem &&& getFrequency) ois
+    --    stemOneLine oline@(tok, ois) = map (getStem &&& getFrequency) ois
+    stemOneLine oline@(tok, ois) = concatMap (\oi ->
+                                         let parts = T.split (=='#') (getStem oi)
+                                         in
+                                          zip parts (replicate (length parts) $ getFrequency oi)
+                                          ) ois
     stemFreqs = concatMap stemOneLine tokenlist
     flattenedfd = splitListByTable id stemFreqs
   in

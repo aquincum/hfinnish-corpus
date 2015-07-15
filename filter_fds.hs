@@ -98,7 +98,7 @@ stemFDFile fl fn = do
   putStrLn $ "Errors removed, " ++ (show $ tSize noError) ++ " tokens."
   let om' = filterByValTable (any getKnown) noError
   putStrLn $ "Unknown stems thrown away, " ++ (show $ tSize om') ++ " tokens."
-  let stemmed = getStems om'
+  stemmed <- getStems om'
   putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."
   let filteredStemmed | fl == Stem = filterTable filterTokenRelevant stemmed
                       | otherwise = stemmed

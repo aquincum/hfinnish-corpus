@@ -139,12 +139,16 @@ runWithDiff :: FilePath -> FilePath -> IO Bool
 runWithDiff toRun output = 
   runCommand toRun >>=
   waitForProcess >>
-  runCommand ("diff -q " ++ output ++ " " ++ output ++ "_testagainst") >>=
+  runCommand ("sort " ++ output ++ " > t1") >>= waitForProcess >>
+  runCommand ("sort " ++ output ++ "_testagainst > t2") >>= waitForProcess >>
+  runCommand ("diff -q t1 t2") >>=
   waitForProcess >>= \excode ->
+  runCommand ("rm t1 t2") >>= waitForProcess >>
   if excode == ExitSuccess then
     return True
   else
-    return False
+    (putStrLn $ "File " ++ output ++ " differs from expected") >>
+    (return False)
 
 testFilter :: IO Bool
 testFilter = runWithDiff "../dist/build/filter_fds/filter_fds freqdist_xaaa" "filtered_freqdist_xaaa"

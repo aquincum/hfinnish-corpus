@@ -21,6 +21,9 @@ import Data.Monoid
 import Text.Parsec
 import Control.Concurrent
 import Control.Arrow
+import Data.List (nub)
+-- DEBUG:
+import System.IO.Unsafe
 
 #ifndef CABAL_INSTALL
 -- Need this for GHCi
@@ -30,15 +33,16 @@ instance (Monad m) => Stream Txt.Text m Char where
 #endif
 
 
--- DEBUG: import System.IO.Unsafe
+
 
 -- |A data structure that is responsible to handle communication between Omorfi and
--- Hanalyze. For now, @omorfi-interactive.sh@ will be invoked and its input and
--- output handles managed within this module.
+-- Hanalyze. For now, @omorfi-interactive.sh@ or @omorfi-generate.sh@ will be
+-- invoked and its input and output handles managed within this module.
 data OmorfiPipe = OmorfiPipe {
   oIn :: Handle,
   oOut :: Handle,
-  oPh :: ProcessHandle
+  oPh :: ProcessHandle,
+  getTask :: OmorfiTask
   }
 
 -- |Part-of-speech information given by Omorfi -- curently not too much
@@ -68,6 +72,12 @@ data OmorfiInfo = OmorfiInfo {
 -- |A Frequency Distribution with Omorfi stemmed information
 data OmorfiFD = OmorfiFD { getFDMap :: Map.Map Token [OmorfiInfo] } deriving Eq
 
+-- |The possible tasks for Omorfi: analysis or generation
+data OmorfiTask = Analyze | Generate
+
+-- |Either-like datatype for the result of 'getOmorfiAnalysis'
+data AnalysisResult = Analysis [OmorfiInfo] | Generation [Token] | AnalysisError deriving Show
+
 -- |So that 'Hanalyze.FreqDist.writeTable' can be used on 'OmorfiFD'!
 instance Table OmorfiFD [OmorfiInfo] where
   tEmpty = OmorfiFD Map.empty
@@ -87,13 +97,16 @@ instance Table OmorfiFD [OmorfiInfo] where
                    "\n"]
         OmorfiInfoError err -> mconcat [mkey, "\t", err]
   
--- |Initializes an Omorfi connection by starting the interactive process
-initOmorfi :: IO OmorfiPipe
-initOmorfi = do
+-- |Initializes an Omorfi connection by starting the interactive process. Parameter whether to run analysis or generation
+initOmorfi :: OmorfiTask -> IO OmorfiPipe
+initOmorfi task = do
   (fd1,fd2) <- openPseudoTerminal
   master <- fdToHandle fd1
   slave <- fdToHandle fd2
-  let oproc = (proc "omorfi-interactive.sh" []){
+  let prog = case task of
+        Analyze -> "omorfi-interactive.sh"
+        Generate -> "omorfi-generate.sh"
+  let oproc = (proc prog []){
         std_in = UseHandle slave,
         std_out = UseHandle slave,
         std_err = UseHandle slave,
@@ -101,22 +114,30 @@ initOmorfi = do
         }
   (_, _, _, ph) <- createProcess oproc
   hSetEncoding master utf8
-  return $ OmorfiPipe master master ph
+  return $ OmorfiPipe master master ph task
 
 -- |Given an Omorfi connection, analyzes a token to its possible analyses
-getOmorfiAnalysis :: OmorfiPipe -> Token -> IO [OmorfiInfo]
-getOmorfiAnalysis (OmorfiPipe inh outh ph) tok = do
-  T.hPutStrLn inh tok
+getOmorfiAnalysis :: OmorfiPipe -> Token -> IO AnalysisResult 
+getOmorfiAnalysis (OmorfiPipe inh outh ph task) tok = do
+  let input = case task of
+        Analyze -> tok
+        Generate -> tok <> T.pack " V Prs Act ConNeg"
+        -- ^we're generating verbs and ConNeg is the stem afaik
+  T.hPutStrLn inh input
   hFlush inh
   cont <- timeout (1000*1000*1000) (getUntilEmptyLine outh)
   case cont of
     Nothing -> do
       putStrLn $ "Problem with " ++ T.unpack tok
-      return []
-    Just anal -> 
-      case parse parseToken "omorfi" anal of
-        Left e -> putStrLn ("Omorfi parsing error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return []
-        Right (tok', ofis) -> return ofis
+      return AnalysisError
+    Just anal ->
+      case task of
+        Analyze -> case parse parseToken "omorfi" anal of
+          Left e -> putStrLn ("Omorfi parsing error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return AnalysisError
+          Right (tok', ofis) -> return $ Analysis ofis
+        Generate -> case parse parseGenerator "omorfi-generate" anal of
+          Left e -> putStrLn ("Omorfi generating parse error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return AnalysisError
+          Right res -> return $ Generation $ nub $ map T.toLower res
 
 
 -- |Internal function that reads input until
@@ -130,7 +151,7 @@ getUntilEmptyLine h = do
       
 -- |Tries to wrap up an Omorfi connection. 
 closeOmorfi :: OmorfiPipe -> IO ()
-closeOmorfi (OmorfiPipe inh _ ph) = do
+closeOmorfi (OmorfiPipe inh _ ph _) = do
   hClose inh
   terminateProcessGroup ph
   terminateProcess ph
@@ -150,12 +171,15 @@ closeOmorfi (OmorfiPipe inh _ ph) = do
 -- |Analyses a 'FreqDist' with interactive omorfi
 analyseFDOmorfi :: FreqDist -> IO OmorfiFD
 analyseFDOmorfi fd = do
-  omorfi <- initOmorfi
+  omorfi <- initOmorfi Analyze
   let tokenfreqs = tToList fd
   progVar <- initializeProgVar tokenfreqs
   let runToken (tok, freq) = if T.length tok == 0 then return (T.pack "", [OmorfiInfoError $ T.pack "Empty token"]) else
         do
-        oanal <- getOmorfiAnalysis omorfi tok
+        oanal' <- getOmorfiAnalysis omorfi tok
+        let oanal = case oanal' of
+              Analysis x -> x
+              _ -> []
         let freqPerAnalysis = if null oanal then freq else freq `div` length oanal
             oanalfreqs = map (\x -> case x of
                                  OmorfiInfo{..} -> x { getFrequency = freqPerAnalysis }
@@ -187,21 +211,34 @@ loadOmorfiFile fn = do
 
 -- |Stems a corpus: the input 'OmorfiFD' is converted to a 'FreqDist'
 -- of stems,
-getStems :: OmorfiFD -> FreqDist
-getStems omfd =
+getStems :: OmorfiFD -> IO FreqDist
+getStems omfd = do
+  generator <- initOmorfi Generate
   let
     tokenlist = tToList omfd
-    stemOneLine ::  (Token, [OmorfiInfo]) -> [(Token, Freq)]
+    deVerb :: Token -> IO [Token]
+    deVerb tok = do
+      anal <- getOmorfiAnalysis generator tok
+      case anal of
+        Generation ts -> return ts
+        _ -> return []
+    stemOneLine ::  (Token, [OmorfiInfo]) -> IO [(Token, Freq)]
     --    stemOneLine oline@(tok, ois) = map (getStem &&& getFrequency) ois
-    stemOneLine oline@(tok, ois) = concatMap (\oi ->
+    stemOneLine oline@(tok, ois) = concat `liftM` mapM (\oi -> do
                                          let parts = T.split (=='#') (getStem oi)
-                                         in
-                                          zip parts (replicate (length parts) $ getFrequency oi)
+                                             partfreqs = zip parts (replicate (length parts) $ getFrequency oi)
+                                         -- now let's deverb if verb-final
+                                         laststem <- if getPOS oi == V
+                                           then do
+                                                vstems <- deVerb (fst $ last partfreqs)
+                                                return $ zip vstems (replicate (length vstems) $ (getFrequency oi `div` length vstems))
+                                           else return $ [last partfreqs]
+                                         return $ init partfreqs ++ laststem
                                           ) ois
-    stemFreqs = concatMap stemOneLine tokenlist
-    flattenedfd = splitListByTable id stemFreqs
-  in
-   flattenedfd
+  stemFreqs <- concat `liftM` mapM stemOneLine tokenlist
+  let flattenedfd = splitListByTable id stemFreqs
+  closeOmorfi generator
+  return $ flattenedfd
 
 
 
@@ -231,18 +268,6 @@ parseToken = do
   eol
   return (tok,analyses)
     where
-      eol :: Parsec Txt.Text st ()
-      sep :: Parsec Txt.Text st ()
-      eol = (many (tab <|> char ' ') >> endOfLine >> return ()) <|> eof
-      sep = skipMany1 (tab <|> char ' ')
-      double :: Parsec Txt.Text st Double
-      double = liftM (fst . head . reads) (many1 (oneOf "0123456789."))
-      parseOneWord :: Parsec Txt.Text st Token
-      parseOneWord =  T.pack `liftM` many1 (noneOf "\n\t+? ")
-      maybePrompt :: Parsec Txt.Text st ()
-      maybePrompt = void $ many (string "> ")
-      firstLine :: Parsec Txt.Text st Token
-      firstLine = parseOneWord
       analysisLine :: Token -> Parsec Txt.Text st OmorfiInfo
       analysisLine tok = do
         maybePrompt
@@ -265,8 +290,48 @@ parseToken = do
         eol
         -- DEBUG: 
         -- DEBUG: if x `seq` fullword /= tok then
-        if fullword /= tok then
+        if fullword /= tok
+          then
           return $ OmorfiInfoError $ mconcat [tok, "/=", fullword,  ": first field of analysis must be the token."]
-        else 
-            return $ OmorfiInfo pos stem known (if leftover == "" then NoOI else OtherInfo leftover) weight 0
+          else 
+          return $ OmorfiInfo pos stem known (if leftover == "" then NoOI else OtherInfo leftover) weight 0
 
+
+
+parseGenerator :: Parsec Txt.Text st [Token]
+parseGenerator = do
+  maybePrompt
+  try (skipMany1 (noneOf "\t\n") >> eol)
+  analyses <- many1 $ analysisLine
+  eol
+  return analyses
+    where
+      analysisLine :: Parsec Txt.Text st Token
+      analysisLine = do
+        maybePrompt
+        skipMany1 (noneOf "\t\n") --skip until tab
+        tab
+        res <- parseOneWord
+        skipMany (noneOf "\n")
+        eol
+        return res
+
+-- |tools for parsing:
+
+eol :: Parsec Txt.Text st ()
+eol = (many (tab <|> char ' ') >> endOfLine >> return ()) <|> eof
+
+sep :: Parsec Txt.Text st ()
+sep = skipMany1 (tab <|> char ' ')
+
+double :: Parsec Txt.Text st Double
+double = liftM (fst . head . reads) (many1 (oneOf "0123456789."))
+
+parseOneWord :: Parsec Txt.Text st Token
+parseOneWord =  T.pack `liftM` many1 (noneOf "\n\t+? ")
+
+maybePrompt :: Parsec Txt.Text st ()
+maybePrompt = void $ many (string "> ")
+
+firstLine :: Parsec Txt.Text st Token
+firstLine = parseOneWord

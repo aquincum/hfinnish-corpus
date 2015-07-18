@@ -214,6 +214,7 @@ loadOmorfiFile fn = do
 getStems :: OmorfiFD -> IO FreqDist
 getStems omfd = do
   generator <- initOmorfi Generate
+  progVar <- initializeProgVar $ tToList omfd
   let
     tokenlist = tToList omfd
     deVerb :: Token -> IO [Token]
@@ -233,6 +234,8 @@ getStems omfd = do
                                                 vstems <- deVerb (fst $ last partfreqs)
                                                 return $ zip vstems (replicate (length vstems) $ (getFrequency oi `div` length vstems))
                                            else return $ [last partfreqs]
+                                         incrementProgVar progVar
+                                         printWithProgVal printEveryPercent progVar
                                          return $ init partfreqs ++ laststem
                                           ) ois
   stemFreqs <- concat `liftM` mapM stemOneLine tokenlist

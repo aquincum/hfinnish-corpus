@@ -119,7 +119,7 @@ void FreqDist::write(const std::string fname){
 
 Omorfi::Omorfi(omorfi_task task){
   int inpipes[2], outpipes[2];
-  if( pipe(inpipes) == -1 || pipe(outpipes)){
+  if( pipe(inpipes) == -1 || pipe(outpipes) == -1){
 	printf("Error opening pipes\n");
 	exit(1);
   }
@@ -136,8 +136,15 @@ Omorfi::Omorfi(omorfi_task task){
 	  prog = "omorfi-generate.sh";
 	  break;
 	}
+	fflush(stdout);
+	fflush(stdin);
+	fflush(stderr);
 	if(dup2(inpipes[1],STDOUT_FILENO) == -1){
 	  fprintf(stderr,"DUP2 problem 1\n");
+	  exit(1);
+	}
+	if(dup2(inpipes[1],STDERR_FILENO) == -1){
+	  fprintf(stderr,"DUP2 problem 1.5\n");
 	  exit(1);
 	}
 	if(dup2(outpipes[0],STDIN_FILENO) == -1){
@@ -148,21 +155,20 @@ Omorfi::Omorfi(omorfi_task task){
 	close(inpipes[1]);
 	close(outpipes[0]);
 	close(outpipes[1]);
-	/*
-	if(execlp(prog.c_str(), prog.c_str(), (char*) NULL) == -1){
+
+	fflush(stdout);
+	fflush(stdin);
+	fflush(stderr);
+	//	if(execlp(prog.c_str(), prog.c_str(), (char*) NULL) == -1){
+	if(execlp("stdbuf", "stdbuf", "-i0", "-o0", prog.c_str(), (char*) NULL) == -1){
 	  fprintf(stderr,"EXEC problem\n");
 	  exit(1);
 	  
-	  }*/
-	while (1){
-	  fprintf(stdout, "alma\n");
-	  sleep(1);
 	}
-	fprintf(stderr,"OMORFI DONE\n");
-	exit(0);
+	fprintf(stderr,"OMORFI PROBLEM\n");
+	exit(2);
   }
   else {
-	this->child = child;
 	close(outpipes[0]);
 	close(inpipes[1]);
 	p_in = inpipes[0];
@@ -179,10 +185,10 @@ Omorfi::~Omorfi(){
 #define BUFLEN 2014
 std::vector<std::string> Omorfi::get_analyses(const std::string wd){
   char buf[BUFLEN];
+  std::string wd2 = wd +"\n";
   int i = 0, bytesav, tries = 0;
   fprintf(stderr, "pout=%d, pin=%d\n", p_out, p_in);
-  write(p_out, wd.c_str(), wd.length());
-  write(p_out, "\nx\nx\nx\nx\njoulun\n", 1);
+  fprintf(stderr, "write status=%d\n", (int) write(p_out, wd2.c_str(), wd2.length()));
   while(1){
 	fprintf(stderr,"IO: %d\n",ioctl(p_in, FIONREAD, &bytesav));
 	if(bytesav) {
@@ -197,8 +203,11 @@ std::vector<std::string> Omorfi::get_analyses(const std::string wd){
 	  return std::vector<std::string>();
 	}
   }
+  //close(p_out);
   read(p_in, (void*) buf, BUFLEN);
   printf("! %s\n", buf);
+  if(buf[0] == '>') return get_analyses(wd);
+  return std::vector<std::string>();
 }
 
 void stemfile(char *fname){
@@ -259,6 +268,7 @@ int main(int argc, char **argv){
 
   //TEST
   Omorfi om(ANALYZE);
+  om.get_analyses("olla");
   om.get_analyses("olen");
   
   return 0;

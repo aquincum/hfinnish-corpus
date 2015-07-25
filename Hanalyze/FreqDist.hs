@@ -104,6 +104,7 @@ instance Monoid FreqDist where
                         (right `seq` getMap right)
     in FreqDist innermap
 
+
 instance Table FreqDist Freq where
   tEmpty = fdEmpty
   tConstruct = const FreqDist
@@ -111,6 +112,16 @@ instance Table FreqDist Freq where
   tPrintfun _ (mkey,mval) =
     mconcat [mkey,T.pack "\t",T.pack $ show mval]
 
+{-
+instance (Table t v, Num v) => Monoid t where
+  mempty = tEmpty
+  mappend !left !right =
+    let innermap =
+          Map.unionWith (+)
+                        (left `seq` tGetMap left)
+                        (right `seq` tGetMap right)
+    in tConstruct left innermap
+-}
 
 -- |Annotation is just a 'Data.Text.Text', therefore a 'Token'
 type Annotation = Token

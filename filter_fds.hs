@@ -15,6 +15,7 @@ import Hanalyze.Omorfi
 import qualified Hanalyze.Token as T
 import Data.Char
 import Data.Maybe (isNothing, isJust, fromJust)
+import Data.Monoid
 import System.Console.GetOpt
 import System.FilePath.Posix
 import Control.Concurrent
@@ -98,7 +99,13 @@ stemFDFile fl fn = do
   putStrLn $ "Errors removed, " ++ (show $ tSize noError) ++ " tokens."
   let om' = filterByValTable (any getKnown) noError
   putStrLn $ "Unknown stems thrown away, " ++ (show $ tSize om') ++ " tokens."
-  stemmed <- getStems om'
+  let uncompounded = splitCompounds om'
+  putStrLn $ "Compounds split, " ++ (show $ length uncompounded) ++ " tokens."
+  let (verbs,notverbs) = splitVerbs uncompounded
+  putStrLn $ "Verbs split, " ++ (show $ length verbs) ++ " verbs."
+  stemmedverbs <- stemVerbs verbs
+  putStrLn $ "Verbs stemmed, " ++ (show $ length stemmedverbs) ++ " verbs."
+  let stemmed = takeStems stemmedverbs <> takeStems notverbs
   putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."
   let filteredStemmed | fl == Stem = filterTable filterTokenRelevant stemmed
                       | otherwise = stemmed

@@ -24,6 +24,12 @@ import Control.Arrow
 import Data.List (nub)
 -- DEBUG:
 import System.IO.Unsafe
+--import Data.IORef
+import qualified Data.Sequence as S
+import Data.Sequence ((><),ViewR(..))
+import qualified Data.Foldable as DF
+import qualified Data.Traversable as DT
+import qualified Data.List as List
 
 #ifndef CABAL_INSTALL
 -- Need this for GHCi
@@ -32,6 +38,8 @@ instance (Monad m) => Stream Txt.Text m Char where
     uncons = return . Txt.uncons
 #endif
 
+--instance Stream Txt.Text Data.Functor.Identity.Identity Char where
+--  uncons = return . Txt.uncons
 
 
 
@@ -47,7 +55,7 @@ data OmorfiPipe = OmorfiPipe {
 
 -- |Part-of-speech information given by Omorfi -- curently not too much
 -- sophistication is needed
-data POS = N | V | Other deriving (Eq, Show)
+data POS = N | V | CompoundPart | Other deriving (Eq, Show)
 
 -- |Morphological information given by Omorfi which will not be very important
 -- here but it'll be saved
@@ -72,6 +80,9 @@ data OmorfiInfo = OmorfiInfo {
 -- |A Frequency Distribution with Omorfi stemmed information
 data OmorfiFD = OmorfiFD { getFDMap :: Map.Map Token [OmorfiInfo] } deriving Eq
 
+-- |A Frequency Distribution with Omorfi stemmed information -- one line one analysis
+type OmorfiSFD = [(Token, OmorfiInfo)]
+
 -- |The possible tasks for Omorfi: analysis or generation
 data OmorfiTask = Analyze | Generate
 
@@ -83,20 +94,30 @@ instance Table OmorfiFD [OmorfiInfo] where
   tEmpty = OmorfiFD Map.empty
   tConstruct = const OmorfiFD
   tGetMap = getFDMap
-  tPrintfun _ (mkey, mval) = mconcat $ map printOInfo mval
+  tPrintfun _ (mkey, mval) = mconcat $ map (printOInfo mkey) mval
+
+{-instance Table OmorfiSFD OmorfiInfo where
+  tEmpty = OmorfiSFD Map.empty
+  tConstruct = const OmorfiSFD
+  tGetMap = getSFDMap
+  tPrintfun _ (mkey, mval) = printOInfo mkey mval
     where
-      printOInfo oi = case oi of
-        OmorfiInfo pos stem kn othi weight freq ->
-          mconcat [mkey, "\t",
-                   stem, "\t",
-                   if kn then "known" else "unknown", "\t",
-                   T.pack $ show  pos, "\t",
-                   if othi == NoOI then "--" else getOIToken othi, "\t",
-                   T.pack $ show weight, "\t",
-                   T.pack $ show freq,
-                   "\n"]
-        OmorfiInfoError err -> mconcat [mkey, "\t", err]
-  
+-}
+
+
+printOInfo :: Token -> OmorfiInfo -> Token
+printOInfo k oi = case oi of
+  OmorfiInfo pos stem kn othi weight freq ->
+    mconcat [k, "\t",
+             stem, "\t",
+             if kn then "known" else "unknown", "\t",
+             T.pack $ show  pos, "\t",
+             if othi == NoOI then "--" else getOIToken othi, "\t",
+             T.pack $ show weight, "\t",
+             T.pack $ show freq,
+             "\n"]
+  OmorfiInfoError err -> mconcat [k, "\t", err]
+
 -- |Initializes an Omorfi connection by starting the interactive process. Parameter whether to run analysis or generation
 initOmorfi :: OmorfiTask -> IO OmorfiPipe
 initOmorfi task = do
@@ -209,40 +230,120 @@ loadOmorfiFile fn = do
     Left e -> putStrLn ("Parse error: " ++ show e) >> return tEmpty
     Right omi -> return omi
 
+
+-- DEBUG BELOW
+test = do
+  let fd = tFromList [(T.pack "olla",16)]
+  x <- analyseFDOmorfi fd
+  let y = splitCompounds x
+  y' <- stemVerbs y
+  return y'
+
+w :: Table t v => t -> IO ()
+w = flip writeTable stdout
+-- DEBUG ABOVE    
+
+
+splitCompounds :: OmorfiFD -> OmorfiSFD
+splitCompounds omfd = concatMap splitLine (tToList omfd)
+  where
+    splitLine (t,ois) = concatMap (splitOI t) ois
+    splitOI t oi = let parts = T.split (=='#') (getStem oi)
+                            --partfreqs = zip parts (replicate (length parts) (getFrequency oi))
+                       partois = map (\s -> OmorfiInfo CompoundPart s True NoOI (getWeight oi) (getFrequency oi)) (init parts)
+                   in
+                    (last parts,oi):(zip parts partois)
+
+
+
+
+splitVerbs :: OmorfiSFD -> (OmorfiSFD,OmorfiSFD)
+splitVerbs omsfd = case List.partition isVerb omsfd of
+  (verbs,notverbs) -> (verbs,notverbs) -- ...
+  where
+    isVerb (_,oi) = getPOS oi == V
+
+stemVerbs :: OmorfiSFD -> IO OmorfiSFD
+stemVerbs verbs = do
+  let verblist = verbs -- ...
+  progVar <- initializeProgVar verblist
+  generator <- initOmorfi Generate
+--  stemmed <- mapM ((stemOneVerb generator progVar) . fst) verblist -- NOT CONCATTED!
+--  let newOIs = map (\oi -> replicate (length ) (snd verblist)
+  stemmed <- mapM (\(tok, oi) -> do
+                                     stems <- stemOneVerb generator progVar tok
+                                     let newOIs = replicate (length stems) oi{getFrequency = (getFrequency oi `div` length stems)}
+                                     return (stems,newOIs)
+                                 ) verblist
+  let flatstemmed = zip (concatMap fst stemmed) (concatMap snd stemmed)
+  closeOmorfi generator
+  return $ flatstemmed --(zip stemmed (map snd verblist))
+  
+stemOneVerb :: OmorfiPipe -> ProgVar -> Token -> IO [Token]
+stemOneVerb generator progVar tok = do
+  anal <- getOmorfiAnalysis generator tok
+  incrementProgVar progVar
+  printWithProgVal printEveryPercent progVar
+  case anal of
+    Generation ts -> return ts
+    _ -> return []
+
+takeStems :: OmorfiSFD -> FreqDist
+takeStems = foldl addT fdEmpty . map (fst &&& (getFrequency . snd))
+  where
+    addT acc (tok,freq) = FreqDist $ Map.insertWith (+) tok freq (getMap acc)
+-- still
+
+
+-- utlevel, vizumos utlevel, I-20, SEVIS fee
+-- XCertificate of Enrollment,
+-- Xfellowship letter
+-- Xuo. transcript?
+-- XDS-160
+-- Xinterjuidopont                       
+-- Xvizumigenylesi dij
+
+
+-- splitCompunds elveszti az utson kivul az osszes sort per sztem
+                       
 -- |Stems a corpus: the input 'OmorfiFD' is converted to a 'FreqDist'
 -- of stems,
-getStems :: OmorfiFD -> IO FreqDist
+{-getStems :: OmorfiFD -> IO FreqDist
 getStems omfd = do
   generator <- initOmorfi Generate
   progVar <- initializeProgVar $ tToList omfd
+--  verblist <- newIORef
   let
-    tokenlist = tToList omfd
+    tokenlist = (S.fromList . tToList) omfd
     deVerb :: Token -> IO [Token]
     deVerb tok = do
       anal <- getOmorfiAnalysis generator tok
       case anal of
         Generation ts -> return ts
         _ -> return []
-    stemOneLine ::  (Token, [OmorfiInfo]) -> IO [(Token, Freq)]
+    stemOneLine ::  (Token, [OmorfiInfo]) -> IO (S.Seq (Token, Freq))
     --    stemOneLine oline@(tok, ois) = map (getStem &&& getFrequency) ois
-    stemOneLine oline@(tok, ois) = concat `liftM` mapM (\oi -> do
+    stemOneLine oline@(tok, ois) = DF.msum `liftM` mapM (\oi -> do
                                          let parts = T.split (=='#') (getStem oi)
-                                             partfreqs = zip parts (replicate (length parts) $ getFrequency oi)
+                                             partfreqs = S.fromList $ zip parts (replicate (length parts) $ getFrequency oi)
+                                             (initials, lastelem) = case S.viewr partfreqs of
+                                               x :> y -> (x,y)
+                                               _ -> (S.empty, (T.pack "",0))
                                          -- now let's deverb if verb-final
                                          laststem <- if getPOS oi == V
                                            then do
-                                                vstems <- deVerb (fst $ last partfreqs)
-                                                return $ zip vstems (replicate (length vstems) $ (getFrequency oi `div` length vstems))
-                                           else return $ [last partfreqs]
+                                                vstems <- deVerb (fst lastelem)
+                                                return $ S.fromList $ zip vstems (replicate (length vstems) $ (getFrequency oi `div` length vstems))
+                                           else return $ S.singleton lastelem
                                          incrementProgVar progVar
                                          printWithProgVal printEveryPercent progVar
-                                         return $ init partfreqs ++ laststem
+                                         return $ initials >< laststem
                                           ) ois
-  stemFreqs <- concat `liftM` mapM stemOneLine tokenlist
+  stemFreqs <- DF.toList `liftM` DF.msum `liftM` DT.mapM stemOneLine tokenlist
   let flattenedfd = splitListByTable id stemFreqs
   closeOmorfi generator
   return $ flattenedfd
-
+-}
 
 
 -- |Parser for an entire Omorfi analysis file

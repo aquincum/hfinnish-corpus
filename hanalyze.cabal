@@ -40,7 +40,8 @@ library
                        process >= 1.2.0.0,
                        unix,
                        statistics,
-                       mtl
+                       mtl,
+                       transformers
   ghc-options:       -fhpc
 
 executable create_fds
@@ -64,12 +65,12 @@ executable merge_fds
 
 executable filter_fds
   main-is:           filter_fds.hs
-  ghc-options:       -rtsopts -O2 
+  ghc-options:       -rtsopts -O2 -prof
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split, parsec, process >= 1.2.0.0,
-                     unix
+                     unix, transformers
   cpp-options:       -DCABAL_INSTALL
 
 executable stem_fds
@@ -87,7 +88,7 @@ executable hanalyze1
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split, parsec, process >= 1.2.0.0, unix,
-                     statistics, mtl
+                     statistics, mtl, transformers
   cpp-options:       -DCABAL_INSTALL
 
 

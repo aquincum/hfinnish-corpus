@@ -65,7 +65,7 @@ executable merge_fds
 
 executable filter_fds
   main-is:           filter_fds.hs
-  ghc-options:       -rtsopts -O2 -prof
+  ghc-options:       -rtsopts -O2
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,

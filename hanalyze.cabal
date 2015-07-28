@@ -41,7 +41,8 @@ library
                        unix,
                        statistics,
                        mtl,
-                       transformers
+                       transformers,
+                       directory
   ghc-options:       -fhpc
 
 executable create_fds
@@ -70,7 +71,7 @@ executable filter_fds
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split, parsec, process >= 1.2.0.0,
-                     unix, transformers
+                     unix, transformers, directory
   cpp-options:       -DCABAL_INSTALL
 
 executable stem_fds
@@ -88,7 +89,7 @@ executable hanalyze1
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
                      split, parsec, process >= 1.2.0.0, unix,
-                     statistics, mtl, transformers
+                     statistics, mtl, transformers, directory
   cpp-options:       -DCABAL_INSTALL
 
 
@@ -99,7 +100,7 @@ test-suite testing
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, HUnit >=1.2.5.2,
                      QuickCheck, process >= 1.2.0.0, filepath, split,
-                     parsec, unix, statistics
+                     parsec, unix, statistics, directory
   type:              exitcode-stdio-1.0
   ghc-options:       -fhpc
   cpp-options:       -DCABAL_INSTALL

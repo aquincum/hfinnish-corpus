@@ -9,6 +9,7 @@ import Hanalyze.Token (Token)
 import Hanalyze.FreqDist
 import Hanalyze.Progress
 import System.IO
+import System.Directory
 import System.Process
 import System.Process.Internals (ProcessHandle(..), ProcessHandle__(..))
 import System.Posix.Terminal
@@ -30,6 +31,8 @@ import Data.Sequence ((><),ViewR(..))
 import qualified Data.Foldable as DF
 import qualified Data.Traversable as DT
 import qualified Data.List as List
+import qualified Data.ByteString.UTF8 as BUTF8
+import qualified System.IO.MMap as MMap
 
 #ifndef CABAL_INSTALL
 -- Need this for GHCi
@@ -156,7 +159,7 @@ getOmorfiAnalysis (OmorfiPipe inh outh ph task) tok = do
         Analyze -> case parse parseToken "omorfi" anal of
           Left e -> putStrLn ("Omorfi parsing error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return AnalysisError
           Right (tok', ofis) -> return $ Analysis ofis
-        Generate -> case parse parseGenerator "omorfi-generate" anal of
+        Generate -> case parse (parseGenerator True) "omorfi-generate" anal of
           Left e -> putStrLn ("Omorfi generating parse error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return AnalysisError
           Right res -> return $ Generation $ nub $ map T.toLower res
 
@@ -233,7 +236,7 @@ loadOmorfiFile fn = do
 
 -- DEBUG BELOW
 test = do
-  let fd = tFromList [(T.pack "olla",16)]
+  let fd = tFromList [(T.pack "olla",16), (T.pack "menet",32), (T.pack "tuli", 500), (T.pack "hankkia", 50)]
   x <- analyseFDOmorfi fd
   let y = splitCompounds x
   y' <- stemVerbs y
@@ -263,21 +266,46 @@ splitVerbs omsfd = case List.partition isVerb omsfd of
   where
     isVerb (_,oi) = getPOS oi == V
 
+
+cHFSTtransducer = "/usr/local/share/hfst/fi/generation.ftb3.hfst"
 stemVerbs :: OmorfiSFD -> IO OmorfiSFD
 stemVerbs verbs = do
-  let verblist = verbs -- ...
-  progVar <- initializeProgVar verblist
-  generator <- initOmorfi Generate
---  stemmed <- mapM ((stemOneVerb generator progVar) . fst) verblist -- NOT CONCATTED!
---  let newOIs = map (\oi -> replicate (length ) (snd verblist)
-  stemmed <- mapM (\(tok, oi) -> do
+  progVar <- initializeProgVar verbs
+  let grouped = List.groupBy (\(s1,o1) (s2,o2) -> (s1 == s2) && (getStem o1 == getStem o2)) verbs
+      verbsnubbed = map (\sois -> (fst (head sois), (snd (head sois)){getFrequency = sum (map (getFrequency . snd) sois)})) grouped
+      verblist = map fst verbsnubbed
+  -- 1. output vlist to file
+  (fn,h) <- openTempFile "." "verbstostem.txt"
+  mapM (T.hPutStrLn h . (<> " V Prs Act ConNeg")) verblist
+  hClose h
+  
+  -- 2. run hfst on file
+  let outputfn = fn ++ ".out"
+  processhandle <- spawnProcess "hfst-lookup" [cHFSTtransducer, "-I", fn, "-o", outputfn, "-s", "-P"]
+  waitForProcess processhandle
+
+  -- 3. read file
+  ls <- TxtIO.readFile outputfn
+
+  -- 4. parse file
+  verbstems <- case parse parseGeneratorFile fn ls of
+        Left e -> putStrLn ("Parse error: " ++ show e) >> return []
+        Right a -> return $ map (nub . map T.toLower) a
+
+  -- 5. match verb with stems
+  let matchmap = zip3 verblist verbstems (map snd verbsnubbed)
+      stemfreqs = concatMap (\(_,st,oi) -> map (\s -> (s,oi{getOtherInfo = NoOI, getFrequency = (getFrequency oi `div` length st)})) st) matchmap
+  removeFile fn
+  removeFile outputfn
+  return stemfreqs
+{-  stemmed <- mapM (\(tok, oi) -> do
                                      stems <- stemOneVerb generator progVar tok
                                      let newOIs = replicate (length stems) oi{getFrequency = (getFrequency oi `div` length stems)}
                                      return (stems,newOIs)
                                  ) verblist
   let flatstemmed = zip (concatMap fst stemmed) (concatMap snd stemmed)
-  closeOmorfi generator
-  return $ flatstemmed --(zip stemmed (map snd verblist))
+  return $ flatstemmed --(zip stemmed (map snd verblist))-}
+  
   
 stemOneVerb :: OmorfiPipe -> ProgVar -> Token -> IO [Token]
 stemOneVerb generator progVar tok = do
@@ -353,7 +381,15 @@ parseFile =  do
   toks <- many parseToken
   eof
   return $ tFromList toks
-  
+
+-- |Parser for an entire Omorfi generation file
+parseGeneratorFile :: Parsec Txt.Text st [[Token]]
+parseGeneratorFile =  do
+--  toks <- sepEndBy parseToken (endOfLine>>endOfLine)
+  toks <- many (parseGenerator False)
+  eof
+  return toks
+
 -- |Parser for a token's results as given by Omorfi:
 --
 -- >>>
@@ -402,10 +438,10 @@ parseToken = do
 
 
 
-parseGenerator :: Parsec Txt.Text st [Token]
-parseGenerator = do
+parseGenerator :: Bool -> Parsec Txt.Text st [Token]
+parseGenerator interactive = do
   maybePrompt
-  try (skipMany1 (noneOf "\t\n") >> eol)
+  when interactive (try (skipMany1 (noneOf "\t\n") >> eol))
   analyses <- many1 $ analysisLine
   eol
   return analyses

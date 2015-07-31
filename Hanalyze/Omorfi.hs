@@ -107,6 +107,10 @@ instance Table OmorfiFD [OmorfiInfo] where
     where
 -}
 
+cHFSTtransducer task = case task of
+  Generate -> "/usr/local/share/hfst/fi/generation.ftb3.hfst"
+  Analyze -> "/usr/local/share/hfst/fi/morphology.ftb3.hfst"
+
 
 printOInfo :: Token -> OmorfiInfo -> Token
 printOInfo k oi = case oi of
@@ -120,6 +124,10 @@ printOInfo k oi = case oi of
              T.pack $ show freq,
              "\n"]
   OmorfiInfoError err -> mconcat [k, "\t", err]
+
+
+
+
 
 -- |Initializes an Omorfi connection by starting the interactive process. Parameter whether to run analysis or generation
 initOmorfi :: OmorfiTask -> IO OmorfiPipe
@@ -195,7 +203,39 @@ closeOmorfi (OmorfiPipe inh _ ph _) = do
 -- |Analyses a 'FreqDist' with interactive omorfi
 analyseFDOmorfi :: FreqDist -> IO OmorfiFD
 analyseFDOmorfi fd = do
-  omorfi <- initOmorfi Analyze
+  (fn,h) <- openTempFile "." "fdtoanalyze.txt"
+  mapM (T.hPutStrLn h) (map fst (tToList fd))
+  hClose h
+
+  let outputfn = fn ++ ".out"
+  processhandle <- spawnProcess "hfst-proc" ["-x", cHFSTtransducer Analyze, fn, outputfn]
+  waitForProcess processhandle
+
+  lines <- TxtIO.readFile outputfn
+  ofd <- case parse parseFile outputfn lines of
+    Left e -> putStrLn ("Parse error: " ++ show e) >> return tEmpty
+    Right x -> return x
+
+  let returnedOFD = infuseFreqToOFD fd ofd
+  
+  removeFile fn
+  removeFile outputfn
+
+  return returnedOFD
+  
+
+infuseFreqToOFD :: FreqDist -> OmorfiFD -> OmorfiFD
+infuseFreqToOFD fd ofd = tFromList $ go (tToList fd) (tToList ofd)
+  where
+    go :: [(Token,Freq)] -> [(Token, [OmorfiInfo])] -> [(Token, [OmorfiInfo])]
+    go [] _ = [] -- shouldn't happen
+    go _ [] = [] -- shouldn't happen
+    go ((t1,fr):tfs) ((t2,ois):tos) = if (t1 == t2)
+                                  then (t2, map (\oi -> oi{getFrequency = (if null ois then fr else fr `div` length ois)}) ois):(go tfs tos)
+                                  else go tfs ((t2,ois):tos)
+                                       
+
+{-  omorfi <- initOmorfi Analyze
   let tokenfreqs = tToList fd
   progVar <- initializeProgVar tokenfreqs
   let runToken (tok, freq) = if T.length tok == 0 then return (T.pack "", [OmorfiInfoError $ T.pack "Empty token"]) else
@@ -214,7 +254,7 @@ analyseFDOmorfi fd = do
         return (tok,oanalfreqs)
   analysed <- mapM runToken tokenfreqs
   closeOmorfi omorfi
-  return $ tFromList analysed
+  return $ tFromList analysed -}
       
 clearErrors :: OmorfiFD -> OmorfiFD
 clearErrors o = OmorfiFD $ Map.map removeErrors (getFDMap o)
@@ -267,10 +307,8 @@ splitVerbs omsfd = case List.partition isVerb omsfd of
     isVerb (_,oi) = getPOS oi == V
 
 
-cHFSTtransducer = "/usr/local/share/hfst/fi/generation.ftb3.hfst"
 stemVerbs :: OmorfiSFD -> IO OmorfiSFD
 stemVerbs verbs = do
-  progVar <- initializeProgVar verbs
   let grouped = List.groupBy (\(s1,o1) (s2,o2) -> (s1 == s2) && (getStem o1 == getStem o2)) verbs
       verbsnubbed = map (\sois -> (fst (head sois), (snd (head sois)){getFrequency = sum (map (getFrequency . snd) sois)})) grouped
       verblist = map fst verbsnubbed
@@ -281,11 +319,22 @@ stemVerbs verbs = do
   
   -- 2. run hfst on file
   let outputfn = fn ++ ".out"
-  processhandle <- spawnProcess "hfst-lookup" [cHFSTtransducer, "-I", fn, "-o", outputfn, "-s", "-P"]
+      output2 = fn ++ ".out2"
+      output3 = fn ++ ".out3"
+  processhandle <- spawnProcess "hfst-lookup" [cHFSTtransducer Generate, "-I", fn, "-o", outputfn, "-s", "-P"]
   waitForProcess processhandle
+  (fnsh, hsh) <- openTempFile "." "seduniq.sh"
+  hPutStrLn hsh "echo Lowercasing..."
+  hPutStrLn hsh $ "sed y/ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖ/abcdefghijklmnopqrstuvwxyzäö/ " ++ outputfn ++ " > " ++ output2
+  hPutStrLn hsh "echo Uniqing..."
+  hPutStrLn hsh $ "uniq " ++ output2 ++ " > " ++ output3
+  hClose hsh
+  
+  processhandle2 <- spawnProcess "sh" [fnsh]
+  waitForProcess processhandle2
 
   -- 3. read file
-  ls <- TxtIO.readFile outputfn
+  ls <- TxtIO.readFile output3
 
   -- 4. parse file
   verbstems <- case parse parseGeneratorFile fn ls of
@@ -297,6 +346,9 @@ stemVerbs verbs = do
       stemfreqs = concatMap (\(_,st,oi) -> map (\s -> (s,oi{getOtherInfo = NoOI, getFrequency = (getFrequency oi `div` length st)})) st) matchmap
   removeFile fn
   removeFile outputfn
+  removeFile output2
+  removeFile output3
+  removeFile fnsh
   return stemfreqs
 {-  stemmed <- mapM (\(tok, oi) -> do
                                      stems <- stemOneVerb generator progVar tok
@@ -402,11 +454,14 @@ parseGeneratorFile =  do
 parseToken :: Parsec Txt.Text st (Token,[OmorfiInfo])
 parseToken = do
   maybePrompt
-  tok <- firstLine
-  eol
-  analyses <- many1 $ analysisLine tok
-  eol
-  return (tok,analyses)
+  tokoi <- choice [try unknownLine, do
+                    tok <- firstLine
+                    eol
+                    analyses <- many1 $ analysisLine tok
+                    eol
+                    return (tok,analyses)
+                ]
+  return tokoi
     where
       analysisLine :: Token -> Parsec Txt.Text st OmorfiInfo
       analysisLine tok = do
@@ -435,8 +490,14 @@ parseToken = do
           return $ OmorfiInfoError $ mconcat [tok, "/=", fullword,  ": first field of analysis must be the token."]
           else 
           return $ OmorfiInfo pos stem known (if leftover == "" then NoOI else OtherInfo leftover) weight 0
-
-
+      unknownLine :: Parsec Txt.Text st (Token, [OmorfiInfo])
+      unknownLine = do
+        maybePrompt
+        wd <- parseOneWord
+        sep
+        string "+?"
+        eol >> eol
+        return (wd, [OmorfiInfo Other wd False NoOI 0 0])
 
 parseGenerator :: Bool -> Parsec Txt.Text st [Token]
 parseGenerator interactive = do

@@ -9,7 +9,9 @@ module Hanalyze.ToUCLAP (
   convertFeatures, convertFeaturesFile,
   convertCorpus, convertCorpusFile,
   convertCorpusFileSublexical,
-  createNatClassFile
+  createNatClassFile,
+  generateCICAWugs1,
+  generateCICAWugsCluster
   )
        where
 
@@ -26,6 +28,7 @@ import Control.Monad.Writer
 import Data.Maybe (isNothing, mapMaybe, fromJust)
 import System.Environment
 import System.Console.GetOpt
+import Data.Monoid
 
 -- need a features file and a training file
 
@@ -68,7 +71,7 @@ convertFeaturesFile pi fn = (TIO.writeFile fn $ convertFeatures pi) >>
 segmentWords :: PhonemicInventory -> [Token] -> Writer T.Text ([Maybe [Phoneme]])
 segmentWords pi tokens = mapM (\tok -> do
                                   let seg = segment pi tok
-                                  when (isNothing seg) $ tell (Tkn.getText tok)
+                                  when (isNothing seg) $ tell (Tkn.getText tok <> "\n")
                                   return seg
                               ) tokens
 
@@ -109,7 +112,7 @@ convertCorpusFileSublexical pi infn outfn = do
   let wds = fdKeys fd
       (segmap, problems) = runWriter $ segmentWords pi wds
   when (problems /= "") $ putStrLn "Problems:\n" >> putStrLn (T.unpack problems)
-  -- |Below: only final vowels.
+  -- Below: only final vowels.
   let monlyvfinalmap = filter (\mphons -> case mphons of
                                  Just phons -> phonemeName (last phons) `elem` ["a", "aa", "ä", "ää"]
                                  _ -> False) segmap
@@ -145,7 +148,7 @@ doParseOneFeature = do
   return $ Feature (if pm == '+' then Plus else Minus) fn
 
 
--- |Too much
+-- |Too much, not using this for now
 generateUCLAWugs :: [Pattern] -> [[Phoneme]]
 generateUCLAWugs up =
   let 
@@ -155,9 +158,50 @@ generateUCLAWugs up =
     patt4 = [DotF vowel, DotF consonant, DotF consonant, DotF vowel, DotF consonant]
     vPatts = [patt1, patt2, patt3, patt4]
     patts = vPatts ++ map (DotF consonant:) vPatts
-    wds = concatMap (generateOverlappedPatterns finnishInventory up) vPatts
+    wds = concatMap (generateOverlappedPatterns finnishInventory up) patts
   in
    wds
+
+-- |Internal, for debugging. Number of segments or combinations,
+-- based on pattern read from string
+nSegments1 :: String -> Int
+nSegments1 patt = length $ fromJust $ generatePattern finnishInventory (fromJust $readPattern finnishInventory  (Tkn.pack patt))
+-- |Internal, for debugging. Number of segments,
+-- based on 1 featurebundle
+nSegments2 :: FeatureBundle -> Int
+nSegments2 fb = length $ fromJust $ generatePattern finnishInventory [DotF fb]
+
+
+
+vI = DotF (vowel <> high <> mid <> unrounded) -- 6
+vA = DotF (vowel <> short <> low) -- 2
+singletonCons = DotF (consonant <> singleton) -- 18
+anyCons = DotF consonant -- 37
+createPatt patt = case generatePattern finnishInventory patt of
+  Just xs -> xs
+  Nothing -> []
+
+generateCICAWugs1 :: [[Phoneme]]
+generateCICAWugs1 =
+  let
+    patt1 = [singletonCons, vI, anyCons, vA] -- 7992
+    patt2 = [vI, anyCons, vA] -- 1332
+    patts = [patt1, patt2]
+  in
+   concatMap createPatt patts
+
+generateCICAWugsCluster :: [[Phoneme]]
+generateCICAWugsCluster =
+  let
+    patt1 = [singletonCons, vI, singletonCons, singletonCons, vA] -- 69984
+    patt2 = [vI, singletonCons, singletonCons, vA] -- 23328
+    patts = [patt1, patt2]
+  in
+   concatMap createPatt patts
+
+
+
+
 
 createNatClassFile :: PhonemicInventory -> FilePath -> IO ()
 createNatClassFile pi fp = 

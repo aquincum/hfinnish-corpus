@@ -1,16 +1,20 @@
+-- |This small module implements a chi square test, needed for some analyses
 module Hanalyze.Chisq where
 
 import Data.List
 import Statistics.Distribution.ChiSquared
 import Statistics.Distribution
 
+-- |Data structure containing all information returned by the chi test.
 data ChiTest = ChiTest {
-  chisq :: Double,
-  p :: Double,
-  sig :: Bool
+  chisq :: Double, -- ^The chi square value itself
+  p :: Double,  -- ^A p value
+  sig :: Bool -- ^Significance
   }
 
 
+-- |Returns the (row,column) size of a 2 dimension matrix. Quite unsafe as it throws an error
+-- if the matrix is not square
 getMatrixSize :: [[Double]] -> (Int, Int)
 getMatrixSize table =
   let
@@ -21,6 +25,7 @@ getMatrixSize table =
      1 -> (rowl,head colsl)
      _ -> error "different column length in matrix"
 
+-- |Calculates a chi square value on a __square__ matrix.
 getChiSq :: [[Double]] -- ^The matrix
             -> Bool    -- ^Use Yates correction?
             -> Double  -- ^Chi squared
@@ -42,10 +47,10 @@ getChiSq table yates =
   in 
    chisq
 
-
+-- |Runs the chi square test on a __square__ matrix
 runChiSqTest :: [[Double]] -- ^The matrix
              -> Bool       -- ^Use Yates correction?
-             -> ChiTest
+             -> ChiTest    -- ^Result
 runChiSqTest table yates =
   let
     (rowl, coll) = getMatrixSize table

@@ -1,6 +1,20 @@
 {-# LANGUAGE MultiParamTypeClasses, FlexibleInstances, OverloadedStrings, DoAndIfThenElse, CPP, RecordWildCards #-}
 -- |This module is responsible for communication with Omorfi, a stemmer for Finnish 
-module Hanalyze.Omorfi where
+module Hanalyze.Omorfi (
+  -- * Data types
+  -- ** Morphological information
+  OmorfiInfo(..), POS(..), OtherInfo(..),
+  -- ** Tables
+  OmorfiFD, OmorfiSFD,
+
+  -- * Running analyses
+  analyseFDOmorfi, loadOmorfiFile, stemVerbs,
+
+  -- * Manipulating Omorfized tables
+  clearErrors, splitCompounds, splitVerbs,
+  takeStems
+
+  ) where
 
 import qualified Hanalyze.Token as T
 import qualified Data.Text as Txt
@@ -47,7 +61,7 @@ instance (Monad m) => Stream Txt.Text m Char where
 
 
 -- |A data structure that is responsible to handle communication between Omorfi and
--- Hanalyze. For now, @omorfi-interactive.sh@ or @omorfi-generate.sh@ will be
+-- Hanalyze. For now, @omorfi-interactive.sh@ or @hfst-lookup@ will be
 -- invoked and its input and output handles managed within this module.
 data OmorfiPipe = OmorfiPipe {
   oIn :: Handle,
@@ -154,7 +168,7 @@ getOmorfiAnalysis (OmorfiPipe inh outh ph task) tok = do
   let input = case task of
         Analyze -> tok
         Generate -> tok <> T.pack " V Prs Act ConNeg"
-        -- ^we're generating verbs and ConNeg is the stem afaik
+        -- we're generating verbs and ConNeg is the stem afaik
   T.hPutStrLn inh input
   hFlush inh
   cont <- timeout (1000*1000*1000) (getUntilEmptyLine outh)
@@ -203,39 +217,7 @@ closeOmorfi (OmorfiPipe inh _ ph _) = do
 -- |Analyses a 'FreqDist' with interactive omorfi
 analyseFDOmorfi :: FreqDist -> IO OmorfiFD
 analyseFDOmorfi fd = do
-  (fn,h) <- openTempFile "." "fdtoanalyze.txt"
-  mapM (T.hPutStrLn h) (map fst (tToList fd))
-  hClose h
-
-  let outputfn = fn ++ ".out"
-  processhandle <- spawnProcess "hfst-proc" ["-x", cHFSTtransducer Analyze, fn, outputfn]
-  waitForProcess processhandle
-
-  lines <- TxtIO.readFile outputfn
-  ofd <- case parse parseFile outputfn lines of
-    Left e -> putStrLn ("Parse error: " ++ show e) >> return tEmpty
-    Right x -> return x
-
-  let returnedOFD = infuseFreqToOFD fd ofd
-  
-  removeFile fn
-  removeFile outputfn
-
-  return returnedOFD
-  
-
-infuseFreqToOFD :: FreqDist -> OmorfiFD -> OmorfiFD
-infuseFreqToOFD fd ofd = tFromList $ go (tToList fd) (tToList ofd)
-  where
-    go :: [(Token,Freq)] -> [(Token, [OmorfiInfo])] -> [(Token, [OmorfiInfo])]
-    go [] _ = [] -- shouldn't happen
-    go _ [] = [] -- shouldn't happen
-    go ((t1,fr):tfs) ((t2,ois):tos) = if (t1 == t2)
-                                  then (t2, map (\oi -> oi{getFrequency = (if null ois then fr else fr `div` length ois)}) ois):(go tfs tos)
-                                  else go tfs ((t2,ois):tos)
-                                       
-
-{-  omorfi <- initOmorfi Analyze
+  omorfi <- initOmorfi Analyze
   let tokenfreqs = tToList fd
   progVar <- initializeProgVar tokenfreqs
   let runToken (tok, freq) = if T.length tok == 0 then return (T.pack "", [OmorfiInfoError $ T.pack "Empty token"]) else
@@ -254,8 +236,41 @@ infuseFreqToOFD fd ofd = tFromList $ go (tToList fd) (tToList ofd)
         return (tok,oanalfreqs)
   analysed <- mapM runToken tokenfreqs
   closeOmorfi omorfi
-  return $ tFromList analysed -}
-      
+  return $ tFromList analysed
+{-  (fn,h) <- openTempFile "." "fdtoanalyze.txt"
+  mapM (T.hPutStrLn h) (map fst (tToList fd))
+  hClose h
+
+  let outputfn = fn ++ ".out"
+  processhandle <- spawnProcess "hfst-proc" ["-x", cHFSTtransducer Analyze, fn, outputfn]
+  waitForProcess processhandle
+
+  lines <- TxtIO.readFile outputfn
+  ofd <- case parse parseFile outputfn lines of
+    Left e -> putStrLn ("Parse error: " ++ show e) >> return tEmpty
+    Right x -> return x
+
+  let returnedOFD = infuseFreqToOFD fd ofd
+  
+  removeFile fn
+  removeFile outputfn
+
+  return returnedOFD
+-}  
+
+infuseFreqToOFD :: FreqDist -> OmorfiFD -> OmorfiFD
+infuseFreqToOFD fd ofd = tFromList $ go (tToList fd) (tToList ofd)
+  where
+    go :: [(Token,Freq)] -> [(Token, [OmorfiInfo])] -> [(Token, [OmorfiInfo])]
+    go [] _ = [] -- shouldn't happen
+    go _ [] = [] -- shouldn't happen
+    go ((t1,fr):tfs) ((t2,ois):tos) = if (t1 == t2)
+                                  then (t2, map (\oi -> oi{getFrequency = (if null ois then fr else fr `div` length ois)}) ois):(go tfs tos)
+                                  else go tfs ((t2,ois):tos)
+                                       
+
+-- |Drops all analyses where omorfi returned an error (where the
+-- omorfi analysis is 'OmorfiInfoError'
 clearErrors :: OmorfiFD -> OmorfiFD
 clearErrors o = OmorfiFD $ Map.map removeErrors (getFDMap o)
   where
@@ -286,7 +301,9 @@ w :: Table t v => t -> IO ()
 w = flip writeTable stdout
 -- DEBUG ABOVE    
 
-
+-- |Takes an 'OmorfiFD' and creates a list where one token corresponds to one analysis,
+-- meanwhile splitting compounds, marking all but the last part as 'CompoundPart'.
+-- Each part gets the frequency of the full word.
 splitCompounds :: OmorfiFD -> OmorfiSFD
 splitCompounds omfd = concatMap splitLine (tToList omfd)
   where
@@ -299,14 +316,21 @@ splitCompounds omfd = concatMap splitLine (tToList omfd)
 
 
 
-
+-- |Splits an 'OmorfiSFD' to a separate list of verbs and notverbs.
+-- The return value is (verbs, notverbs)
 splitVerbs :: OmorfiSFD -> (OmorfiSFD,OmorfiSFD)
 splitVerbs omsfd = case List.partition isVerb omsfd of
   (verbs,notverbs) -> (verbs,notverbs) -- ...
   where
     isVerb (_,oi) = getPOS oi == V
 
-
+-- |Takes in a list of verbs in the form of an 'OmorfiSFD' (already stemmed corpus),
+-- where the omorfi analysis returned the Infinitive forms of the verbs as stems. In
+-- Finnish, the ConNeg form is closer to the stem, so this function determines this form
+-- for each verb, and replaces the tokens in the list with the true verb stem. It does
+-- this by writing out the corpus to a temporary file, runs @hfst-lookup@ generation on
+-- them, manipulates that file and reads it back, remerging the original frequencies to
+-- the 'OmorfiSFD'.
 stemVerbs :: OmorfiSFD -> IO OmorfiSFD
 stemVerbs verbs = do
   let grouped = List.groupBy (\(s1,o1) (s2,o2) -> (s1 == s2) && (getStem o1 == getStem o2)) verbs
@@ -368,6 +392,10 @@ stemOneVerb generator progVar tok = do
     Generation ts -> return ts
     _ -> return []
 
+
+-- |Converts an 'OmorfiSFD' to a 'FreqDist' by throwing away all
+-- morphological information and summing all occurences of the same
+-- token.
 takeStems :: OmorfiSFD -> FreqDist
 takeStems = foldl addT fdEmpty . map (fst &&& (getFrequency . snd))
   where

@@ -1,3 +1,5 @@
+-- |This module provides some semi-regexp tools to look for
+-- or manipulate certain phonological patterns.
 module Hanalyze.Pattern (
   -- * Data type
   Pattern(..),
@@ -27,7 +29,7 @@ import Data.Maybe (mapMaybe)
 
 type PattParser st x = Parsec String st x
 
--- |A pattern for filtering
+-- |A pattern for filtering, lookup or even generating strings based on an inventory.
 data Pattern = P Phoneme -- ^Matches a given phoneme based on its label
              | AnyP [Phoneme] -- ^Matches any of the listed phonemes
              | Dot -- ^Matches one and one phoneme only
@@ -42,13 +44,58 @@ instance Show Pattern where
   show patt = writePattern [patt]
 
 
--- |Read in a pattern based on a phonemic inventory. Now with quality parsing!
+{-| Reads in a pattern based on a phonemic inventory. It handles digraphs,
+   and some regexp-like tools.
+
+ * a phoneme is matched by simply typing out a phoneme (digraphs work!):
+
+ @
+  readPattern inv "abii" == Just ['P' a, 'P' b, 'P' ii]
+ @
+
+ * Optional presence of 1 phoneme is marked with a @?@
+
+ @
+  readPattern inv "?bii" == Just ['Question', P b, P ii]
+ @
+
+ * Any one phoneme is marked with a @.@
+
+ @
+  readPattern inv ".bii" == Just ['Dot', P b, P ii]
+ @
+
+ * Choice between more phonemes is marked with square brackets, like @[b,d,g]@
+
+ @
+  readPattern inv "[a,e]bii" == Just ['AnyP' [a,e], P b, P ii]
+ @
+
+ * Zero or more phonemes is marked with a @*@
+
+ @
+  readPattern inv "*bii" == Just ['Star', P b, P ii]
+ @
+
+ * Feature matching is marked as listing a feature bundle between curly brackets
+   and a dot @.@, a question @?@ or a star @*@ as described above. The feature
+   listing must be separated by commas and plus/minus/underspecification is marked
+   with a @+@, @-@ and @0@. No space may come between the @+-0@ and the feature
+   name, but spaces may be around the commas.
+
+ @
+  readPattern inv "{+vowel, -high}.bii" == Just ['DotF' ('FeatureBundle' [+vowel, -high]), P b, P ii]
+  readPattern inv "{+vowel, -high}?bii" == Just ['QuestionF' ('FeatureBundle' [+vowel, -high]), P b, P ii]
+  readPattern inv "{+vowel, -high}*bii" == Just ['StarF' ('FeatureBundle' [+vowel, -high]), P b, P ii]
+ @
+
+-}
 readPattern :: PhonemicInventory -> Token -> Maybe [Pattern]
 readPattern inv s = case parse (parsePatterns inv) "pattern reading" (T.unpack s) of
   Left e -> Nothing
   Right x -> Just x
                      
--- |Output a pattern in a human-readable form
+-- |Outputs a pattern in a human-readable form
 writePattern :: [Pattern] -> String
 writePattern = concatMap write'
   where
@@ -100,8 +147,10 @@ parsePattern pi = try digraph <|> star <|> question <|> dot <|>
     featureSpecifications = sepBy featureSpecification (char ',')
     featureSpecification :: PattParser st Feature
     featureSpecification = do
+      skipMany (char ' ')
       pm <- parsePM
-      fn <- many1 (noneOf ",{}")
+      fn <- many1 (noneOf ",{} ")
+      skipMany (char ' ')
       return $ Feature pm fn
 
 --    getPhoneme p = 
@@ -211,20 +260,22 @@ generatePattern pi patt =
   case sequence $ generatedFBs patt of
     Nothing -> Nothing
     Just fbs -> Just $ generateFromFBs pi fbs
-  where
-    generatedFBs :: [Pattern] -> [Maybe FeatureBundle]
-    generatedFBs [] = []
-    generatedFBs (p:ps) = myFB p:(generatedFBs ps)
-    myFB p = case p of
-      DotF fb -> Just fb
-      Dot -> Just $ setBundle []
-      _ -> Nothing
 
-generateOverlappedPatterns :: PhonemicInventory
-                          -> [Pattern]
-                          -> [Pattern]
-                          -> [[Phoneme]]
-generateOverlappedPatterns pi p1 p2 =
+generatedFBs :: [Pattern] -> [Maybe FeatureBundle]
+generatedFBs [] = []
+generatedFBs (p:ps) = myFB p:(generatedFBs ps)
+
+myFB p = case p of
+  DotF fb -> Just fb
+  Dot -> Just $ setBundle []
+  _ -> Nothing
+
+
+-- |Generates the overlapped pattern between two dot patterns.
+overlappedPattern :: [Pattern]
+                  -> [Pattern]
+                  -> [[Pattern]]
+overlappedPattern p1 p2 =
   let
     (shorter, longer) = if length p1 < length p2 then (p1,p2) else (p2,p1)
     pad patt len start = let pattlen = length patt
@@ -234,6 +285,19 @@ generateOverlappedPatterns pi p1 p2 =
     npatterns = length longer - length shorter
     paddedshorts = map (pad shorter (length longer)) [0..npatterns]
     mergeds = mapMaybe (mergeDotPatterns longer) paddedshorts
+  in
+   mergeds
+
+
+-- |Generates words based on the overlap of two dot patterns.
+-- Careful with this, could be slow.
+generateOverlappedPatterns :: PhonemicInventory
+                          -> [Pattern]
+                          -> [Pattern]
+                          -> [[Phoneme]]
+generateOverlappedPatterns pi p1 p2 =
+  let
+    mergeds = overlappedPattern p1 p2
     wordsGenerated = mapMaybe (generatePattern pi) mergeds
   in
    concat wordsGenerated

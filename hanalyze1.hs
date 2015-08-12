@@ -34,7 +34,10 @@ data Task = AnalyzeFile -- ^do the big analysis
           | SplitCut -- ^Do the 'SplitFD' task and cut the words until the last segment before the 2nd vowel
           | UCLAPL -- ^Produce input files for the UCLA Phonotactic Learner
           | Sublexical -- ^Produce input files for Becker's sublexical analyzer
+          | Wugs -- ^Create wugs in CIC(C)A shape
+          | Help -- ^Print out the help
           deriving (Show, Eq)
+
 data Flag = Task Task
           | MaxN Int
           | FileName FilePath
@@ -42,10 +45,11 @@ data Flag = Task Task
 
 options :: [OptDescr Flag]
 options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, split, splitcut, uclapl, sublexical)",
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, split, splitcut, uclapl, sublexical, wugs)",
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
   Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
-  Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory"
+  Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory",
+  Option ['h'] ["help"] (NoArg (Task Help)) "Display help"
   ]
 
 optGetTask :: String -> Flag
@@ -56,6 +60,8 @@ optGetTask s = case s of
   "splitcut" -> Task SplitCut
   "uclapl" -> Task UCLAPL
   "sublexical" -> Task Sublexical
+  "wugs" -> Task Wugs
+  "help" -> Task Help
   _ -> Task AnalyzeFile
 
 compileOptions :: [String] -> IO ([Flag])
@@ -74,12 +80,15 @@ compileOptions args = case getOpt Permute options args of
         hasSc = (Task SplitCut) `elem` o
         hasUC = (Task UCLAPL) `elem` o
         hasSl = (Task Sublexical) `elem` o
+        hasWu = (Task Wugs) `elem` o
+        hasHl = (Task Help) `elem` o
+    when (hasHl) (error $ usageInfo "Usage: hanalyze1 [OPTIONS...] [FILE]" options)
     when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
     when (hasMaxn && hasTa) (myError ["both maxn and anderson, ambiguous task"])
     when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
 
     let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
-               | hasSp || hasSc || hasUC || hasSl = o
+               | hasSp || hasSc || hasUC || hasSl || hasWu = o
                | not hasMaxn && hasTi = MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && not hasTf = Task AnalyzeFile:MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && hasTf = MaxN 2:o
@@ -244,6 +253,16 @@ main = do
     let infn = flagGetFn flags
     --    createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
     convertCorpusFileSublexical finnishInventory infn "sublex-training.txt"
+
+
+  when ((Task Wugs) `elem` flags) $ do
+    let wugs1 = generateCICAWugs1
+    let wugs2 = generateCICAWugsCluster
+    withFile "wugs.txt" WriteMode (\h ->
+                                    mapM_ (T.hPutStrLn h . spellout) wugs1 >>
+                                    mapM_ (T.hPutStrLn h . spellout) wugs2
+                                    )
+
 
   
   when ((Task AnalyzeInventory) `elem` flags) $ do

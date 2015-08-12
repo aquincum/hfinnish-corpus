@@ -40,7 +40,7 @@ module Hanalyze.Phoneme
          -- *** consonants
          labial, coronal, velar, glottal, palatal, voiced, voiceless,
          stop, nasal, fricative, approximant, lateral, trill, short,
-         long, consonant,
+         long, consonant, singleton, geminate,
 
          -- *** vowels
          high, mid, low, rounded, unrounded, front, back, vowel,

@@ -13,7 +13,7 @@ module Hanalyze.FreqDist
          -- ** Generalized for Tables
          writeTable, saveTable,
          -- ** Specifically for raw FreqDists
-         countFreqs, multiReadCountFreqs, readCountFreqs,
+         countFreqs, readCountFreqs, multiReadCountFreqs,
          readFreqDist,
 
          -- * Manipulating FreqDists
@@ -199,7 +199,7 @@ countFreqs = foldl addPlusToken fdEmpty
 readCountFreqs :: FilePath -> IO FreqDist
 readCountFreqs fn = fmap countFreqs (loadFile fn)
 
--- |Reads frequency distributions from a list of files. First, it calls 'readCountFreq' on files
+-- |Reads frequency distributions from a list of files. First, it calls 'readCountFreqs' on files
 -- and then merges these distributions by adding the frequencies together.
 multiReadCountFreqs :: [FilePath] -> IO FreqDist
 multiReadCountFreqs fns = do

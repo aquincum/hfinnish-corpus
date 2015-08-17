@@ -276,7 +276,7 @@ fVelar = Feature Plus "velar"
 fGlottal = Feature Plus "glottal"
 fPalatal = Feature Plus "palatal"
 
-fAnterior = Feature Plus "anterior"
+--fAnterior = Feature Plus "anterior"
 
 fContinuant = Feature Plus "continuant"
 fSonorant =  Feature Plus "sonorant"
@@ -302,8 +302,8 @@ coronal = Bundle [underspecified fLabial,  fCoronal, underspecified fVelar, fCon
 velar = Bundle [underspecified fLabial, underspecified fCoronal,  fVelar, fCons]
 glottal = Bundle [fGlottal, fCons]
 palatal = mconcat [Bundle [fPalatal], Bundle $ map underspecified [fLabial, fVelar, fGlottal, fCoronal]]
-anterior = Bundle [fAnterior]
-posterior = Bundle [minus fAnterior]
+--anterior = Bundle [fAnterior]
+--posterior = Bundle [minus fAnterior]
 
 
 voiced = Bundle [fVoiced, fCons]
@@ -348,21 +348,21 @@ testInvConsonants :: PhonemicInventory
 testInvConsonants = [
   Phoneme "p" (mconcat [voiceless, labial, stop]),
   Phoneme "b" (mconcat [voiced, labial, stop]),
-  Phoneme "t" (mconcat [voiceless, coronal, stop, anterior]),
-  Phoneme "d" (mconcat [voiced, coronal, stop, anterior]),
+  Phoneme "t" (mconcat [voiceless, coronal, stop]),
+  Phoneme "d" (mconcat [voiced, coronal, stop]),
   Phoneme "k" (mconcat [voiceless, velar, stop]),
   Phoneme "g" (mconcat [voiced, velar, stop]),
   Phoneme "m" (mconcat [nasal, labial]),
-  Phoneme "n" (mconcat [nasal, coronal, anterior]),
+  Phoneme "n" (mconcat [nasal, coronal]),
   Phoneme "f" (mconcat [fricative, voiceless, labial]),
   Phoneme "v" (mconcat [fricative, voiced, labial]),
-  Phoneme "s" (mconcat [fricative, voiceless, coronal, anterior]),
-  Phoneme "z" (mconcat [fricative, voiced, coronal, anterior]),
-  Phoneme "š" (mconcat [fricative, voiceless, coronal, posterior]),
-  Phoneme "ž" (mconcat [fricative, voiced, coronal, posterior]),
+  Phoneme "s" (mconcat [fricative, voiceless, coronal]),
+  Phoneme "z" (mconcat [fricative, voiced, coronal]),
+  --  Phoneme "š" (mconcat [fricative, voiceless, coronal, posterior]),
+  -- Phoneme "ž" (mconcat [fricative, voiced, coronal, posterior]),
   Phoneme "h" (mconcat [fricative, glottal, voiceless]),
-  Phoneme "l" (mconcat [approximant, lateral, coronal, anterior]),
-  Phoneme "r" (mconcat [approximant, trill, coronal, anterior]),
+  Phoneme "l" (mconcat [approximant, lateral, coronal]),
+  Phoneme "r" (mconcat [approximant, trill, coronal]),
   Phoneme "j" (mconcat [approximant, palatal])
   ]
                     

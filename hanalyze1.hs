@@ -258,9 +258,11 @@ main = do
   when ((Task Wugs) `elem` flags) $ do
     let wugs1 = generateCICAWugs1
     let wugs2 = generateCICAWugsCluster
+    let wugs3 = generateCICAWugsHiatus
     withFile "wugs.txt" WriteMode (\h ->
                                     mapM_ (T.hPutStrLn h . spellout) wugs1 >>
-                                    mapM_ (T.hPutStrLn h . spellout) wugs2
+                                    mapM_ (T.hPutStrLn h . spellout) wugs2 >>
+                                    mapM_ (T.hPutStrLn h . spellout) wugs3
                                     )
 
 

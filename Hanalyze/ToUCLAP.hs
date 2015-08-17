@@ -11,7 +11,8 @@ module Hanalyze.ToUCLAP (
   convertCorpusFileSublexical,
   createNatClassFile,
   generateCICAWugs1,
-  generateCICAWugsCluster
+  generateCICAWugsCluster,
+  generateCICAWugsHiatus
   )
        where
 
@@ -199,7 +200,14 @@ generateCICAWugsCluster =
   in
    concatMap createPatt patts
 
-
+generateCICAWugsHiatus :: [[Phoneme]]
+generateCICAWugsHiatus =
+  let
+    patt1 = [singletonCons, vI, vA] -- 
+    patt2 = [vI, vA] -- 
+    patts = [patt1, patt2]
+  in
+   concatMap createPatt patts
 
 
 

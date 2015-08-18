@@ -12,7 +12,8 @@ module Hanalyze.ToUCLAP (
   createNatClassFile,
   generateCICAWugs1,
   generateCICAWugsCluster,
-  generateCICAWugsHiatus
+  generateCICAWugsHiatus,
+  readUCLAPLOutput
   )
        where
 
@@ -31,15 +32,28 @@ import System.Environment
 import System.Console.GetOpt
 import Data.Monoid
 
--- need a features file and a training file
-
-type UCLAParser st x = Parsec T.Text st x
 
 #ifndef CABAL_INSTALL
 -- Need this for GHCi
 instance (Monad m) => Stream T.Text m Char where
     uncons = return . T.uncons
 #endif
+
+-- need a features file and a training file
+
+type UCLAParser st x = Parsec T.Text st x
+
+-- |UCLA weights
+type Weight = Float
+-- |Table of words and UCLA weights. We don't (yet?) care about individual constraint
+-- violations and such, only the total weight
+data UCLAScores = UCLAScores {getUCLAMap :: Map.Map Token Weight} deriving (Eq, Show)
+
+instance Table UCLAScores Weight where
+  tEmpty = UCLAScores Map.empty
+  tConstruct = const UCLAScores
+  tGetMap = getUCLAMap
+  tPrintfun _ (mkey, mval) = mconcat [mkey, Tkn.pack "\t", Tkn.pack $ show $ mval]
 
 
 convertFeatures :: PhonemicInventory -> T.Text
@@ -124,30 +138,6 @@ convertCorpusFileSublexical pi infn outfn = do
   putStrLn $ "Corpus (training) file " ++ outfn ++ " saved."
   TIO.writeFile outfn txt
 
-parseUCLAPConstraint :: T.Text -> [Pattern]
-parseUCLAPConstraint txt = case parse doParseUCLAPConstraint "UCLA constraint reading" txt of
-  Left e -> []
-  Right x -> x
-
-doParseUCLAPConstraint :: UCLAParser st [Pattern]
-doParseUCLAPConstraint = do
-  char '*'
-  many1 doParseOneConstraint
-
-doParseOneConstraint :: UCLAParser st Pattern
-doParseOneConstraint = do
-  char '['
-  feats <- sepBy1 doParseOneFeature (char ',')
-  char ']'
-  return $ DotF $ setBundle feats
-  
-
-doParseOneFeature :: UCLAParser st Feature
-doParseOneFeature = do
-  pm <- char '+' <|> char '-'
-  fn <- many1 $ noneOf "[,]"
-  return $ Feature (if pm == '+' then Plus else Minus) fn
-
 
 -- |Too much, not using this for now
 generateUCLAWugs :: [Pattern] -> [[Phoneme]]
@@ -210,6 +200,12 @@ generateCICAWugsHiatus =
    concatMap createPatt patts
 
 
+readUCLAPLOutput :: T.Text -> FilePath -> UCLAScores
+readUCLAPLOutput text fn =
+  case parse parseUCLAPOutputFile fn text of
+    Left e -> error ("Problem with UCLAPL parsing: " ++ show e) --tEmpty
+    Right x ->  x
+
 
 createNatClassFile :: PhonemicInventory -> FilePath -> IO ()
 createNatClassFile pi fp = 
@@ -217,6 +213,54 @@ createNatClassFile pi fp =
       str = T.concat $ map (\x -> "Novel of size " `T.append` T.pack (show (length x)) `T.append` ": " `T.append` T.intercalate (T.pack ",") (map (T.pack . show) x)) (map getBundle natclasses)
   in
    TIO.writeFile fp str
+
+
+-- *Parsing
+
+parseUCLAPOutputFile :: UCLAParser st UCLAScores
+parseUCLAPOutputFile = ignoreLine >>
+                       ignoreLine >>
+                       ignoreLine >>
+                       many parseUCLAPLine >>=
+                       return . tFromList
+  where
+    ignoreLine = manyTill anyChar (try $ char '\n')
+
+parseUCLAPLine :: UCLAParser st (Token, Weight)
+parseUCLAPLine = do
+  wd <- many $ noneOf "\t\n"
+  tab
+  wholes <- many1 digit
+  parts <- option "0" (char '.' >> many1 digit)
+  let w = read $ wholes ++ ('.':parts)
+  manyTill anyChar (try $ char '\n')
+  return (Tkn.pack wd, w)  
+
+
+parseUCLAPConstraint :: T.Text -> [Pattern]
+parseUCLAPConstraint txt = case parse doParseUCLAPConstraint "UCLA constraint reading" txt of
+  Left e -> []
+  Right x -> x
+
+doParseUCLAPConstraint :: UCLAParser st [Pattern]
+doParseUCLAPConstraint = do
+  char '*'
+  many1 doParseOneConstraint
+
+doParseOneConstraint :: UCLAParser st Pattern
+doParseOneConstraint = do
+  char '['
+  feats <- sepBy1 doParseOneFeature (char ',')
+  char ']'
+  return $ DotF $ setBundle feats
+  
+
+doParseOneFeature :: UCLAParser st Feature
+doParseOneFeature = do
+  pm <- char '+' <|> char '-'
+  fn <- many1 $ noneOf "[,]"
+  return $ Feature (if pm == '+' then Plus else Minus) fn
+
 
 {-
 main :: IO ()

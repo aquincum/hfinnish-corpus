@@ -22,7 +22,8 @@ import Text.Printf
 import qualified Hanalyze.Token as T
 import System.Console.GetOpt
 import Hanalyze.ToUCLAP
-
+import qualified Data.Text as Txt
+import qualified Data.Text.IO as TIO
 
 
 
@@ -35,6 +36,7 @@ data Task = AnalyzeFile -- ^do the big analysis
           | UCLAPL -- ^Produce input files for the UCLA Phonotactic Learner
           | Sublexical -- ^Produce input files for Becker's sublexical analyzer
           | Wugs -- ^Create wugs in CIC(C)A shape
+          | SampleWugs -- ^Sample wugs from the UCLAPL output
           | Help -- ^Print out the help
           deriving (Show, Eq)
 
@@ -45,7 +47,7 @@ data Flag = Task Task
 
 options :: [OptDescr Flag]
 options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, split, splitcut, uclapl, sublexical, wugs)",
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, split, splitcut, uclapl, sublexical, wugs, samplewugs)",
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
   Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
   Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory",
@@ -61,6 +63,7 @@ optGetTask s = case s of
   "uclapl" -> Task UCLAPL
   "sublexical" -> Task Sublexical
   "wugs" -> Task Wugs
+  "samplewugs" -> Task SampleWugs
   "help" -> Task Help
   _ -> Task AnalyzeFile
 
@@ -81,6 +84,7 @@ compileOptions args = case getOpt Permute options args of
         hasUC = (Task UCLAPL) `elem` o
         hasSl = (Task Sublexical) `elem` o
         hasWu = (Task Wugs) `elem` o
+        hasSw = (Task SampleWugs) `elem` o
         hasHl = (Task Help) `elem` o
     when (hasHl) (error $ usageInfo "Usage: hanalyze1 [OPTIONS...] [FILE]" options)
     when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
@@ -88,7 +92,7 @@ compileOptions args = case getOpt Permute options args of
     when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
 
     let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
-               | hasSp || hasSc || hasUC || hasSl || hasWu = o
+               | hasSp || hasSc || hasUC || hasSl || hasWu || hasSw = o
                | not hasMaxn && hasTi = MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && not hasTf = Task AnalyzeFile:MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && hasTf = MaxN 2:o
@@ -100,6 +104,7 @@ compileOptions args = case getOpt Permute options args of
                     || (Task SplitCut) `elem` retval
                     || (Task UCLAPL) `elem` retval
                     || (Task Sublexical) `elem` retval
+                    || (Task SampleWugs) `elem` retval
     
         retval' | needsFile && not hasFn && not (null n) = FileName (head n):retval
                 | needsFile && not hasFn && null n = myError ["no FILE given either with -n or otherwise"]
@@ -217,6 +222,21 @@ summarizeByPattern fd inv patt = do
 filterVowelFinals :: FreqDist -> FreqDist
 filterVowelFinals = filterTable $ filterToken finnishInventory [Star, DotF vowel]
 
+
+fitsPattern :: [Pattern] -> Token -> Bool
+fitsPattern patt tkn =
+  let
+    phons = segment finnishInventory (T.filter (/= ' ') tkn)
+  in
+   case phons of
+     Just phs -> filterWord phs patt
+     Nothing -> False
+
+
+
+
+
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -265,7 +285,25 @@ main = do
                                     mapM_ (T.hPutStrLn h . spellout) wugs3
                                     )
 
-
+  when ((Task SampleWugs) `elem` flags) $ do
+    let infn = flagGetFn flags
+    contents <- TIO.readFile infn
+    let cWithAe = Txt.intercalate (Txt.pack "ä") (Txt.splitOn (Txt.pack "ae") contents)
+        cWithOe = Txt.intercalate (Txt.pack "ö") (Txt.splitOn (Txt.pack "oe") cWithAe)
+        allWugs = readUCLAPLOutput cWithOe infn
+        zeroWeight = filterByValTable (== 0.0) allWugs
+        zeroWeightFD = (tFromList $ map (\(t,_) -> (t,0)) (tToList zeroWeight)) :: FreqDist
+        patternAnnotMap :: [(Annotation, Token -> Bool)]
+        patternAnnotMap = [
+          (T.pack "1", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.j{-consonantal}.*"))),
+          (T.pack "2", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.{-consonantal}.*"))),
+          (T.pack "3", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal,+high}.[p,pp]{-consonantal}.*"))),
+          (T.pack "4", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[l,ll]{-consonantal}.*"))),
+          (T.pack "5", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[f,s,h]j{-consonantal}.*")))
+          ]
+        annotated = annotateFD patternAnnotMap zeroWeightFD
+    writeTable annotated stdout
+    -- TO DO: filter by existence; sample
   
   when ((Task AnalyzeInventory) `elem` flags) $ do
     -- something different

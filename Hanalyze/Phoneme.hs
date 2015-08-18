@@ -402,7 +402,18 @@ finnishInventory = mapWithFeat testInvVowels short ++
     doubledInvConsonants = map (\phon -> let n = phonemeName phon in
                                  Phoneme (n ++ n) (featureBundle phon)) testInvConsonants
 
+-- |The Finnish inventory with "ae" and "oe" instead of "ä" and "ö" respectively 
+finnishInventoryAe :: PhonemicInventory
+finnishInventoryAe = map replace finnishInventory
+  where
+    replace ph = ph {phonemeName = foldl replaceChar "" (phonemeName ph)}
+    replaceChar sofar ch = case ch of
+      'ä' -> sofar ++ "ae"
+      'ö' -> sofar ++ "oe"
+      _ -> sofar ++ [ch]
 
+
+      
 finnishInventoryWithEdges :: PhonemicInventory
 finnishInventoryWithEdges =
   mapWithFeat finnishInventory phoneme  ++ [

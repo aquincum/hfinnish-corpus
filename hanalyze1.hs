@@ -18,6 +18,8 @@ import Control.Monad
 import Data.Monoid
 import Data.Maybe
 import Text.Printf
+import Data.Random
+import Data.Random.Source.DevRandom
 -- import Data.Data
 import qualified Hanalyze.Token as T
 import System.Console.GetOpt
@@ -42,6 +44,8 @@ data Task = AnalyzeFile -- ^do the big analysis
 
 data Flag = Task Task
           | MaxN Int
+          | SampleNone Int
+          | SamplePatt Int
           | FileName FilePath
             deriving (Show, Eq)
 
@@ -51,7 +55,9 @@ options = [
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
   Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
   Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory",
-  Option ['h'] ["help"] (NoArg (Task Help)) "Display help"
+  Option ['h'] ["help"] (NoArg (Task Help)) "Display help",
+  Option [] ["samplenone"] (ReqArg (SampleNone . read) "n") "Required for samplewugs: how many no-patterns to sample.",
+  Option [] ["samplepatt"] (ReqArg (SamplePatt . read) "n") "Required for samplewugs: how many sample patterns to sample."
   ]
 
 optGetTask :: String -> Flag
@@ -109,6 +115,14 @@ compileOptions args = case getOpt Permute options args of
         retval' | needsFile && not hasFn && not (null n) = FileName (head n):retval
                 | needsFile && not hasFn && null n = myError ["no FILE given either with -n or otherwise"]
                 | otherwise = retval
+    when (Task SampleWugs `elem` retval) $ do
+      let hasNone = any (\fl -> case fl of
+                          SampleNone _ -> True
+                          _ -> False) retval'
+      let hasPatt = any (\fl -> case fl of
+                          SamplePatt _ -> True
+                          _ -> False) retval'
+      when (not hasNone && not hasPatt) (myError ["For a samplewugs task, give the number of samples to generate for no-patterns and patterns explicitly"])
 
     return retval'
   (_, _, errs) -> myError errs
@@ -127,6 +141,18 @@ flagGetFn [] = error "No filename in flags"
 flagGetFn (h:f) = case h of
   FileName x -> x
   _ -> flagGetFn f
+
+flagGetSampleNone :: [Flag] -> Int
+flagGetSampleNone [] = error "No sample none in flags"
+flagGetSampleNone (h:f) = case h of
+  SampleNone x -> x
+  _ -> flagGetSampleNone f
+
+flagGetSamplePatt :: [Flag] -> Int
+flagGetSamplePatt [] = error "No sample patt in flags"
+flagGetSamplePatt (h:f) = case h of
+  SamplePatt x -> x
+  _ -> flagGetSamplePatt f
 
 {- too complicated
 flagGet :: [Flag] -> String -> Flag
@@ -305,8 +331,18 @@ main = do
           (T.pack "5", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[f,s,h]j{-consonantal}.*")))
           ]
         annotated = annotateFD patternAnnotMap unknownsFD
-    writeTable annotated stdout
-    -- TO DO: sample
+        createSample :: ([Flag] -> Int) -> String -> IO AnnotatedFreqDist
+        createSample fromFlags annot =
+          let
+            part = tToList $ filterWithAnnotation (==T.pack annot) annotated
+          in
+            runRVar (shuffleNofM (min (fromFlags flags) (length part)) (length part) part) DevURandom >>=
+            return . tFromList
+    nonesSample <- createSample flagGetSampleNone ""
+    pattSample <- mapM (createSample flagGetSamplePatt) ["1","2","3","4","5"]
+    withFile "sampled-wugs.txt" WriteMode $ \h ->
+      writeTable nonesSample stdout >>
+      mapM_ (flip writeTable stdout) pattSample
   
   when ((Task AnalyzeInventory) `elem` flags) $ do
     -- something different

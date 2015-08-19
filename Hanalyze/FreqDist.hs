@@ -21,6 +21,7 @@ module Hanalyze.FreqDist
          filterTable, filterByValTable,
          cleanupTable, sumTable,
          splitByTable, splitListByTable,
+         mapTable,
 
          -- ** Specifically for raw FreqDists
          filterFDFile,
@@ -279,6 +280,11 @@ filterTable f fd = tConstruct fd $ Map.filterWithKey expfilt $ tGetMap fd
 -- |Filters a Table based on a filtering function over the values
 filterByValTable :: Table a x => (x -> Bool) -> a -> a
 filterByValTable f fd = tConstruct fd $ Map.filter f  $ tGetMap fd
+
+-- |Maps the function on the /keys/ of the table, that is, on the tokens
+mapTable :: Table a x => (Token -> Token) -> a -> a
+mapTable f fd = tConstruct fd $ Map.mapKeys f $ tGetMap fd
+
 
 
 -- |Filters a Frequency Distribution file with a filter function and

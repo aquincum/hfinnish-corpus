@@ -226,7 +226,7 @@ filterVowelFinals = filterTable $ filterToken finnishInventory [Star, DotF vowel
 fitsPattern :: [Pattern] -> Token -> Bool
 fitsPattern patt tkn =
   let
-    phons = segment finnishInventory (T.filter (/= ' ') tkn)
+    phons = segment finnishInventory tkn
   in
    case phons of
      Just phs -> filterWord phs patt
@@ -293,6 +293,9 @@ main = do
         allWugs = readUCLAPLOutput cWithOe infn
         zeroWeight = filterByValTable (== 0.0) allWugs
         zeroWeightFD = (tFromList $ map (\(t,_) -> (t,0)) (tToList zeroWeight)) :: FreqDist
+        noSpacesFD = mapTable (T.filter (/= ' ')) zeroWeightFD
+    morphanalyzed <- analyseFDOmorfi noSpacesFD
+    let unknownsFD = takeStems $ getUnknownWords morphanalyzed
         patternAnnotMap :: [(Annotation, Token -> Bool)]
         patternAnnotMap = [
           (T.pack "1", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.j{-consonantal}.*"))),
@@ -301,9 +304,9 @@ main = do
           (T.pack "4", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[l,ll]{-consonantal}.*"))),
           (T.pack "5", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[f,s,h]j{-consonantal}.*")))
           ]
-        annotated = annotateFD patternAnnotMap zeroWeightFD
+        annotated = annotateFD patternAnnotMap unknownsFD
     writeTable annotated stdout
-    -- TO DO: filter by existence; sample
+    -- TO DO: sample
   
   when ((Task AnalyzeInventory) `elem` flags) $ do
     -- something different

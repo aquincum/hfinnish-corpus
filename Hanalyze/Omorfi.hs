@@ -12,7 +12,7 @@ module Hanalyze.Omorfi (
 
   -- * Manipulating Omorfized tables
   clearErrors, splitCompounds, splitVerbs,
-  takeStems
+  takeStems, getUnknownWords
 
   ) where
 
@@ -301,6 +301,20 @@ w :: Table t v => t -> IO ()
 w = flip writeTable stdout
 -- DEBUG ABOVE    
 
+
+-- |Filters out all words which are known. Used for building wugs. Returns an
+-- 'OmorfiSFD' since no compounds will be found
+getUnknownWords :: OmorfiFD -> OmorfiSFD
+getUnknownWords ofd =
+  let
+    oneUnknown :: [OmorfiInfo] -> Bool
+    oneUnknown ois = (length ois == 1) && (getKnown (head ois) == False)
+    unknowns = filterByValTable oneUnknown ofd
+    osfd = map (\(t, ois) -> (t, head ois)) (tToList unknowns)
+  in
+   osfd
+    
+
 -- |Takes an 'OmorfiFD' and creates a list where one token corresponds to one analysis,
 -- meanwhile splitting compounds, marking all but the last part as 'CompoundPart'.
 -- Each part gets the frequency of the full word.
@@ -323,6 +337,8 @@ splitVerbs omsfd = case List.partition isVerb omsfd of
   (verbs,notverbs) -> (verbs,notverbs) -- ...
   where
     isVerb (_,oi) = getPOS oi == V
+
+
 
 -- |Takes in a list of verbs in the form of an 'OmorfiSFD' (already stemmed corpus),
 -- where the omorfi analysis returned the Infinitive forms of the verbs as stems. In

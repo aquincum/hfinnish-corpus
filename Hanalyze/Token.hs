@@ -5,7 +5,7 @@ module Hanalyze.Token (
   Token(..), pack, unpack,
 
   -- * cons'ing
-  cons, uncons, uncons2,
+  cons, uncons, uncons2, last,
 
   -- * Other needed functions to lift
   --  for append, concat -- use Monoid functions
@@ -31,7 +31,7 @@ import qualified Data.Text.Read as TxtR
 import qualified Data.String as String
 import Data.Monoid
 import Control.DeepSeq
-import Prelude hiding (concat, filter, readFile, hPutStrLn, words, foldl, reverse,length)
+import Prelude hiding (concat, filter, readFile, hPutStrLn, words, foldl, reverse,length, last)
 import Control.Monad
 import Control.Arrow
 import System.IO hiding (readFile, hPutStrLn, hGetLine)
@@ -84,6 +84,11 @@ uncons2 tok = do
   (c1, tk2) <- uncons tok
   (c2, tk3) <- uncons tk2
   return (c1,c2,tk3)
+
+-- |Returns the last character of the string
+last :: Token -> Char
+last t = Txt.last $ getText t
+
 
 -- |Appends two Tokens
 append :: Token -> Token -> Token

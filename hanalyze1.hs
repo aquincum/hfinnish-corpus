@@ -259,8 +259,24 @@ fitsPattern patt tkn =
      Nothing -> False
 
 
-
-
+-- |Keep only stems that have a pair: ending in -a ~ ending in -ä
+findCouples :: FreqDist -> FreqDist
+findCouples fd =
+  let
+    revfd = mapTable T.reverse fd
+    getHead t = case T.uncons t of
+      Just (c,_) -> c
+      Nothing -> 'x'
+    isMyPairInThere pairc pair t = case T.uncons t of
+      Just (c,left) -> (T.cons pairc left) `elem` (fdKeys pair)
+      Nothing -> False
+    as = filterTable (\t -> getHead t == 'a') revfd
+    aes = filterTable (\t -> getHead t == 'ä') revfd
+    asinaestoo = filterTable (isMyPairInThere 'ä' aes) as
+    aesinastoo = filterTable (isMyPairInThere 'a' as) aes
+    remerged = asinaestoo <> aesinastoo
+  in
+   mapTable T.reverse remerged
 
 
 main :: IO ()
@@ -314,15 +330,23 @@ main = do
   when ((Task SampleWugs) `elem` flags) $ do
     let infn = flagGetFn flags
     contents <- TIO.readFile infn
+    putStrLn "File read."
     let cWithAe = Txt.intercalate (Txt.pack "ä") (Txt.splitOn (Txt.pack "ae") contents)
         cWithOe = Txt.intercalate (Txt.pack "ö") (Txt.splitOn (Txt.pack "oe") cWithAe)
         allWugs = readUCLAPLOutput cWithOe infn
-        zeroWeight = filterByValTable (== 0.0) allWugs
+    putStrLn $ "Umlauts reitroduced. n = " ++ show (tSize allWugs)
+    let zeroWeight = filterByValTable (== 0.0) allWugs
         zeroWeightFD = (tFromList $ map (\(t,_) -> (t,0)) (tToList zeroWeight)) :: FreqDist
-        noSpacesFD = mapTable (T.filter (/= ' ')) zeroWeightFD
+    putStrLn $ "Zero weights filtered. n = " ++ show (tSize zeroWeightFD)
+    let noSpacesFD = mapTable (T.filter (/= ' ')) zeroWeightFD
+    putStrLn $ "Spaces removed. n = " ++ show (tSize noSpacesFD)
     morphanalyzed <- analyseFDOmorfi noSpacesFD
+    putStrLn $ "Morphological parsing done. n = " ++ show (tSize morphanalyzed)
     let unknownsFD = takeStems $ getUnknownWords morphanalyzed
-        patternAnnotMap :: [(Annotation, Token -> Bool)]
+    putStrLn $ "Known words filtered. n = " ++ show (tSize unknownsFD)
+    let unknownPairsFD = findCouples unknownsFD
+    putStrLn $ "Unknown pairs found. n = " ++ show (tSize unknownPairsFD)
+    let patternAnnotMap :: [(Annotation, Token -> Bool)]
         patternAnnotMap = [
           (T.pack "1", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.j{-consonantal}.*"))),
           (T.pack "2", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.{-consonantal}.*"))),
@@ -330,8 +354,9 @@ main = do
           (T.pack "4", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[l,ll]{-consonantal}.*"))),
           (T.pack "5", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[f,s,h]j{-consonantal}.*")))
           ]
-        annotated = annotateFD patternAnnotMap unknownsFD
-        createSample :: ([Flag] -> Int) -> String -> IO AnnotatedFreqDist
+        annotated = annotateFD patternAnnotMap unknownPairsFD
+    putStrLn $ "Annotation done. Sampling..."
+    let createSample :: ([Flag] -> Int) -> String -> IO AnnotatedFreqDist
         createSample fromFlags annot =
           let
             part = tToList $ filterWithAnnotation (==T.pack annot) annotated
@@ -340,9 +365,10 @@ main = do
             return . tFromList
     nonesSample <- createSample flagGetSampleNone ""
     pattSample <- mapM (createSample flagGetSamplePatt) ["1","2","3","4","5"]
+    putStrLn $ "Sampling done."
     withFile "sampled-wugs.txt" WriteMode $ \h ->
-      writeTable nonesSample stdout >>
-      mapM_ (flip writeTable stdout) pattSample
+      writeTable nonesSample h >>
+      mapM_ (flip writeTable h) pattSample
   
   when ((Task AnalyzeInventory) `elem` flags) $ do
     -- something different

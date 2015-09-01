@@ -411,4 +411,4 @@ main = do
     mapM_ (summarizeByPattern fd' finnishInventory) patterns
         
     -- explore
-
+    

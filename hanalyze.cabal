@@ -54,6 +54,7 @@ executable create_fds
                      split,
                      deepseq,
                      time,
+                     parsec,
                      bytestring, mmap, utf8-string, filepath
 
 executable merge_fds
@@ -62,7 +63,7 @@ executable merge_fds
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
-                     split
+                     split, parsec
 
 executable filter_fds
   main-is:           filter_fds.hs
@@ -80,7 +81,7 @@ executable stem_fds
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,
-                     split, temporary, process >= 1.2.0.0
+                     split, temporary, process >= 1.2.0.0, parsec
 
 executable hanalyze1
   main-is:           hanalyze1.hs

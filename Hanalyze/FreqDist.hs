@@ -19,6 +19,7 @@ module Hanalyze.FreqDist
          -- * Manipulating FreqDists
          -- ** Generalized for Tables
          filterTable, filterByValTable,
+         filterTableByPattern,
          cleanupTable, sumTable,
          splitByTable, splitListByTable,
          mapTable,
@@ -50,7 +51,8 @@ import           System.Environment
 import           System.FilePath.Posix
 import           System.IO
 import qualified System.IO.MMap as MMap
-
+import           Hanalyze.Pattern
+import           Hanalyze.Phoneme
 
 -- |Tables that can be written out
 class Eq t => Table t val  | t -> val where
@@ -276,6 +278,16 @@ filterTable :: Table a x => (Token -> Bool) -> a -> a
 filterTable f fd = tConstruct fd $ Map.filterWithKey expfilt $ tGetMap fd
   where
     expfilt tok _ = f tok
+
+
+filterTableByPattern :: Table a x => [Pattern] -> a -> a
+filterTableByPattern patt t = filterTable filterWordByPattern t
+  where
+    filterWordByPattern :: Token -> Bool
+    filterWordByPattern tok = case segment finnishInventory tok of
+      Nothing -> False
+      Just x -> filterWord x patt
+
 
 -- |Filters a Table based on a filtering function over the values
 filterByValTable :: Table a x => (x -> Bool) -> a -> a

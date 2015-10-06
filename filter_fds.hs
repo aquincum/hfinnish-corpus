@@ -64,15 +64,12 @@ filterTokenRelevant t = case segment finnishInventory t of
   Just x -> relevantStem x []
 
 -- |Filter a token based on relevance -- advanced, stemmed version
+  {-
 stemFilterTokenRelevant :: Token ->  Bool
-stemFilterTokenRelevant t = case segment finnishInventory t of
-  Nothing -> False
-  Just x -> filterWord x pattern
- where
-   pattern = [StarF $ setBundle [fCons],
+stemFilterTokenRelevant t = filterTableByPattern  [StarF $ setBundle [fCons],
               DotF $ setBundle [fFront, minus fLow, minus fRounded],
               Star
-              ]
+              ] t-}
 
 -- |Cleaning up non-alphanumeric symbols. Could get more complicated
 cleanupWord :: Token -> Token
@@ -91,7 +88,11 @@ stemFDFile fl fn = do
   let cleaned = cleanupTable cleanupWord $ fd
   putStrLn $ "FreqDist cleaned, " ++ (show $ tSize cleaned) ++ " tokens."
   -- putStrLn $ show $ tToList cleaned
-  let cleaned' = if fl == Stem then filterTable stemFilterTokenRelevant cleaned else cleaned
+  let relPattern = [StarF $ setBundle [fCons],
+              DotF $ setBundle [fFront, minus fLow, minus fRounded],
+              Star
+              ] 
+  let cleaned' = if fl == Stem then filterTableByPattern relPattern cleaned else cleaned
   when (fl == Stem) $ putStrLn $ "First filtering done, " ++ (show $ tSize cleaned') ++ " tokens."
   om <- analyseFDOmorfi cleaned'
   putStrLn $ "Omorfi analysis done, " ++ (show $ tSize om) ++ " tokens."

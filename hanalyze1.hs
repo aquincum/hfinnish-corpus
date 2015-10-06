@@ -33,6 +33,7 @@ import qualified Data.Text.IO as TIO
 data Task = AnalyzeFile -- ^do the big analysis
           | AnalyzeInventory -- ^analyze the phonemic inventory: display relevant natural classes
           | Anderson -- ^Do the Anderson (1980) replication
+          | GetLexStats -- ^Get the lexical statistics for the wug study
           | SplitFD -- ^Split a frequency distribution file to frontneutral and backneutral stems
           | SplitCut -- ^Do the 'SplitFD' task and cut the words until the last segment before the 2nd vowel
           | UCLAPL -- ^Produce input files for the UCLA Phonotactic Learner
@@ -51,7 +52,7 @@ data Flag = Task Task
 
 options :: [OptDescr Flag]
 options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, split, splitcut, uclapl, sublexical, wugs, samplewugs)",
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, getlexstats, split, splitcut, uclapl, sublexical, wugs, samplewugs)",
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
   Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
   Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory",
@@ -64,6 +65,7 @@ optGetTask :: String -> Flag
 optGetTask s = case s of
   "analyzeinventory" -> Task AnalyzeInventory
   "anderson" -> Task Anderson
+  "getlexstats" -> Task GetLexStats
   "split" -> Task SplitFD
   "splitcut" -> Task SplitCut
   "uclapl" -> Task UCLAPL
@@ -85,6 +87,7 @@ compileOptions args = case getOpt Permute options args of
         hasTi = (Task AnalyzeInventory) `elem` o
         hasTf = (Task AnalyzeFile) `elem` o
         hasTa = (Task Anderson) `elem` o
+        hasGl = (Task GetLexStats) `elem` o
         hasSp = (Task SplitFD) `elem` o
         hasSc = (Task SplitCut) `elem` o
         hasUC = (Task UCLAPL) `elem` o
@@ -98,7 +101,7 @@ compileOptions args = case getOpt Permute options args of
     when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
 
     let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
-               | hasSp || hasSc || hasUC || hasSl || hasWu || hasSw = o
+               | hasSp || hasSc || hasUC || hasSl || hasWu || hasSw || hasGl = o
                | not hasMaxn && hasTi = MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && not hasTf = Task AnalyzeFile:MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && hasTf = MaxN 2:o
@@ -106,6 +109,7 @@ compileOptions args = case getOpt Permute options args of
 
         needsFile =    (Task AnalyzeFile) `elem` retval
                     || (Task Anderson) `elem` retval
+                    || (Task GetLexStats) `elem` retval
                     || (Task SplitFD) `elem` retval
                     || (Task SplitCut) `elem` retval
                     || (Task UCLAPL) `elem` retval
@@ -398,6 +402,15 @@ main = do
     putStrLn "# ONLY >100 FREQ FD"
     summarizeAnderson $ filterByValTable (> 100) fd
     --  saveTable fd' a"test.out"
+    return ()
+  when ((Task GetLexStats) `elem` flags) $ do
+    fd <- readFreqDist $ flagGetFn flags -- you want filtered3_all here, the whole corpus
+    let pattern = fromJust $ readPattern finnishInventory "{+consonantal}*[i,ii,ie,e,ei,ee]{+consonantal}*[a,ä]"
+        vfinals = filterTableByPattern pattern fd
+    withFile "vowelfinals.txt" WriteMode (writeTable vfinals)
+    summarySection vfinals
+    vowelSummarySection "plain vowel structure" vfinals onlyVowels
+    vowelSummarySection "plain harmonicity" vfinals harmonicity
     return ()
   when ((Task AnalyzeFile) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags

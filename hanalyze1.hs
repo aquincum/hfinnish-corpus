@@ -411,6 +411,8 @@ main = do
     summarySection vfinals
     vowelSummarySection "plain vowel structure" vfinals onlyVowels
     vowelSummarySection "plain harmonicity" vfinals harmonicity
+    vowelSummarySection "last vowel" vfinals lastVowel
+    vowelSummarySection "stem vowel & last vowel" vfinals stemLastVowel
     return ()
   when ((Task AnalyzeFile) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags
@@ -424,4 +426,14 @@ main = do
     mapM_ (summarizeByPattern fd' finnishInventory) patterns
         
     -- explore
+    
+lastVowel :: Token -> String
+lastVowel t = case segment finnishInventory t of
+  Nothing -> "segment-error"
+  Just x -> phonemeName $ last x
+
+stemLastVowel :: Token -> [String]
+stemLastVowel t = case segment finnishInventory t of
+  Nothing -> []
+  Just phs -> map phonemeName $ filter (flip isPhoneme vowel) phs
     

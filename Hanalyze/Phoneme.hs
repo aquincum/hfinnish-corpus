@@ -18,7 +18,7 @@ module Hanalyze.Phoneme
          mergeFeature, mergeFeature', mergeBundle, intersectBundle, subsetFB,
 
          -- * Lookup functions
-         findInBundle, findPhoneme,
+         findInBundle, findPhoneme, isPhoneme,
 
          -- * Segmenting
          segment, spellout,
@@ -438,6 +438,11 @@ findPhoneme [] _ = Nothing
 findPhoneme (x:xs) s = if phonemeName x == s
                        then Just x
                        else findPhoneme xs s
+
+-- |Determines whether a phoneme has the feature values specified in the 'FeatureBundle'
+isPhoneme :: Phoneme -> FeatureBundle -> Bool
+isPhoneme ph fb = subsetFB fb (featureBundle ph)
+
                             
 -- |Picks out a set of phonemes based on features
 pickByFeature :: PhonemicInventory -> FeatureBundle -> [Phoneme]

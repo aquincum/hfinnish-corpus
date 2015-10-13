@@ -279,6 +279,20 @@ fitsPattern patt tkn =
      Just phs -> filterWord phs patt
      Nothing -> False
 
+annotateWithPatterns :: FreqDist -> AnnotatedFreqDist
+annotateWithPatterns fd =
+  let patternAnnotMap :: [(Annotation, Token -> Bool)]
+      patternAnnotMap = [
+        (T.pack "1", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.j{-consonantal}.*"))),
+        (T.pack "2", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.{-consonantal}.*"))),
+        (T.pack "3", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal,+high}.[p,pp]{-consonantal}.*"))),
+        (T.pack "4", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[l,ll]{-consonantal}.*"))),
+        (T.pack "5", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[f,s,h]j{-consonantal}.*")))
+        ]
+  in
+   annotateFD patternAnnotMap fd
+                    
+
 
 -- |Keep only stems that have a pair: ending in -a ~ ending in -ä
 findCouples :: FreqDist -> FreqDist
@@ -367,15 +381,7 @@ main = do
     putStrLn $ "Known words filtered. n = " ++ show (tSize unknownsFD)
     let unknownPairsFD = findCouples unknownsFD
     putStrLn $ "Unknown pairs found. n = " ++ show (tSize unknownPairsFD)
-    let patternAnnotMap :: [(Annotation, Token -> Bool)]
-        patternAnnotMap = [
-          (T.pack "1", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.j{-consonantal}.*"))),
-          (T.pack "2", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.{-consonantal}.*"))),
-          (T.pack "3", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal,+high}.[p,pp]{-consonantal}.*"))),
-          (T.pack "4", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[l,ll]{-consonantal}.*"))),
-          (T.pack "5", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[f,s,h]j{-consonantal}.*")))
-          ]
-        annotated = annotateFD patternAnnotMap unknownPairsFD
+    let annotated = annotateWithPatterns unknownPairsFD 
     putStrLn $ "Annotation done. Sampling..."
     let createSample :: ([Flag] -> Int) -> String -> IO AnnotatedFreqDist
         createSample fromFlags annot =
@@ -430,7 +436,7 @@ main = do
     vowelSummarySection "plain harmonicity" vfinals harmonicity
     vowelSummarySection "last vowel" vfinals lastVowel
     sltable <- vowelSummarySection "stem vowel & last vowel" vfinals stemLastVowel
-    
+    withFile "lexstats.txt" WriteMode (writeTable sltable)
     return ()
   when ((Task AnalyzeFile) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags

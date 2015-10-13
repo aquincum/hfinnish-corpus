@@ -198,7 +198,7 @@ instance Table VowelSummaryFreqDist VowelSummaryInfo where
                                       T.pack $ printf "%d\t" ((round $ getTokenFreq mval) :: Int),
                                       T.pack $ printf "%d\t" ((round $ getTypeFreq mval) :: Int),
                                       T.pack $ printf "%.2f%%\t" ((getTokenPerc mval) :: Double),
-                                      T.pack $ printf "%.2f%%\t" ((getTokenPerc mval) :: Double)
+                                      T.pack $ printf "%.2f%%\t" ((getTypePerc mval) :: Double)
                                       ]
 
 vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO VowelSummaryFreqDist
@@ -437,6 +437,16 @@ main = do
     vowelSummarySection "last vowel" vfinals lastVowel
     sltable <- vowelSummarySection "stem vowel & last vowel" vfinals stemLastVowel
     withFile "lexstats.txt" WriteMode (writeTable sltable)
+    let patternannotated = annotateWithPatterns vfinals
+        printPatternAfd :: AnnotatedFreqDist -> String -> Handle -> IO ()
+        printPatternAfd afd annot h = do
+          hPutStrLn h ""
+          hPutStrLn h $ "=== PATTERN " ++ annot ++ " ==="
+          let fd = dropAnnotation $ filterWithAnnotation (== T.pack annot) afd
+          psltable <- vowelSummarySection ("stem vowel & last vowel with pattern " ++ annot) fd stemLastVowel
+          writeTable psltable h
+    withFile "lexstats-pattern.txt" WriteMode (\h ->
+                                                mapM (\a -> printPatternAfd patternannotated a h) ["","1","2","3","4","5"])
     return ()
   when ((Task AnalyzeFile) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags

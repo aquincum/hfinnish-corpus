@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Main where
 
@@ -182,22 +183,38 @@ summarySection fd = sectionHeader "Summary" >>
                     dataPointInt "grand total" (sumTable fd)
 
 
-vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO (Map.Map Token [Double])
+data VowelSummaryInfo = VowelSummaryInfo { getTokenFreq :: Double,
+                                           getTypeFreq :: Double,
+                                           getTokenPerc :: Double,
+                                           getTypePerc :: Double
+                                         } deriving (Eq, Show)
+-- |Resulting from 'vowelSummarySection'
+data VowelSummaryFreqDist = VowelSummaryFreqDist {getVSFDMap :: Map.Map Token VowelSummaryInfo} deriving (Eq, Show)
+instance Table VowelSummaryFreqDist VowelSummaryInfo where
+  tEmpty = VowelSummaryFreqDist Map.empty
+  tConstruct = const VowelSummaryFreqDist
+  tGetMap = getVSFDMap
+  tPrintfun _ (mkey, mval) = mconcat [mkey, "\t",
+                                      T.pack $ printf "%d\t" ((round $ getTokenFreq mval) :: Int),
+                                      T.pack $ printf "%d\t" ((round $ getTypeFreq mval) :: Int),
+                                      T.pack $ printf "%.2f%%\t" ((getTokenPerc mval) :: Double),
+                                      T.pack $ printf "%.2f%%\t" ((getTokenPerc mval) :: Double)
+                                      ]
+
+vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO VowelSummaryFreqDist
 vowelSummarySection str fd f =
   sectionHeader ("Vowel structure summary -- " ++ str)  >>
   writeout >>
   putStrLn "" >>
-  return (Map.fromList tokenperc)
+  return tokenperc
   where
     summedMap = Map.toList $ tGetMap $ summarizeFD f fd -- (Int, Int) ~ (token, type)
     allToken = fromIntegral $ foldr ((+) . fst . snd) 0 summedMap
     allType = fromIntegral $  foldr ((+) . snd . snd) 0 summedMap
-    tokenperc = map (\(t, (a,b)) -> (t, [(fromIntegral a),(fromIntegral b),(fromIntegral a) / allToken * 100.0, (fromIntegral b) / allType * 100.0])) summedMap
-    writeout = mapM (\(t, list) -> putStr (T.unpack t) >>
-                                   putStr "\t" >>
-                                   mapM (\x -> printf "%d\t" ((round x)::Int)) (take 2 list) >>
-                                   mapM (\x -> printf "%.2f%%\t" (x::Double)) (drop 2 list) >>
-                                   putStr "\n") tokenperc
+    tokenperc = tFromList $ map (\(t, (a,b)) -> (t, VowelSummaryInfo (fromIntegral a) (fromIntegral b) ((fromIntegral a) / allToken * 100.0) ((fromIntegral b) / allType * 100.0))) summedMap
+    writeout = mapM putStrLn (map (T.unpack . (tPrintfun tokenperc)) (tToList tokenperc))
+--saveVowelSummary :: Map.Map Token [Double]
+
 
 summarizeByC :: FreqDist -> IO ()
 summarizeByC fd = do
@@ -238,7 +255,7 @@ summarizeByPattern fd inv patt = do
   putStrLn $ " ========*** " ++ writePattern patt ++ " ***========"
   fitMap       <- vowelSummarySection ("fitting pattern " ++ writePattern patt) fdFits harmonicity
   doesntfitMap <- vowelSummarySection ("not fitting pattern " ++ writePattern patt) fdDoesntfit harmonicity
-  let getTypeFreqs m = map ((!! 1) .snd) (Map.toList m)
+  let getTypeFreqs m = map (getTypeFreq . snd) (tToList m)
       table = [getTypeFreqs fitMap, getTypeFreqs doesntfitMap]
   putStrLn $ show table
   catch (do
@@ -412,7 +429,8 @@ main = do
     vowelSummarySection "plain vowel structure" vfinals onlyVowels
     vowelSummarySection "plain harmonicity" vfinals harmonicity
     vowelSummarySection "last vowel" vfinals lastVowel
-    vowelSummarySection "stem vowel & last vowel" vfinals stemLastVowel
+    sltable <- vowelSummarySection "stem vowel & last vowel" vfinals stemLastVowel
+    
     return ()
   when ((Task AnalyzeFile) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags

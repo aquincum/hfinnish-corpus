@@ -430,11 +430,24 @@ main = do
     fd <- readFreqDist $ flagGetFn flags -- you want filtered3_all here, the whole corpus
     let pattern = fromJust $ readPattern finnishInventory "{+consonantal}*[i,ii,ie,e,ei,ee]{+consonantal}*[a,ä]"
         vfinals = filterTableByPattern pattern fd
+        allCorpusAAePattern = fromJust $ readPattern finnishInventory "*[a,ä]"
+        allCorpusAAeDisyllPattern = fromJust $ readPattern finnishInventory "{+consonantal}*{-consonantal}.{+consonantal}*[a,ä]"
+        allCorpusAAe = filterTableByPattern allCorpusAAePattern fd
+        allCorpusAAeDisyll = filterTableByPattern allCorpusAAeDisyllPattern fd
     withFile "vowelfinals.txt" WriteMode (writeTable vfinals)
     summarySection vfinals
     vowelSummarySection "plain vowel structure" vfinals onlyVowels
     vowelSummarySection "plain harmonicity" vfinals harmonicity
-    vowelSummarySection "last vowel" vfinals lastVowel
+    lv <- vowelSummarySection "last vowel" vfinals lastVowel
+    allCorpusLv <- vowelSummarySection "last vowel" allCorpusAAe lastVowel
+    allCorpusDisyllLv <- vowelSummarySection "last vowel" allCorpusAAeDisyll lastVowel
+    withFile "wordfinal.txt" WriteMode $ \h ->
+      hPutStrLn h "In all corpus:" >>
+      writeTable allCorpusLv h >>
+      hPutStrLn h "\nIn all corpus disyllabic:" >>
+      writeTable allCorpusDisyllLv h >>
+      hPutStrLn h "\nOnly neutral disyllabic:" >>
+      writeTable lv h
     sltable <- vowelSummarySection "stem vowel & last vowel" vfinals stemLastVowel
     withFile "lexstats.txt" WriteMode (writeTable sltable)
     let patternannotated = annotateWithPatterns vfinals

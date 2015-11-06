@@ -477,7 +477,13 @@ main = do
 lastVowel :: Token -> String
 lastVowel t = case segment finnishInventory t of
   Nothing -> "segment-error"
-  Just x -> phonemeName $ last x
+  Just x -> go x
+    where
+      isVowel ph = isPhoneme ph vowel
+      go phs
+        | phs == [] = "none"
+        | isVowel (last phs) = phonemeName (last phs)
+        | otherwise =  go (init phs)
 
 stemLastVowel :: Token -> [String]
 stemLastVowel t = case segment finnishInventory t of

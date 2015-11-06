@@ -428,10 +428,10 @@ main = do
     return ()
   when ((Task GetLexStats) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags -- you want filtered3_all here, the whole corpus
-    let pattern = fromJust $ readPattern finnishInventory "{+consonantal}*[i,ii,ie,e,ei,ee]{+consonantal}*[a,ä]"
+    let pattern = fromJust $ readPattern finnishInventory "{+consonantal}*[i,ii,ie,e,ei,ee]{+consonantal}*[a,ä,aa,ää]{+consonantal}*"
         vfinals = filterTableByPattern pattern fd
-        allCorpusAAePattern = fromJust $ readPattern finnishInventory "*[a,ä]"
-        allCorpusAAeDisyllPattern = fromJust $ readPattern finnishInventory "{+consonantal}*{-consonantal}.{+consonantal}*[a,ä]"
+        allCorpusAAePattern = fromJust $ readPattern finnishInventory "*[a,ä,aa,ää]{+consonantal}*"
+        allCorpusAAeDisyllPattern = fromJust $ readPattern finnishInventory "{+consonantal}*{-consonantal}.{+consonantal}*[a,ä,aa,ää]{+consonantal}*"
         allCorpusAAe = filterTableByPattern allCorpusAAePattern fd
         allCorpusAAeDisyll = filterTableByPattern allCorpusAAeDisyllPattern fd
     withFile "vowelfinals.txt" WriteMode (writeTable vfinals)

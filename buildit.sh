@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cabal install --only-dependencies --enable-tests
-cabal configure --enable-tests   && cabal build
+cabal configure --enable-tests --enable-library-coverage  && cabal build
 
 
 if (! cabal test) then

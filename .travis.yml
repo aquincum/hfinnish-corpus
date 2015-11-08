@@ -1,7 +1,6 @@
 language: haskell
 script: ./buildit.sh
 ghc: 7.8
-before_install:
-  - sudo pip install codecov
-after_success:
-  - codecov
+after_script:
+  - cabal install codecov-haskell
+  - codecov-haskell testing

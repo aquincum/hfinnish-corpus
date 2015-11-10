@@ -131,9 +131,9 @@ convertCorpusFileSublexical pi infn outfn = do
   -- Below: only final vowels.
   -- New: let's chop off the last vowel + consonants as it would make sense
   let choppeds = map (\mphons -> case mphons of
-                            Just phons -> (Tkn.getText $ spellout (chopLastVowelPlus phons),T.pack (getHarmonicitySuffix phons))
-                            _ -> (T.pack "", T.pack "")) segmap
-      txt = T.unlines $ map (\(a,b) -> T.concat [a, T.pack "\t",a,b]) choppeds
+                         Just phons -> ((chopLastVowelPlus phons),T.pack (getHarmonicitySuffix phons))
+                         _ -> ([], T.pack "")) segmap
+      txt = T.unlines $ map (\(a,b) -> T.concat [strToken (Just a), T.pack "\t",strToken (Just a),T.pack " ", b]) choppeds
   TIO.writeFile outfn txt
   putStrLn $ "Corpus (training) file " ++ outfn ++ " saved."
   where

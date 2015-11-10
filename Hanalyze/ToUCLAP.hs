@@ -22,6 +22,7 @@ import qualified Data.Text.IO as TIO
 import Hanalyze.Phoneme
 import Hanalyze.FreqDist
 import Hanalyze.Pattern
+import Hanalyze.Vowels
 import Text.Parsec
 import qualified Data.Map.Strict as Map
 import qualified Hanalyze.Token as Tkn
@@ -128,15 +129,26 @@ convertCorpusFileSublexical pi infn outfn = do
       (segmap, problems) = runWriter $ segmentWords pi wds
   when (problems /= "") $ putStrLn "Problems:\n" >> putStrLn (T.unpack problems)
   -- Below: only final vowels.
-  let monlyvfinalmap = filter (\mphons -> case mphons of
-                                 Just phons -> phonemeName (last phons) `elem` ["a", "aa", "ä", "ää"]
-                                 _ -> False) segmap
-      onlyvfinalmap = map fromJust monlyvfinalmap
-      nofinalvmap = map init onlyvfinalmap
-      zipped = zip nofinalvmap onlyvfinalmap
-      txt = T.unlines $ map (\(a,b) -> T.concat [strToken (Just a), T.pack "\t",strToken (Just b)]) zipped
-  putStrLn $ "Corpus (training) file " ++ outfn ++ " saved."
+  -- New: let's chop off the last vowel + consonants as it would make sense
+  let choppeds = map (\mphons -> case mphons of
+                            Just phons -> (Tkn.getText $ spellout (chopLastVowelPlus phons),T.pack (getHarmonicitySuffix phons))
+                            _ -> (T.pack "", T.pack "")) segmap
+      txt = T.unlines $ map (\(a,b) -> T.concat [a, T.pack "\t",a,b]) choppeds
   TIO.writeFile outfn txt
+  putStrLn $ "Corpus (training) file " ++ outfn ++ " saved."
+  where
+    getHarmonicitySuffix :: [Phoneme] -> String
+    getHarmonicitySuffix phons = case harmonicity $ spellout phons of
+      BackNeutral -> "B"
+      FrontNeutral -> "F"
+      _ -> "?"
+    chopLastVowelPlus :: [Phoneme] -> [Phoneme]
+    chopLastVowelPlus [] = []
+    chopLastVowelPlus phons = case isPhoneme (last phons) vowel of
+      True -> init phons
+      False -> chopLastVowelPlus (init phons)
+                              
+                               
 
 
 -- |Too much, not using this for now

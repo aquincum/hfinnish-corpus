@@ -5,13 +5,14 @@ module Hanalyze.Vowels (
 
   -- * Basic harmonicity functions
   
-  harmonyV, onlyVowels, harmonicity, fullHarmonic,
+  harmonyV, harmonyVP, onlyVowels, harmonicity, fullHarmonic,
   suffixIt, 
 
   ) where
 
 import qualified Hanalyze.Token as T
 import Hanalyze.Token (Token)
+import Hanalyze.Phoneme
 import Data.Maybe
 
 -- |Harmony value of a vowel (Front, Neutral, Back), [i,e] are neutral
@@ -36,6 +37,16 @@ harmonyV c
   | c `elem` "äöy" = Just Front
   | otherwise = Nothing
 
+-- |Determines the harmony value of a vowel /phoneme/
+harmonyVP :: Phoneme -> Maybe HarmonyV
+harmonyVP p  
+  | c `elem` ["a","aa","o","oo","u","uu"] = Just Back
+  | c `elem` ["e","ee","i","ii","ei","ie"] = Just Neutral
+  | c `elem` ["ä", "ää", "ö", "öö", "y", "yy"] = Just Front
+  | otherwise = Nothing
+ where
+   c = phonemeName p
+                
 -- |return a 'String' with the vowels only
 onlyVowels :: Token -> Token
 onlyVowels = T.filter (isJust . harmonyV)

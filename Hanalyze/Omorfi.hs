@@ -12,7 +12,7 @@ module Hanalyze.Omorfi (
 
   -- * Manipulating Omorfized tables
   clearErrors, splitCompounds, splitVerbs,
-  takeStems, getUnknownWords
+  takeStems, getUnknownWords, takeWords
 
   ) where
 
@@ -417,6 +417,15 @@ takeStems = foldl addT fdEmpty . map (fst &&& (getFrequency . snd))
   where
     addT acc (tok,freq) = FreqDist $ Map.insertWith (+) tok freq (getMap acc)
 -- still
+
+-- |Converts an 'OmorfiFD' to a 'FreqDist' by throwing away all
+-- morphological information and the stem! And summing all token
+-- occurences.
+takeWords :: OmorfiFD -> FreqDist
+takeWords ofd = tFromList $ map addThem (tToList ofd)
+  where
+    addThem :: (Token, [OmorfiInfo]) -> (Token, Freq)
+    addThem (t, ois) = (t, sum (map getFrequency ois))
 
 
 -- utlevel, vizumos utlevel, I-20, SEVIS fee

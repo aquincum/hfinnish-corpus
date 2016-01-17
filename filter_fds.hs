@@ -22,12 +22,13 @@ import Control.Concurrent
 
 -- Option parsing:
 
-data Flag = Stem | Omorfi deriving (Show, Eq)
+data Flag = Stem | Omorfi | Clean deriving (Show, Eq)
 
 options :: [OptDescr Flag]
 options = [
   Option ['s'] ["stem"] (NoArg Stem) "stem and filter corpus",
-  Option ['o'] ["omorfi"] (NoArg Omorfi) "only stem the corpus with Omorfi"
+  Option ['o'] ["omorfi"] (NoArg Omorfi) "only stem the corpus with Omorfi",
+  Option ['c'] ["clean"] (NoArg Clean) "only clean the corpus (don't stem)"
   ]
 
 compileOptions :: [String] -> IO ([Flag], [String])
@@ -75,11 +76,13 @@ stemFilterTokenRelevant t = filterTableByPattern  [StarF $ setBundle [fCons],
 cleanupWord :: Token -> Token
 cleanupWord = T.filter (`elem` "abcdefghijklmnopqrstuvwxyzäö")
 
-stemFDFile :: Flag -- ^Input flag -- Omorfi or Stem
+stemFDFile :: Flag -- ^Input flag -- Omorfi or Stem or Clean
               -> FilePath -- ^Input file
               -> IO ()
 stemFDFile fl fn = do
-  let saveprefix = if fl == Stem then "filtered2_" else "filtered3_"
+  let saveprefix | fl == Stem = "filtered2_"
+                 | fl == Omorfi = "filtered3_"
+                 | fl == Clean = "cleaned_"
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
@@ -89,9 +92,9 @@ stemFDFile fl fn = do
   putStrLn $ "FreqDist cleaned, " ++ (show $ tSize cleaned) ++ " tokens."
   -- putStrLn $ show $ tToList cleaned
   let relPattern = [StarF $ setBundle [fCons],
-              DotF $ setBundle [fFront, minus fLow, minus fRounded],
-              Star
-              ] 
+                    DotF $ setBundle [fFront, minus fLow, minus fRounded],
+                    Star
+                   ] 
   let cleaned' = if fl == Stem then filterTableByPattern relPattern cleaned else cleaned
   when (fl == Stem) $ putStrLn $ "First filtering done, " ++ (show $ tSize cleaned') ++ " tokens."
   om <- analyseFDOmorfi cleaned'
@@ -100,18 +103,26 @@ stemFDFile fl fn = do
   putStrLn $ "Errors removed, " ++ (show $ tSize noError) ++ " tokens."
   let om' = filterByValTable (any getKnown) noError
   putStrLn $ "Unknown stems thrown away, " ++ (show $ tSize om') ++ " tokens."
-  let uncompounded = splitCompounds om'
-  putStrLn $ "Compounds split, " ++ (show $ length uncompounded) ++ " tokens."
-  let (verbs,notverbs) = splitVerbs uncompounded
-  putStrLn $ "Verbs split, " ++ (show $ length verbs) ++ " verbs."
-  stemmedverbs <- stemVerbs verbs
-  putStrLn $ "Verbs stemmed, " ++ (show $ length stemmedverbs) ++ " verbs."
-  let stemmed = takeStems stemmedverbs <> takeStems notverbs
-  putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."
-  let filteredStemmed | fl == Stem = filterTable filterTokenRelevant stemmed
-                      | otherwise = stemmed
-  when (fl == Stem) $ putStrLn $ "Relevance determined, " ++ (show $ tSize filteredStemmed) ++ " tokens."
-  saveTable filteredStemmed savefn
+  when (fl == Clean) (do
+                      let om'' = takeWords om'
+                      putStrLn $ "Wordforms found, " ++ (show $ tSize om'') ++ " tokens."
+                      saveTable om'' savefn
+                      )
+  when (fl /= Clean) (do
+                      let uncompounded = splitCompounds om'
+                      putStrLn $ "Compounds split, " ++ (show $ length uncompounded) ++ " tokens."
+                      let (verbs,notverbs) = splitVerbs uncompounded
+                      putStrLn $ "Verbs split, " ++ (show $ length verbs) ++ " verbs."
+                      stemmedverbs <- stemVerbs verbs
+                      putStrLn $ "Verbs stemmed, " ++ (show $ length stemmedverbs) ++ " verbs."
+                      let stemmed = takeStems stemmedverbs <> takeStems notverbs
+                      putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."
+                      let filteredStemmed | fl == Stem = filterTable filterTokenRelevant stemmed
+                                          | otherwise = stemmed
+                      when (fl == Stem) $ putStrLn $ "Relevance determined, " ++ (show $ tSize filteredStemmed) ++ " tokens."
+                      saveTable filteredStemmed savefn
+                     )
+
 
 
 main :: IO ()
@@ -119,14 +130,15 @@ main = do
   args <- getArgs
   (flags, fns) <- compileOptions args
   when (length fns < 1) (error "No files specified")
-  when (Stem `elem` flags && Omorfi `elem` flags) (error "Choose either -s or -o")
+  when (length flags > 1) (error "Choose either -s, -o or -c")
   progVar <- initializeProgVar fns
   let filterAction | Stem `elem` flags = stemFDFile Stem
                    | Omorfi `elem` flags = stemFDFile Omorfi
+                   | Clean `elem` flags = stemFDFile Clean
                    | otherwise = filterFDFile filterTokenRelevant cleanupWord
       runOneFile fn = do
         filterAction fn
         incrementProgVar progVar
         printWithProgVal printProgress progVar >>= putStrLn
-  mapM_ filterAction fns
+  mapM_ runOneFile fns
   return ()

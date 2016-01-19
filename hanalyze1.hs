@@ -344,7 +344,7 @@ main = do
     let infn = flagGetFn flags
     convertFeaturesFile finnishInventoryWithEdges "Features.txt"
     convertCorpusFile finnishInventory infn "Training.txt"
-    createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
+    --createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
 
   when ((Task Sublexical) `elem` flags) $ do
     let infn = flagGetFn flags

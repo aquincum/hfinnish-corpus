@@ -18,6 +18,7 @@ import Hanalyze.Chisq
 import Control.Monad
 import Data.Monoid
 import Data.Maybe
+import Data.List (intersperse)
 import Text.Printf
 import Data.Random
 import Data.Random.Source.DevRandom
@@ -41,6 +42,8 @@ data Task = AnalyzeFile -- ^do the big analysis
           | Sublexical -- ^Produce input files for Becker's sublexical analyzer
           | Wugs -- ^Create wugs in CIC(C)A shape
           | SampleWugs -- ^Sample wugs from the UCLAPL output
+          | GenerateExamplesForGrammar -- ^Generate examples for each constraint
+            -- in an UCLAPL output grammar.txt
           | Help -- ^Print out the help
           deriving (Show, Eq)
 
@@ -53,7 +56,7 @@ data Flag = Task Task
 
 options :: [OptDescr Flag]
 options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, getlexstats, split, splitcut, uclapl, sublexical, wugs, samplewugs)",
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, getlexstats, split, splitcut, uclapl, sublexical, wugs, samplewugs, generateexamplesforgrammar)",
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
   Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
   Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory",
@@ -73,6 +76,7 @@ optGetTask s = case s of
   "sublexical" -> Task Sublexical
   "wugs" -> Task Wugs
   "samplewugs" -> Task SampleWugs
+  "generateexamplesforgrammar" -> Task GenerateExamplesForGrammar
   "help" -> Task Help
   _ -> Task AnalyzeFile
 
@@ -95,6 +99,7 @@ compileOptions args = case getOpt Permute options args of
         hasSl = (Task Sublexical) `elem` o
         hasWu = (Task Wugs) `elem` o
         hasSw = (Task SampleWugs) `elem` o
+        hasGxfg = (Task GenerateExamplesForGrammar) `elem` o
         hasHl = (Task Help) `elem` o
     when (hasHl) (error $ usageInfo "Usage: hanalyze1 [OPTIONS...] [FILE]" options)
     when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
@@ -102,7 +107,7 @@ compileOptions args = case getOpt Permute options args of
     when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
 
     let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
-               | hasSp || hasSc || hasUC || hasSl || hasWu || hasSw || hasGl = o
+               | hasSp || hasSc || hasUC || hasSl || hasWu || hasSw || hasGl || hasGxfg = o
                | not hasMaxn && hasTi = MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && not hasTf = Task AnalyzeFile:MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && hasTf = MaxN 2:o
@@ -116,6 +121,7 @@ compileOptions args = case getOpt Permute options args of
                     || (Task UCLAPL) `elem` retval
                     || (Task Sublexical) `elem` retval
                     || (Task SampleWugs) `elem` retval
+                    || (Task GenerateExamplesForGrammar) `elem` retval
     
         retval' | needsFile && not hasFn && not (null n) = FileName (head n):retval
                 | needsFile && not hasFn && null n = myError ["no FILE given either with -n or otherwise"]
@@ -313,7 +319,6 @@ findCouples fd =
   in
    mapTable T.reverse remerged
 
-
 main :: IO ()
 main = do
   args <- getArgs
@@ -471,6 +476,13 @@ main = do
         patternGenerator fb = [StarF consonant, DotF fb, StarF consonant, StarF vowel]
         patterns = map patternGenerator vowelRelevants
     mapM_ (summarizeByPattern fd' finnishInventory) patterns
+  when ((Task GenerateExamplesForGrammar) `elem` flags) $ do
+    txt <- TIO.readFile $ flagGetFn flags
+    let uclagr = readUCLAPLGrammar txt (flagGetFn flags)
+    let patts = map generateExamples uclagr
+        pattsStr = map (\p -> mconcat $ intersperse (T.pack ",") p) patts
+    mapM_ (\(uc, wds) ->
+            putStrLn (show uc ++ "\t" ++ (T.unpack wds))) (zip uclagr pattsStr)
         
     -- explore
     

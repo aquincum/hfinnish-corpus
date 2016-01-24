@@ -6,6 +6,7 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
 module Hanalyze.ToUCLAP (
+  UCLAGrammar, UCLAConstraint(..),
   convertFeatures, convertFeaturesFile,
   convertCorpus, convertCorpusFile,
   convertCorpusFileSublexical,
@@ -13,7 +14,9 @@ module Hanalyze.ToUCLAP (
   generateCICAWugs1,
   generateCICAWugsCluster,
   generateCICAWugsHiatus,
-  readUCLAPLOutput
+  readUCLAPLOutput,
+  readUCLAPLGrammar,
+  generateExamples
   )
        where
 
@@ -49,6 +52,22 @@ type Weight = Float
 -- |Table of words and UCLA weights. We don't (yet?) care about individual constraint
 -- violations and such, only the total weight
 data UCLAScores = UCLAScores {getUCLAMap :: Map.Map Token Weight} deriving (Eq, Show)
+
+-- |Model of grammar
+type UCLAGrammar = [UCLAConstraint]
+data UCLAConstraint = UCLAConstraint {
+  getPattern :: [Pattern],
+  getTier :: String,
+  getWeight :: Weight
+  }
+
+instance Show UCLAConstraint where
+  show uc = concat [writePattern (getPattern uc),
+                    "\t",
+                    getTier uc,
+                    "\t",
+                    show (getWeight uc)]
+
 
 instance Table UCLAScores Weight where
   tEmpty = UCLAScores Map.empty
@@ -218,6 +237,17 @@ readUCLAPLOutput text fn =
     Left e -> error ("Problem with UCLAPL parsing: " ++ show e) --tEmpty
     Right x ->  x
 
+readUCLAPLGrammar :: T.Text -> FilePath -> UCLAGrammar
+readUCLAPLGrammar text fn =
+  case parse parseUCLAPLGrammar fn text of
+    Left e -> error ("Problem with UCLAPL parsing: " ++ show e) --tEmpty
+    Right x ->  x
+
+debugFN = "/home/dani/Work/UCLAPL/finnish/output/grammar.txt"
+gr = do
+  t <- TIO.readFile debugFN
+  return $ readUCLAPLGrammar t debugFN
+
 
 createNatClassFile :: PhonemicInventory -> FilePath -> IO ()
 createNatClassFile pi fp = 
@@ -226,9 +256,44 @@ createNatClassFile pi fp =
   in
    TIO.writeFile fp str
 
+generateExamples :: UCLAConstraint -> [Token]
+generateExamples uc = let phons = case generatePattern finnishInventory (getPattern uc) of
+                            Just x -> x
+                            Nothing -> []
+                          toks = map spellout phons
+                      in
+                       toks
+
 
 -- *Parsing
 
+-- |For `grammar.txt` files
+parseUCLAPLGrammar :: UCLAParser st UCLAGrammar
+parseUCLAPLGrammar = many parseUCLAPLConstraintLine
+
+parseUCLAPLConstraintLine :: UCLAParser st UCLAConstraint
+parseUCLAPLConstraintLine = do
+                            p <- doParseUCLAPConstraint
+                            char '\t'
+                            t <- parseTier
+                            char '\t'
+                            w <- parseWeight
+                            char '\n'
+                            return $ UCLAConstraint p t w
+  where
+    parseTier = do
+      string "(tier="
+      s <- many $ noneOf "\t\n)"
+      char ')'
+      return s
+    parseWeight = do
+      wholes <- many1 digit
+      parts <- option "0" (char '.' >> many1 digit)
+      let w = read $ wholes ++ ('.':parts)
+      return w
+
+
+-- \For files like `blickTestResults`.
 parseUCLAPOutputFile :: UCLAParser st UCLAScores
 parseUCLAPOutputFile = ignoreLine >>
                        ignoreLine >>

@@ -28,6 +28,7 @@ import System.Console.GetOpt
 import Hanalyze.ToUCLAP
 import qualified Data.Text as Txt
 import qualified Data.Text.IO as TIO
+import Control.Monad.Writer
 
 
 
@@ -408,7 +409,12 @@ main = do
           Nothing -> []
           Just phons -> phons
         words = map spellout phs
-    mapM_ (T.hPutStrLn stdout) words
+    when (not (flagGetUCLAOutput flags)) $ mapM_ (T.hPutStrLn stdout) words
+    when (flagGetUCLAOutput flags) $ do
+      let fd = tFromList (zip words (replicate (length words) 1))
+          (corp, probs) = runWriter $ convertCorpus finnishInventory fd
+      TIO.putStrLn corp
+      when (not (probs == Txt.empty)) (putStrLn "Problems:\n" >> TIO.putStrLn probs)
 
   when ((Task SampleWugs) `elem` flags) $ do
     let infn = flagGetFn flags

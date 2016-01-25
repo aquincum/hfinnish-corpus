@@ -44,6 +44,7 @@ data Task = AnalyzeFile -- ^do the big analysis
           | SampleWugs -- ^Sample wugs from the UCLAPL output
           | GenerateExamplesForGrammar -- ^Generate examples for each constraint
             -- in an UCLAPL output grammar.txt
+          | GenerateFromPatt -- ^Generate from dot pattern.
           | Help -- ^Print out the help
           deriving (Show, Eq)
 
@@ -51,15 +52,24 @@ data Flag = Task Task
           | MaxN Int
           | SampleNone Int
           | SamplePatt Int
+          | UCLAOutput Bool
           | FileName FilePath
+          | FPattern [Pattern]
             deriving (Show, Eq)
+
+readFPattern :: String -> [Pattern]
+readFPattern s = case readPattern finnishInventory (T.pack s) of
+  Nothing -> []
+  Just p -> p
 
 options :: [OptDescr Flag]
 options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, getlexstats, split, splitcut, uclapl, sublexical, wugs, samplewugs, generateexamplesforgrammar)",
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, getlexstats, split, splitcut, uclapl, sublexical, wugs, samplewugs, generateexamplesforgrammar, generatefrompatt)",
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
   Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
+  Option ['p'] ["pattern"] (ReqArg (FPattern . readFPattern) "PATTERN") "Pattern to generate from. If task is generatefrompatt, it is required, but can be specified just plainly without -p",
   Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory",
+  Option ['u'] ["uclaoutput"] (NoArg (UCLAOutput True)) "Display help",
   Option ['h'] ["help"] (NoArg (Task Help)) "Display help",
   Option [] ["samplenone"] (ReqArg (SampleNone . read) "n") "Required for samplewugs: how many no-patterns to sample.",
   Option [] ["samplepatt"] (ReqArg (SamplePatt . read) "n") "Required for samplewugs: how many sample patterns to sample."
@@ -77,6 +87,7 @@ optGetTask s = case s of
   "wugs" -> Task Wugs
   "samplewugs" -> Task SampleWugs
   "generateexamplesforgrammar" -> Task GenerateExamplesForGrammar
+  "generatefrompatt" -> Task GenerateFromPatt
   "help" -> Task Help
   _ -> Task AnalyzeFile
 
@@ -89,6 +100,9 @@ compileOptions args = case getOpt Permute options args of
         hasFn = any (\fl -> case fl of
                            FileName _ -> True
                            _ -> False) o
+        hasPt = any (\fl -> case fl of
+                        FPattern _ -> True
+                        _ -> False) o
         hasTi = (Task AnalyzeInventory) `elem` o
         hasTf = (Task AnalyzeFile) `elem` o
         hasTa = (Task Anderson) `elem` o
@@ -100,6 +114,7 @@ compileOptions args = case getOpt Permute options args of
         hasWu = (Task Wugs) `elem` o
         hasSw = (Task SampleWugs) `elem` o
         hasGxfg = (Task GenerateExamplesForGrammar) `elem` o
+        hasGfp = (Task GenerateFromPatt) `elem` o
         hasHl = (Task Help) `elem` o
     when (hasHl) (error $ usageInfo "Usage: hanalyze1 [OPTIONS...] [FILE]" options)
     when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
@@ -108,6 +123,8 @@ compileOptions args = case getOpt Permute options args of
 
     let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
                | hasSp || hasSc || hasUC || hasSl || hasWu || hasSw || hasGl || hasGxfg = o
+               | hasGfp && (UCLAOutput True) `elem` o = o
+               | hasGfp && not ((UCLAOutput True) `elem` o) = UCLAOutput False:o
                | not hasMaxn && hasTi = MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && not hasTf = Task AnalyzeFile:MaxN 2:o
                | not hasMaxn && not hasTa && not hasTi && hasTf = MaxN 2:o
@@ -122,9 +139,13 @@ compileOptions args = case getOpt Permute options args of
                     || (Task Sublexical) `elem` retval
                     || (Task SampleWugs) `elem` retval
                     || (Task GenerateExamplesForGrammar) `elem` retval
+
+        needsPattern = (Task GenerateFromPatt) `elem` retval
     
         retval' | needsFile && not hasFn && not (null n) = FileName (head n):retval
                 | needsFile && not hasFn && null n = myError ["no FILE given either with -n or otherwise"]
+                | needsPattern && not hasPt && not (null n) = FPattern (readFPattern $ head n):retval
+                | needsPattern && not hasPt && null n = myError ["no PATTERN given either with -p or otherwise"]
                 | otherwise = retval
     when (Task SampleWugs `elem` retval) $ do
       let hasNone = any (\fl -> case fl of
@@ -164,6 +185,18 @@ flagGetSamplePatt [] = error "No sample patt in flags"
 flagGetSamplePatt (h:f) = case h of
   SamplePatt x -> x
   _ -> flagGetSamplePatt f
+
+flagGetPattern :: [Flag] -> [Pattern]
+flagGetPattern [] = error "No pattern in flags"
+flagGetPattern (h:f) = case h of
+  FPattern x -> x
+  _ -> flagGetPattern f
+
+flagGetUCLAOutput :: [Flag] -> Bool
+flagGetUCLAOutput [] = error "No UCLA output flag in flags"
+flagGetUCLAOutput (h:f) = case h of
+  UCLAOutput x -> x
+  _ -> flagGetUCLAOutput f
 
 {- too complicated
 flagGet :: [Flag] -> String -> Flag
@@ -366,6 +399,16 @@ main = do
                                     mapM_ (T.hPutStrLn h . spellout) wugs2 >>
                                     mapM_ (T.hPutStrLn h . spellout) wugs3
                                     )
+
+  when ((Task GenerateFromPatt) `elem` flags) $ do
+    let patt = flagGetPattern flags
+    when (length patt == 0) (error "Illegal pattern.")
+    when (not (isDotPattern patt)) (error "Not a dot pattern!")
+    let phs = case generatePattern finnishInventory patt of
+          Nothing -> []
+          Just phons -> phons
+        words = map spellout phs
+    mapM_ (T.hPutStrLn stdout) words
 
   when ((Task SampleWugs) `elem` flags) $ do
     let infn = flagGetFn flags

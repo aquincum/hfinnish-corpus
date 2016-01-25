@@ -17,7 +17,10 @@ module Hanalyze.Pattern (
   mergeDotPatterns,
 
   -- * Generating
-  generatePattern, generateOverlappedPatterns
+  generatePattern, generateOverlappedPatterns,
+  
+  -- *Querying
+  isDotPattern
   ) where
 
 import Hanalyze.Phoneme
@@ -92,7 +95,7 @@ instance Show Pattern where
 -}
 readPattern :: PhonemicInventory -> Token -> Maybe [Pattern]
 readPattern inv s = case parse (parsePatterns inv) "pattern reading" (T.unpack s) of
-  Left e -> Nothing
+  Left _ -> Nothing
   Right x -> Just x
                      
 -- |Outputs a pattern in a human-readable form
@@ -264,10 +267,11 @@ generatePattern pi patt =
 generatedFBs :: [Pattern] -> [Maybe FeatureBundle]
 generatedFBs [] = []
 generatedFBs (p:ps) = myFB p:(generatedFBs ps)
-
+myFB :: Pattern -> Maybe FeatureBundle
 myFB p = case p of
   DotF fb -> Just fb
   Dot -> Just $ setBundle []
+  P p -> Just $ featureBundle p
   _ -> Nothing
 
 
@@ -301,4 +305,12 @@ generateOverlappedPatterns pi p1 p2 =
     wordsGenerated = mapMaybe (generatePattern pi) mergeds
   in
    concat wordsGenerated
+
+isDotPattern :: [Pattern] -> Bool
+isDotPattern [] = True
+isDotPattern (h:t) = case h of
+  P _ -> isDotPattern t
+  Dot -> isDotPattern t
+  DotF _ -> isDotPattern t
+  _ -> False
 

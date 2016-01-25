@@ -257,7 +257,7 @@ createNatClassFile pi fp =
    TIO.writeFile fp str
 
 generateExamples :: UCLAConstraint -> [Token]
-generateExamples uc = let phons = case generatePattern finnishInventory (getPattern uc) of
+generateExamples uc = let phons = case generatePattern finnishInventoryWithEdges (getPattern uc) of
                             Just x -> x
                             Nothing -> []
                           toks = map spellout phons

@@ -46,7 +46,7 @@ data Task = AnalyzeFile -- ^do the big analysis
           | GenerateExamplesForGrammar -- ^Generate examples for each constraint
             -- in an UCLAPL output grammar.txt
           | GenerateFromPatt -- ^Generate from dot pattern.
-          | DisyllSummary -- ^Summarize lex stats
+          | HarmSummary -- ^Summarize lex stats
           | Help -- ^Print out the help
           deriving (Show, Eq)
 
@@ -66,7 +66,7 @@ readFPattern s = case readPattern finnishInventory (T.pack s) of
 
 options :: [OptDescr Flag]
 options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, getlexstats, split, splitcut, uclapl, sublexical, wugs, samplewugs, generateexamplesforgrammar, generatefrompatt, disyllsummary)",
+  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, getlexstats, split, splitcut, uclapl, sublexical, wugs, samplewugs, generateexamplesforgrammar, generatefrompatt, harmsummary)",
   Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
   Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
   Option ['p'] ["pattern"] (ReqArg (FPattern . readFPattern) "PATTERN") "Pattern to generate from. If task is generatefrompatt, it is required, but can be specified just plainly without -p",
@@ -90,7 +90,7 @@ optGetTask s = case s of
   "samplewugs" -> Task SampleWugs
   "generateexamplesforgrammar" -> Task GenerateExamplesForGrammar
   "generatefrompatt" -> Task GenerateFromPatt
-  "disyllsummary" -> Task DisyllSummary
+  "harmsummary" -> Task HarmSummary
   "help" -> Task Help
   _ -> Task AnalyzeFile
 
@@ -118,7 +118,7 @@ compileOptions args = case getOpt Permute options args of
         hasSw = (Task SampleWugs) `elem` o
         hasGxfg = (Task GenerateExamplesForGrammar) `elem` o
         hasGfp = (Task GenerateFromPatt) `elem` o
-        hasDis = (Task DisyllSummary) `elem` o
+        hasHarm = (Task HarmSummary) `elem` o
         hasHl = (Task Help) `elem` o
     when (hasHl) (error $ usageInfo "Usage: hanalyze1 [OPTIONS...] [FILE]" options)
     when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
@@ -126,7 +126,7 @@ compileOptions args = case getOpt Permute options args of
     when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
 
     let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
-               | hasSp || hasSc || hasUC || hasSl || hasWu || hasSw || hasGl || hasGxfg || hasDis = o
+               | hasSp || hasSc || hasUC || hasSl || hasWu || hasSw || hasGl || hasGxfg || hasHarm = o
                | hasGfp && (UCLAOutput True) `elem` o = o
                | hasGfp && not ((UCLAOutput True) `elem` o) = UCLAOutput False:o
                | not hasMaxn && hasTi = MaxN 2:o
@@ -143,7 +143,7 @@ compileOptions args = case getOpt Permute options args of
                     || (Task Sublexical) `elem` retval
                     || (Task SampleWugs) `elem` retval
                     || (Task GenerateExamplesForGrammar) `elem` retval
-                    || (Task DisyllSummary) `elem` retval
+                    || (Task HarmSummary) `elem` retval
 
         needsPattern = (Task GenerateFromPatt) `elem` retval
     
@@ -484,11 +484,12 @@ main = do
     summarizeAnderson $ filterByValTable (> 100) fd
     --  saveTable fd' a"test.out"
     return ()
-  when ((Task DisyllSummary) `elem` flags) $ do
+  when ((Task HarmSummary) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags
-    let disyllPattern = fromJust $ readPattern finnishInventory "{+consonantal}*{-consonantal}.{+consonantal}*{-consonantal}.{+consonantal}*"
-        disylls = filterTableByPattern disyllPattern fd
-        summary = summarizeFD (abbreviateBFNs . wordHarmonies) disylls
+    let doSegment wd = case segment finnishInventory wd of
+          Nothing -> []
+          Just s -> s
+        summary = summarizeFD (abbreviateBFNs . wordHarmonies . doSegment) fd
     writeTable summary stdout
   when ((Task GetLexStats) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags -- you want filtered3_all here, the whole corpus

@@ -47,13 +47,12 @@ harmonyVP p
  where
    c = phonemeName p
 
--- |Returns the vowel harmonicities in a word as a list
-wordHarmonies :: Token -> [HarmonyV]
-wordHarmonies tok = case T.uncons tok of
-  Nothing -> []
-  Just (h, t) -> case harmonyV h of
-    Nothing -> wordHarmonies t
-    Just harm -> harm:wordHarmonies t
+-- |Returns the vowel harmonicities in a phoneme list as a list
+wordHarmonies :: [Phoneme] -> [HarmonyV]
+wordHarmonies [] = []
+wordHarmonies (h:t) = case harmonyVP h of
+  Nothing -> wordHarmonies t
+  Just harm -> harm:wordHarmonies t
 
 -- |Simple abbreviation for shorter printing
 abbreviateBFN :: HarmonyV -> Char

@@ -33,16 +33,17 @@ instance Monoid Task where
                     "Concatenation of tasks."
 
 -- |A hack so that my params are monoids.
-type IntParam = Int
+newtype IntParam = IntParam Int deriving (Show, Eq, Read)
 instance Monoid IntParam where
-  mempty = 1
-  mappend = (+)
+  mempty = IntParam 1
+  mappend (IntParam i1) (IntParam i2) = IntParam $ i1+i2
+
 
 -- |A hack so that my params are monoids.
-type BoolParam = Bool
+newtype BoolParam = BoolParam Bool deriving (Show, Eq)
 instance Monoid BoolParam where
-  mempty = False
-  mappend = (&&)
+  mempty = BoolParam False
+  mappend (BoolParam b1) (BoolParam b2) = BoolParam $ b1 && b2
 
 data Flag = TaskFlag Task
           | MaxN IntParam

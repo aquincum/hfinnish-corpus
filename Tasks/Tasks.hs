@@ -5,8 +5,12 @@ module Tasks.Tasks where
 
 import           Data.Maybe
 import           System.Console.GetOpt
+import qualified Tasks.AnalyzeInventory
 import qualified Tasks.GenerateFromPattern
+import qualified Tasks.SampleWugs
+import qualified Tasks.SplitFrontBack
 import qualified Tasks.Sublexical
+import qualified Tasks.Summaries
 import           Tasks.Task
 import qualified Tasks.UCLAPL
 import qualified Tasks.Wugs
@@ -15,8 +19,14 @@ import qualified Tasks.Wugs
 tasks :: [Task]
 tasks = [ noTask,
           helpTask,
+          Tasks.AnalyzeInventory.task,
           Tasks.GenerateFromPattern.task,
+          Tasks.SampleWugs.task,
+          Tasks.SplitFrontBack.taskfb,
+          Tasks.SplitFrontBack.taskcut,
           Tasks.Sublexical.task,
+          Tasks.Summaries.taskAnderson,
+          Tasks.Summaries.taskLexStat,
           Tasks.UCLAPL.task,
           Tasks.Wugs.task
         ]
@@ -33,7 +43,7 @@ generateOptions =
     nonTaskOptions = [Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
                       Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
                       Option ['p'] ["pattern"] (ReqArg (FPattern . readFPattern) "PATTERN") "Pattern to generate from. If task is generatefrompatt, it is required, but can be specified just plainly without -p",
-                      Option ['u'] ["uclaoutput"] (NoArg (UCLAOutput True)) "Display help",
+                      Option ['u'] ["uclaoutput"] (NoArg (UCLAOutput (BoolParam True))) "Display help",
                       Option ['h'] ["help"] (NoArg (TaskFlag helpTask)) "Display help",
                       Option [] ["samplenone"] (ReqArg (SampleNone . read) "n") "Required for samplewugs: how many no-patterns to sample.",
                       Option [] ["samplepatt"] (ReqArg (SamplePatt . read) "n") "Required for samplewugs: how many sample patterns to sample."

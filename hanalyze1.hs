@@ -5,74 +5,31 @@
 
 module Main where
 
-import           System.IO
 import           Control.Exception
-import           System.Environment
-import qualified Data.Map as Map
-import           Hanalyze.FreqDist
-import           Hanalyze.Vowels
-import           Hanalyze.Pattern
-import           Hanalyze.Phoneme
-import           Hanalyze.Omorfi
-import           Hanalyze.Chisq
 import           Control.Monad
-import           Data.Monoid
-import           Data.Maybe
+import           Control.Monad.Writer
 import           Data.List (intersperse)
-import           Text.Printf
+import qualified Data.Map as Map
+import           Data.Maybe
+import           Data.Monoid
 import           Data.Random
 import           Data.Random.Source.DevRandom
--- import Data.Data
-import           Control.Monad.Writer
 import qualified Data.Text as Txt
 import qualified Data.Text.IO as TIO
+import           Hanalyze.Chisq
+import           Hanalyze.FreqDist
+import           Hanalyze.Omorfi
+import           Hanalyze.Pattern
+import           Hanalyze.Phoneme
 import           Hanalyze.ToUCLAP
 import qualified Hanalyze.Token as T
+import           Hanalyze.Vowels
 import           System.Console.GetOpt
+import           System.Environment
+import           System.IO
 import           Tasks.Options
+import           Text.Printf
 
-sectionHeader :: String -> IO ()
-sectionHeader s = putStrLn s >> putStrLn "========"
-
-dataPointInt :: String -> Int -> IO ()
-dataPointInt label val = putStrLn $ label ++ ": " ++ show val
-
-summarySection :: FreqDist -> IO ()
-summarySection fd = sectionHeader "Summary" >>
-                    dataPointInt "grand total" (sumTable fd)
-
-
-data VowelSummaryInfo = VowelSummaryInfo { getTokenFreq :: Double,
-                                           getTypeFreq :: Double,
-                                           getTokenPerc :: Double,
-                                           getTypePerc :: Double
-                                         } deriving (Eq, Show)
--- |Resulting from 'vowelSummarySection'
-data VowelSummaryFreqDist = VowelSummaryFreqDist {getVSFDMap :: Map.Map Token VowelSummaryInfo} deriving (Eq, Show)
-instance Table VowelSummaryFreqDist VowelSummaryInfo where
-  tEmpty = VowelSummaryFreqDist Map.empty
-  tConstruct = const VowelSummaryFreqDist
-  tGetMap = getVSFDMap
-  tPrintfun _ (mkey, mval) = mconcat [mkey, "\t",
-                                      T.pack $ printf "%d\t" ((round $ getTokenFreq mval) :: Int),
-                                      T.pack $ printf "%d\t" ((round $ getTypeFreq mval) :: Int),
-                                      T.pack $ printf "%.2f%%\t" ((getTokenPerc mval) :: Double),
-                                      T.pack $ printf "%.2f%%\t" ((getTypePerc mval) :: Double)
-                                      ]
-
-vowelSummarySection :: (Show x, Eq x) => String -> FreqDist -> (Token -> x) -> IO VowelSummaryFreqDist
-vowelSummarySection str fd f =
-  sectionHeader ("Vowel structure summary -- " ++ str)  >>
-  writeout >>
-  putStrLn "" >>
-  return tokenperc
-  where
-    summedMap = Map.toList $ tGetMap $ summarizeFD f fd -- (Int, Int) ~ (token, type)
-    allToken = fromIntegral $ foldr ((+) . fst . snd) 0 summedMap
-    allType = fromIntegral $  foldr ((+) . snd . snd) 0 summedMap
-    tokenperc = tFromList $ map (\(t, (a,b)) -> (t, VowelSummaryInfo (fromIntegral a) (fromIntegral b) ((fromIntegral a) / allToken * 100.0) ((fromIntegral b) / allType * 100.0))) summedMap
-    writeout = mapM putStrLn (map (T.unpack . (tPrintfun tokenperc)) (tToList tokenperc))
---saveVowelSummary :: Map.Map Token [Double]
 
 
 summarizeByC :: FreqDist -> IO ()
@@ -84,25 +41,6 @@ summarizeByC fd = do
   vowelSummarySection "with coronals" fdCor harmonicity
   vowelSummarySection "with velars" fdVel harmonicity
   return ()
-
-summarizeAnderson :: FreqDist -> IO AnnotatedFreqDist
-summarizeAnderson fd = do
-  let l p = fromJust $ findPhoneme finnishInventory p
-      gravesNotP = [l "k", l "g", l "kk", l "m", l "mm", l "ng", l "f", l "ff", l "v", l "vv", l "h", l "hh", l "j", l "jj"]
-      acutesP = [l "p", l "pp", l "t", l "tt", l "d", l "dd", l "n", l "nn", l "s", l "ss", l "z", l "zz", l "l", l "ll", l "r", l "rr"]
-      funGrave  = filterToken finnishInventory [DotF consonant, DotF vowel, AnyP gravesNotP, DotF $ mconcat [low,vowel]]
-      funAcuteI = filterToken finnishInventory [DotF consonant, AnyP [l "i", l "ii", l "ei"], AnyP acutesP, DotF $ mconcat [low,vowel]]
-      funAcuteE = filterToken finnishInventory [DotF consonant, AnyP [l "e", l "ee"], AnyP acutesP, DotF $ mconcat [low,vowel]]
-
-      -- todo: QuestionF
-      
-      fdGrave = filterTable funGrave fd
-      fdAcuteI = filterTable funAcuteI fd
-      fdAcuteE = filterTable funAcuteE fd
-  vowelSummarySection "with graves without [p] (Anderson: disharmonic)" fdGrave harmonicity
-  vowelSummarySection "with acutes or [p] after [i(:),ei] (Anderson: disharmonic)" fdAcuteI harmonicity
-  vowelSummarySection "with acutes or [p] after [e(:)] (Anderson: harmonic)" fdAcuteE harmonicity
-  return $ annotateFD [("grave", funGrave), ("acute with i", funAcuteI), ("acute with e", funAcuteE)] fd
 
 
 summarizeByPattern :: FreqDist -> PhonemicInventory -> [Pattern] -> IO AnnotatedFreqDist
@@ -129,176 +67,16 @@ filterVowelFinals :: FreqDist -> FreqDist
 filterVowelFinals = filterTable $ filterToken finnishInventory [Star, DotF vowel]
 
 
-fitsPattern :: [Pattern] -> Token -> Bool
-fitsPattern patt tkn =
-  let
-    phons = segment finnishInventory tkn
-  in
-   case phons of
-     Just phs -> filterWord phs patt
-     Nothing -> False
-
-annotateWithPatterns :: FreqDist -> AnnotatedFreqDist
-annotateWithPatterns fd =
-  let patternAnnotMap :: [(Annotation, Token -> Bool)]
-      patternAnnotMap = [
-        (T.pack "1", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.j{-consonantal}.*"))),
-        (T.pack "2", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.{-consonantal}.*"))),
-        (T.pack "3", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal,+high}.[p,pp]{-consonantal}.*"))),
-        (T.pack "4", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[l,ll]{-consonantal}.*"))),
-        (T.pack "5", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[f,s,h,v]j{-consonantal}.*")))
-        ]
-  in
-   annotateFD patternAnnotMap fd
                     
 
 
--- |Keep only stems that have a pair: ending in -a ~ ending in -ä
-findCouples :: FreqDist -> FreqDist
-findCouples fd =
-  let
-    revfd = mapTable T.reverse fd
-    getHead t = case T.uncons t of
-      Just (c,_) -> c
-      Nothing -> 'x'
-    isMyPairInThere pairc pair t = case T.uncons t of
-      Just (c,left) -> (T.cons pairc left) `elem` (fdKeys pair)
-      Nothing -> False
-    as = filterTable (\t -> getHead t == 'a') revfd
-    aes = filterTable (\t -> getHead t == 'ä') revfd
-    asinaestoo = filterTable (isMyPairInThere 'ä' aes) as
-    aesinastoo = filterTable (isMyPairInThere 'a' as) aes
-    remerged = asinaestoo <> aesinastoo
-  in
-   mapTable T.reverse remerged
 
 main :: IO ()
 main = do
   args <- getArgs
   flags <- compileOptions args
 
-  when ((TaskFlag SplitFD) `elem` flags || (TaskFlag SplitCut) `elem` flags) $ do 
-    fd <- readFreqDist $ flagGetFn flags
-    let front = filterTable (\t -> harmonicity t == FrontNeutral) fd
-        back = filterTable (\t -> harmonicity t == BackNeutral) fd
-    when ((TaskFlag SplitCut) `elem` flags) $ do
-      let patt = case readPattern finnishInventory "{+consonantal}*{-consonantal}.{-consonantal}*{+consonantal}*" of
-            Nothing -> error "readpattern"
-            Just p -> p
-      let takeUntil2ndV tok = case segment finnishInventory tok of
-            Nothing -> T.pack ""
-            Just seg -> case matchWord seg patt of
-              Nothing -> T.pack "no match"
-              Just matched -> spellout matched
-      let front' = tMap takeUntil2ndV front 
-      let back' = tMap takeUntil2ndV back
-      saveTable front' (flagGetFn flags ++ "_front_cut")
-      saveTable back' (flagGetFn flags ++ "_back_cut")
-    when ((TaskFlag SplitFD) `elem` flags) $ do
-      saveTable front (flagGetFn flags ++ "_front")
-      saveTable back (flagGetFn flags ++ "_back")
-
-  when ((TaskFlag UCLAPL) `elem` flags) $ do
-    let infn = flagGetFn flags
-    convertFeaturesFile finnishInventoryWithEdges "Features.txt"
-    convertCorpusFile finnishInventory infn "Training.txt"
-    --createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
-
-  when ((TaskFlag Sublexical) `elem` flags) $ do
-    let infn = flagGetFn flags
-    --    createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
-    convertCorpusFileSublexical finnishInventory infn "sublex-training.txt"
-
-
-  when ((TaskFlag Wugs) `elem` flags) $ do
-    let wugs1 = generateCICAWugs1
-    let wugs2 = generateCICAWugsCluster
-    let wugs3 = generateCICAWugsHiatus
-    withFile "wugs.txt" WriteMode (\h ->
-                                    mapM_ (T.hPutStrLn h . spellout) wugs1 >>
-                                    mapM_ (T.hPutStrLn h . spellout) wugs2 >>
-                                    mapM_ (T.hPutStrLn h . spellout) wugs3
-                                    )
-
-  when ((TaskFlag GenerateFromPatt) `elem` flags) $ do
-    let patt = flagGetPattern flags
-    when (length patt == 0) (error "Illegal pattern.")
-    when (not (isDotPattern patt)) (error "Not a dot pattern!")
-    let phs = case generatePattern finnishInventory patt of
-          Nothing -> []
-          Just phons -> phons
-        words = map spellout phs
-    when (not (flagGetUCLAOutput flags)) $ mapM_ (T.hPutStrLn stdout) words
-    when (flagGetUCLAOutput flags) $ do
-      let fd = tFromList (zip words (replicate (length words) 1))
-          (corp, probs) = runWriter $ convertCorpus finnishInventory fd
-      TIO.putStrLn corp
-      when (not (probs == Txt.empty)) (putStrLn "Problems:\n" >> TIO.putStrLn probs)
-
-  when ((TaskFlag SampleWugs) `elem` flags) $ do
-    let infn = flagGetFn flags
-    contents <- TIO.readFile infn
-    putStrLn "File read."
-    let cWithAe = Txt.intercalate (Txt.pack "ä") (Txt.splitOn (Txt.pack "ae") contents)
-        cWithOe = Txt.intercalate (Txt.pack "ö") (Txt.splitOn (Txt.pack "oe") cWithAe)
-        allWugs = readUCLAPLOutput cWithOe infn
-    putStrLn $ "Umlauts reitroduced. n = " ++ show (tSize allWugs)
-    let zeroWeight = filterByValTable (== 0.0) allWugs
-        zeroWeightFD = (tFromList $ map (\(t,_) -> (t,0)) (tToList zeroWeight)) :: FreqDist
-    putStrLn $ "Zero weights filtered. n = " ++ show (tSize zeroWeightFD)
-    let noSpacesFD = mapTable (T.filter (/= ' ')) zeroWeightFD
-    putStrLn $ "Spaces removed. n = " ++ show (tSize noSpacesFD)
-    morphanalyzed <- analyseFDOmorfi noSpacesFD
-    putStrLn $ "Morphological parsing done. n = " ++ show (tSize morphanalyzed)
-    let unknownsFD = takeStems $ getUnknownWords morphanalyzed
-    putStrLn $ "Known words filtered. n = " ++ show (tSize unknownsFD)
-    let unknownPairsFD = findCouples unknownsFD
-    putStrLn $ "Unknown pairs found. n = " ++ show (tSize unknownPairsFD)
-    let annotated = annotateWithPatterns unknownPairsFD 
-    putStrLn $ "Annotation done. Sampling..."
-    let createSample :: ([Flag] -> Int) -> String -> IO AnnotatedFreqDist
-        createSample fromFlags annot =
-          let
-            part = tToList $ filterWithAnnotation (==T.pack annot) annotated
-          in
-            runRVar (shuffleNofM (min (fromFlags flags) (length part)) (length part) part) DevURandom >>=
-            return . tFromList
-    nonesSample <- createSample flagGetSampleNone ""
-    pattSample <- mapM (createSample flagGetSamplePatt) ["1","2","3","4","5"]
-    putStrLn $ "Sampling done."
-    withFile "sampled-wugs.txt" WriteMode $ \h ->
-      writeTable nonesSample h >>
-      mapM_ (flip writeTable h) pattSample
   
-  when ((TaskFlag AnalyzeInventory) `elem` flags) $ do
-    -- something different
-    let relb = selectRelevantBundles finnishInventory (flagGetMaxn flags)
-        phonemes = map (pickByFeature finnishInventory) relb
-        phnames = (map . map) phonemeName phonemes
-        outputzip = zip relb phnames
-    mapM_ (\zline -> putStr (show $ fst zline) >>
-                     putStr ": " >>
-                     mapM_ (\ph -> putStr (ph ++ " ")) (snd zline) >>
-                     putStrLn "") outputzip
-  when ((TaskFlag Anderson) `elem` flags) $ do
-    --  fd <- liftM filterVowelFinals $ readFreqDist $ head args    fd <- readFreqDist $ head args
-    fd <- readFreqDist $ flagGetFn flags
-    summarySection fd
-    vowelSummarySection "plain vowel structure" fd onlyVowels
-    vowelSummarySection "plain harmonicity" fd harmonicity
-    putStrLn "# MAIN FD"
-    withFile "summary_annot_fd.txt" WriteMode (\h -> do
-                                                  annotfd <- summarizeAnderson fd
-                                                  writeTable annotfd h
-                                              )
-    putStrLn "# ONLY >10 FREQ FD"
-    summarizeAnderson $ filterByValTable (> 10) fd
-    putStrLn "# ONLY >50 FREQ FD"
-    summarizeAnderson $ filterByValTable (> 50) fd
-    putStrLn "# ONLY >100 FREQ FD"
-    summarizeAnderson $ filterByValTable (> 100) fd
-    --  saveTable fd' a"test.out"
-    return ()
   when ((TaskFlag HarmSummary) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags
     let doSegment wd = case segment finnishInventory wd of
@@ -306,41 +84,6 @@ main = do
           Just s -> s
         summary = summarizeFD (abbreviateBFNs . wordHarmonies . doSegment) fd
     writeTable summary stdout
-  when ((TaskFlag GetLexStats) `elem` flags) $ do
-    fd <- readFreqDist $ flagGetFn flags -- you want filtered3_all here, the whole corpus
-    let pattern = fromJust $ readPattern finnishInventory "{+consonantal}*[i,ii,ie,e,ei,ee]{+consonantal}*[a,ä,aa,ää]{+consonantal}*"
-        vfinals = filterTableByPattern pattern fd
-        allCorpusAAePattern = fromJust $ readPattern finnishInventory "*[a,ä,aa,ää]{+consonantal}*"
-        allCorpusAAeDisyllPattern = fromJust $ readPattern finnishInventory "{+consonantal}*{-consonantal}.{+consonantal}*[a,ä,aa,ää]{+consonantal}*"
-        allCorpusAAe = filterTableByPattern allCorpusAAePattern fd
-        allCorpusAAeDisyll = filterTableByPattern allCorpusAAeDisyllPattern fd
-    withFile "vowelfinals.txt" WriteMode (writeTable vfinals)
-    summarySection vfinals
-    vowelSummarySection "plain vowel structure" vfinals onlyVowels
-    vowelSummarySection "plain harmonicity" vfinals harmonicity
-    lv <- vowelSummarySection "last vowel" vfinals lastVowel
-    allCorpusLv <- vowelSummarySection "last vowel" allCorpusAAe lastVowel
-    allCorpusDisyllLv <- vowelSummarySection "last vowel" allCorpusAAeDisyll lastVowel
-    withFile "wordfinal.txt" WriteMode $ \h ->
-      hPutStrLn h "In all corpus:" >>
-      writeTable allCorpusLv h >>
-      hPutStrLn h "\nIn all corpus disyllabic:" >>
-      writeTable allCorpusDisyllLv h >>
-      hPutStrLn h "\nOnly neutral disyllabic:" >>
-      writeTable lv h
-    sltable <- vowelSummarySection "stem vowel & last vowel" vfinals stemLastVowel
-    withFile "lexstats.txt" WriteMode (writeTable sltable)
-    let patternannotated = annotateWithPatterns vfinals
-        printPatternAfd :: AnnotatedFreqDist -> String -> Handle -> IO ()
-        printPatternAfd afd annot h = do
-          hPutStrLn h ""
-          hPutStrLn h $ "=== PATTERN " ++ annot ++ " ==="
-          let fd = dropAnnotation $ filterWithAnnotation (== T.pack annot) afd
-          psltable <- vowelSummarySection ("stem vowel & last vowel with pattern " ++ annot) fd stemLastVowel
-          writeTable psltable h
-    withFile "lexstats-pattern.txt" WriteMode (\h ->
-                                                mapM (\a -> printPatternAfd patternannotated a h) ["","1","2","3","4","5"])
-    return ()
   when ((TaskFlag AnalyzeFile) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags
     summarySection fd

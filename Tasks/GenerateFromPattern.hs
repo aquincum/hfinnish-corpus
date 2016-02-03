@@ -32,7 +32,7 @@ doTask flags = do
         Just phons -> phons
       words = map spellout phs
   case getFlag flags UCLAOutput of
-    Just (UCLAOutput True) -> do
+    Just (UCLAOutput (BoolParam True)) -> do
       let fd = tFromList (zip words (replicate (length words) 1))
           (corp, probs) = runWriter $ convertCorpus finnishInventory fd
       TIO.putStrLn corp

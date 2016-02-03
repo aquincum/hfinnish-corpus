@@ -5,8 +5,11 @@ module Tasks.Tasks where
 
 import           Data.Maybe
 import           System.Console.GetOpt
+import qualified Tasks.AnalyzeFile
 import qualified Tasks.AnalyzeInventory
+import qualified Tasks.GenerateExamplesForGrammar
 import qualified Tasks.GenerateFromPattern
+import qualified Tasks.HarmSummary
 import qualified Tasks.SampleWugs
 import qualified Tasks.SplitFrontBack
 import qualified Tasks.Sublexical
@@ -19,8 +22,11 @@ import qualified Tasks.Wugs
 tasks :: [Task]
 tasks = [ noTask,
           helpTask,
+          Tasks.AnalyzeFile.task,
           Tasks.AnalyzeInventory.task,
+          Tasks.GenerateExamplesForGrammar.task,
           Tasks.GenerateFromPattern.task,
+          Tasks.HarmSummary.task,
           Tasks.SampleWugs.task,
           Tasks.SplitFrontBack.taskfb,
           Tasks.SplitFrontBack.taskcut,

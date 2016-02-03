@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module Tasks.Summaries (taskAnderson, taskLexStat) where
+module Tasks.Summaries where
 
 import qualified Data.Map as Map
 import           Data.Maybe

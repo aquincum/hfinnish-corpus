@@ -1,6 +1,7 @@
 module Main where
 
 import System.Environment
+import Tasks.Task
 import Tasks.Tasks
 
 main :: IO ()

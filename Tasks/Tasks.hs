@@ -3,62 +3,38 @@
 
 module Tasks.Tasks where
 
---import Tasks.Options
-import           Control.Monad
 import           Data.Monoid
 import           Hanalyze.Pattern
+import           Hanalyze.Phoneme
+import qualified Hanalyze.Token as T
 import           System.Console.GetOpt
-import qualified Tasks.Options as Options
-
-data Task = Task {
-  runTask :: [Flag] -> IO (),
-  taskFlagString :: String,
-  descriptionString :: String
-  }
-
-instance Show Task where
-  show t = "Task " ++ taskFlagString t
-instance Eq Task where
-  t1 == t2 = taskFlagString t1 == taskFlagString t2
-
--- |For my reflection trick to work!
-instance Monoid Task where
-  mempty = noTask
-  mappend t1 t2 = Task
-                    (\flags -> (runTask t1) flags >> (runTask) t2 flags)
-                    (taskFlagString t1 ++ ", " ++ taskFlagString t2)
-                    "Concatenation of tasks."
-
-type IntParam = Int
-instance Monoid IntParam where
-  mempty = 1
-  mappend = (+)
-
-data Flag = TaskFlag Task
-          | MaxN IntParam
-          | SampleNone IntParam
-          | SamplePatt IntParam
-          | UCLAOutput Bool
-          | FileName FilePath
-          | FPattern [Pattern]
-            deriving (Show, Eq)
+import           System.Exit
+import           Tasks.Task
+import qualified Tasks.UCLAPL
 
 tasks :: [Task]
-tasks = [ noTask, helpTask ]
+tasks = [ noTask,
+          helpTask,
+          Tasks.UCLAPL.task
+        ]
 
-
-noTask :: Task
-noTask = Task (\_ -> putStrLn "No task run.") "none" "This task does not do anything!"
 
 helpTask :: Task
 helpTask = Task (\_ -> putStrLn printUsage) "help" "This task only prints out the usage info of the program"
+
+
+readFPattern :: String -> [Pattern]
+readFPattern s = case readPattern finnishInventory (T.pack s) of
+  Nothing -> []
+  Just p -> p
+
 
 generateOptions :: [OptDescr Flag]
 generateOptions =
   let
     nonTaskOptions = [Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
                       Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
-                      Option ['p'] ["pattern"] (ReqArg (FPattern . Options.readFPattern) "PATTERN") "Pattern to generate from. If task is generatefrompatt, it is required, but can be specified just plainly without -p",
+                      Option ['p'] ["pattern"] (ReqArg (FPattern . readFPattern) "PATTERN") "Pattern to generate from. If task is generatefrompatt, it is required, but can be specified just plainly without -p",
                       Option ['u'] ["uclaoutput"] (NoArg (UCLAOutput True)) "Display help",
                       Option ['h'] ["help"] (NoArg (TaskFlag helpTask)) "Display help",
                       Option [] ["samplenone"] (ReqArg (SampleNone . read) "n") "Required for samplewugs: how many no-patterns to sample.",
@@ -71,30 +47,6 @@ generateOptions =
 
 
 
--- |Ugly hack, can't Typeable yet.
---
--- >>> showConstructorName (MaxN 5)
--- "MaxN"
-showConstructorName :: Show a => a -> String
-showConstructorName = head . words . show
-
--- |Ugly hack too, but works.
---
--- >>> showConstructorNamePlain MaxN
--- "MaxN"
-showConstructorNamePlain :: (Show a, Monoid a) => (a -> Flag) -> String
-showConstructorNamePlain c = showConstructorName $ c mempty 
-
--- |Get any flag based on a constructor '(a -> Flag)', thanks
--- to my ugly 'showConstructorNamePlain' trick.
---
--- >>> getFlag flags MaxN
--- 5
-getFlag :: (Show a, Monoid a) => [Flag] -> (a -> Flag) -> Maybe Flag
-getFlag [] _ = Nothing
-getFlag (f:fs) constr = if showConstructorName f == showConstructorNamePlain constr
-                        then Just f
-                        else getFlag fs constr
 
 
 compileOptions :: [String] -> IO ([Flag])
@@ -124,7 +76,4 @@ getTaskFlag s =
   in
    if length matched == 0 then TaskFlag helpTask
    else TaskFlag $ head matched
-
-
-
 

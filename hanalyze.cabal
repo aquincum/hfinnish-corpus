@@ -48,47 +48,9 @@ library
                        random-source
   ghc-options:       -fhpc
 
-executable create_fds
-  main-is:           create_fds.hs
-  ghc-options:	     -threaded -rtsopts 
-  build-depends:     base >=4.6,
-                     containers, 
-                     text,
-                     split,
-                     deepseq,
-                     time,
-                     parsec,
-                     bytestring, mmap, utf8-string, filepath
-
-executable merge_fds
-  main-is:           merge_fds.hs
-  ghc-options:       -threaded -rtsopts -O2 
-  build-depends:     base >=4.6, containers, hanalyze, 
-                     text, time, deepseq, parallel, mmap, 
-                     utf8-string, bytestring, filepath,
-                     split, parsec
-
-executable filter_fds
-  main-is:           filter_fds.hs
-  ghc-options:       -rtsopts -O2
-  build-depends:     base >=4.6, containers, hanalyze, 
-                     text, time, deepseq, parallel, mmap, 
-                     utf8-string, bytestring, filepath,
-                     split, parsec, process >= 1.2.0.0,
-                     unix, transformers, directory
-  cpp-options:       -DCABAL_INSTALL
-
-executable stem_fds
-  main-is:           stem_fds.hs
-  ghc-options:       -rtsopts -O2 
-  build-depends:     base >=4.6, containers, hanalyze, 
-                     text, time, deepseq, parallel, mmap, 
-                     utf8-string, bytestring, filepath,
-                     split, temporary, process >= 1.2.0.0, parsec
-
 executable hanalyze
   main-is:           hanalyze.hs
-  ghc-options:       -rtsopts -O2 
+  ghc-options:       -rtsopts -O2 -threaded
   build-depends:     base >=4.6, containers, hanalyze, 
                      text, time, deepseq, parallel, mmap, 
                      utf8-string, bytestring, filepath,

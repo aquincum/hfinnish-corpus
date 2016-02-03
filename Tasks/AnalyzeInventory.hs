@@ -6,7 +6,7 @@ import           Tasks.Task
 task :: Task
 task = Task
          doTask
-         (Just (MaxN . read))
+         (Just (MaxN . readIntParam))
          "analyzeinventory"
          "Analyzes the inventory of Finnish. Selects relevant bundles of maxn length. Default argument is maxn."
 

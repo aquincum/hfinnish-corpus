@@ -1,12 +1,18 @@
 {-# LANGUAGE DoAndIfThenElse #-}
-module Main where
+module Tasks.MergeFDs (task) where
 
 import Hanalyze.FreqDist
-import System.IO
-import System.Environment
 import Data.Monoid
-import Data.List
 import Control.Applicative
+import Tasks.Task
+
+task :: Task
+task = Task
+  doTask
+  (Just FileName)
+  "mergefds"
+  "Merges freqdists into a summary one. The first file name given will be the output freqdist, while all the rest files will be merged into this one."
+
 
 -- |Runs the merging operation
 runMerge :: FilePath -> -- ^The file name of the _output_
@@ -27,10 +33,10 @@ runMerge out ins = do
   saveTable fd out
   return ()
 
-main :: IO ()
-main = do
-  fns <- getArgs
+doTask :: [Flag] -> IO ()
+doTask flags = do
+  let fns = map (\(FileName f) -> f) $ getAllFlags flags FileName
   if length fns < 2 then
-    putStrLn "Usage:\nmerge_fds <output_file> [input files...]"
+    putStrLn "Usage:\nhanalyze mergefds <output_file> [input files...]"
   else 
     runMerge (head fns) (tail fns)

@@ -33,11 +33,13 @@ instance Monoid Task where
                     "Concatenation of tasks."
 
 -- |A hack so that my params are monoids.
-newtype IntParam = IntParam Int deriving (Show, Eq, Read)
+newtype IntParam = IntParam Int deriving (Show, Eq)
 instance Monoid IntParam where
   mempty = IntParam 1
   mappend (IntParam i1) (IntParam i2) = IntParam $ i1+i2
 
+readIntParam :: String -> IntParam
+readIntParam s = let i = read s :: Int in IntParam i
 
 -- |A hack so that my params are monoids.
 newtype BoolParam = BoolParam Bool deriving (Show, Eq)
@@ -47,6 +49,7 @@ instance Monoid BoolParam where
 
 data Flag = TaskFlag Task
           | MaxN IntParam
+          | Capabilities IntParam
           | SampleNone IntParam
           | SamplePatt IntParam
           | UCLAOutput BoolParam
@@ -83,6 +86,15 @@ getFlag (f:fs) constr = if showConstructorName f == showConstructorNamePlain con
                         then Just f
                         else getFlag fs constr
 
+-- |Get all the arguments that are constructed by the  constructor
+--
+-- >>> getAllFlags flags FileName
+-- ["this.txt", "that.txt"]
+getAllFlags :: (Show a, Monoid a) => [Flag] -> (a -> Flag) -> [Flag]
+getAllFlags [] _ = []
+getAllFlags (f:fs) constr = if showConstructorName f == showConstructorNamePlain constr
+                        then f:(getAllFlags fs constr)
+                        else getAllFlags fs constr
 
 
 dieIfNoFN :: Maybe Flag -> IO FilePath

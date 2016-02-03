@@ -1,19 +1,21 @@
-module Main where
+module Tasks.CreateFDs (task) where
 
-import qualified Data.Map.Strict as Map
-import System.IO
-import System.Environment
-import Data.List.Split (splitOn)
+import           Control.Concurrent
+import           Control.Exception
 import qualified Control.Monad as M
-import Control.Concurrent
-import Control.DeepSeq
-import Control.Exception
-import Hanalyze.FreqDist
-import Hanalyze.Vowels
-import Hanalyze.Process
-import Hanalyze.Progress
+import           Data.List.Split (splitOn)
+import           Hanalyze.FreqDist
+import           Hanalyze.Process
+import           Hanalyze.Progress
+import           Tasks.Task
 
-qsort (p:xs) = qsort [x | x<-xs, x<p] ++ [p] ++ qsort [x | x<-xs, x>=p]
+task :: Task
+task = Task
+  doTask
+  (Just FileName)
+  "createfds"
+  "Creates freqdists from raw corpus. Runs on as many files as are given. Saves output to a file prefixed with freqdist_"
+  
 
 -- |Read one file, convert to FreqDists and output them to "freqdist_"++filename
 dealWithAFile :: FilePath -> ProgVar -> IO ()
@@ -31,10 +33,13 @@ dealWithAFile fn progress = do
     (\e -> putStrLn ("Error in printing, " ++ show (e::SomeException)))
 
 
-main :: IO ()
-main = do
-  setNumCapabilities 3
-  fns <- getArgs
+doTask :: [Flag] -> IO ()
+doTask flags = do
+  let capabilities = case getFlag flags Capabilities of
+        Nothing -> 3
+        Just (Capabilities (IntParam i)) -> i
+  setNumCapabilities capabilities
+  let fns =  map (\(FileName f) -> f) $ getAllFlags flags FileName
   progress <- initializeProgVar fns
   ncap <- getNumCapabilities
   putStrLn $ "Running with " ++ show ncap ++ " capabilities."

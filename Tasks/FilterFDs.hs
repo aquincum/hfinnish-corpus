@@ -1,43 +1,49 @@
-module Main where
+module Tasks.FilterFDs (taskStem, taskStemFilter, taskClean, taskClassicFilter) where
 
-import qualified Data.Map as Map
-import System.IO
-import System.Environment
 import Control.Monad
-import Control.Exception
 import Hanalyze.FreqDist
 import Hanalyze.Vowels
-import Hanalyze.Process
 import Hanalyze.Progress
 import Hanalyze.Phoneme
 import Hanalyze.Pattern
 import Hanalyze.Omorfi
 import qualified Hanalyze.Token as T
-import Data.Char
-import Data.Maybe (isNothing, isJust, fromJust)
+import Data.Maybe (isNothing)
 import Data.Monoid
-import System.Console.GetOpt
 import System.FilePath.Posix
-import Control.Concurrent
+import Tasks.Task
 
 -- Option parsing:
 
-data Flag = Stem | Omorfi | Clean deriving (Show, Eq)
+data LocalTask = StemFilter | Stem | Clean | ClassicFilter deriving (Show, Eq)
 
-options :: [OptDescr Flag]
-options = [
-  Option ['s'] ["stem"] (NoArg Stem) "stem and filter corpus",
-  Option ['o'] ["omorfi"] (NoArg Omorfi) "only stem the corpus with Omorfi",
-  Option ['c'] ["clean"] (NoArg Clean) "only clean the corpus (don't stem)"
-  ]
-
-compileOptions :: [String] -> IO ([Flag], [String])
-compileOptions args = case getOpt Permute options args of
-  (o, n, []) -> return (o, n)
-  (_, _, errs) -> error $ "Option parsing error: " ++ concat errs ++
-                  "\n" ++ usageInfo "Usage: filter_fds [OPTION...] files" options
-
-
+taskStem :: Task
+taskStem = Task
+           (doTask Stem)
+           (Just FileName)
+           "stem"
+           "Stems the corpus. Can work on more files. Goes through all of the words, cleans them, finds stems, and outputs to files prefixed with filtered3_. Old filter_fds -o"
+  
+taskStemFilter :: Task
+taskStemFilter = Task
+           (doTask StemFilter)
+           (Just FileName)
+           "stemfilter"
+           "Stems the corpus and filters to CIC(C)A stems. Might be a bit deprecated. Can work on more files. Goes through all of the words, cleans them, finds stems, filters to CIC(C)A stems and outputs to files prefixed with filtered2_. Old filter_fds -s"
+  
+taskClean :: Task
+taskClean = Task
+           (doTask Clean)
+           (Just FileName)
+           "clean"
+           "Just cleans the corpus to have a clean token word forms freqdist. Can work on more files. Goes through all of the words, cleans them, finds stems, and outputs to files prefixed with cleaned_. Old filter_fds -c"
+  
+taskClassicFilter :: Task
+taskClassicFilter = Task
+           (doTask ClassicFilter)
+           (Just FileName)
+           "classicfilter"
+           "Deprecated. Simply cleans up and filters to CIC(C)A word forms. Does no stemming whatsoever. cleaned_. Old filter_fds (no flags)"
 
 
 -- |In my dissertation, I'll be looking at C[i,e,ie]C[a,ä] forms and more generally C[i,e,ie]CV forms.
@@ -50,7 +56,7 @@ compileOptions args = case getOpt Permute options args of
 relevantStem :: [Phoneme] -- ^token recursively folded left-to-right
                 -> [Phoneme] -- ^saved list of vowels so far
                 -> Bool  -- ^the return value
-relevantStem [] [v1,v2] = True
+relevantStem [] [_,_] = True
 relevantStem [] _ = False
 relevantStem (h:t) l
   | isNothing $ harmonyV $ head (phonemeName h) = relevantStem t l
@@ -76,12 +82,12 @@ stemFilterTokenRelevant t = filterTableByPattern  [StarF $ setBundle [fCons],
 cleanupWord :: Token -> Token
 cleanupWord = T.filter (`elem` "abcdefghijklmnopqrstuvwxyzäö")
 
-stemFDFile :: Flag -- ^Input flag -- Omorfi or Stem or Clean
+stemFDFile :: LocalTask -- ^Input flag -- Stem or StemFilter or Clean
               -> FilePath -- ^Input file
               -> IO ()
 stemFDFile fl fn = do
-  let saveprefix | fl == Stem = "filtered2_"
-                 | fl == Omorfi = "filtered3_"
+  let saveprefix | fl == StemFilter = "filtered2_"
+                 | fl == Stem = "filtered3_"
                  | fl == Clean = "cleaned_"
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
@@ -95,8 +101,8 @@ stemFDFile fl fn = do
                     DotF $ setBundle [fFront, minus fLow, minus fRounded],
                     Star
                    ] 
-  let cleaned' = if fl == Stem then filterTableByPattern relPattern cleaned else cleaned
-  when (fl == Stem) $ putStrLn $ "First filtering done, " ++ (show $ tSize cleaned') ++ " tokens."
+  let cleaned' = if fl == StemFilter then filterTableByPattern relPattern cleaned else cleaned
+  when (fl == StemFilter) $ putStrLn $ "First filtering done, " ++ (show $ tSize cleaned') ++ " tokens."
   om <- analyseFDOmorfi cleaned'
   putStrLn $ "Omorfi analysis done, " ++ (show $ tSize om) ++ " tokens."
   let noError = clearErrors om
@@ -117,26 +123,22 @@ stemFDFile fl fn = do
                       putStrLn $ "Verbs stemmed, " ++ (show $ length stemmedverbs) ++ " verbs."
                       let stemmed = takeStems stemmedverbs <> takeStems notverbs
                       putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."
-                      let filteredStemmed | fl == Stem = filterTable filterTokenRelevant stemmed
+                      let filteredStemmed | fl == StemFilter = filterTable filterTokenRelevant stemmed
                                           | otherwise = stemmed
-                      when (fl == Stem) $ putStrLn $ "Relevance determined, " ++ (show $ tSize filteredStemmed) ++ " tokens."
+                      when (fl == StemFilter) $ putStrLn $ "Relevance determined, " ++ (show $ tSize filteredStemmed) ++ " tokens."
                       saveTable filteredStemmed savefn
                      )
 
 
 
-main :: IO ()
-main = do
-  args <- getArgs
-  (flags, fns) <- compileOptions args
-  when (length fns < 1) (error "No files specified")
-  when (length flags > 1) (error "Choose either -s, -o or -c")
+doTask :: LocalTask -> [Flag] -> IO ()
+doTask lt flags = do
+  let fns =  map (\(FileName f) -> f) $ getAllFlags flags FileName
+  when (length fns < 1) (error "No files given.")
   progVar <- initializeProgVar fns
-  let filterAction | Stem `elem` flags = stemFDFile Stem
-                   | Omorfi `elem` flags = stemFDFile Omorfi
-                   | Clean `elem` flags = stemFDFile Clean
-                   | otherwise = filterFDFile filterTokenRelevant cleanupWord
-      runOneFile fn = do
+  let filterAction | lt == ClassicFilter = filterFDFile filterTokenRelevant cleanupWord
+                   | otherwise = stemFDFile lt
+  let runOneFile fn = do
         filterAction fn
         incrementProgVar progVar
         printWithProgVal printProgress progVar >>= putStrLn

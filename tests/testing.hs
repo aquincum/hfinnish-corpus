@@ -151,10 +151,10 @@ runWithDiff toRun output =
     (return False)
 
 testFilter :: IO Bool
-testFilter = runWithDiff "../dist/build/filter_fds/filter_fds freqdist_xaaa" "filtered_freqdist_xaaa"
+testFilter = runWithDiff "../dist/build/hanalyze/hanalyze classicfilter freqdist_xaaa" "filtered_freqdist_xaaa"
 
 testStemming :: IO Bool
-testStemming = runWithDiff "../dist/build/filter_fds/filter_fds -o test_corp" "filtered3_test_corp"
+testStemming = runWithDiff "../dist/build/hanalyze/hanalyze stem test_corp" "filtered3_test_corp"
 
 testOmorfiPlain :: IO Bool
 testOmorfiPlain = do

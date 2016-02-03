@@ -62,7 +62,8 @@ generateOptions =
                       Option ['u'] ["uclaoutput"] (NoArg (UCLAOutput (BoolParam True))) "If present, the output will be UCLAPL usable",
                       Option ['h'] ["help"] (NoArg (TaskFlag helpTask)) "Display help",
                       Option [] ["samplenone"] (ReqArg (SampleNone . readIntParam) "n") "Required for samplewugs: how many no-patterns to sample.",
-                      Option [] ["samplepatt"] (ReqArg (SamplePatt . readIntParam) "n") "Required for samplewugs: how many sample patterns to sample."
+                      Option [] ["samplepatt"] (ReqArg (SamplePatt . readIntParam) "n") "Required for samplewugs: how many sample patterns to sample.",
+                      Option ['t'] ["filetype"] (ReqArg (FileType . readFFileType) "TYPE") "The type of the freqdist to read in. Default is a plain FreqDist."
                      ]
     taskStr = "which task to do."
     taskOption = Option ['t'] [] (ReqArg getTaskFlag "TASK") taskStr

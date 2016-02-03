@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                hanalyze
-version:             0.1.0.1
+version:             0.1.0.2
 synopsis:            Haskell-based corpus analysis tools.
 description:         Haskell-based corpus analysis tools. The main goal is to analyze a raw webcorpus that can be used for my dissertation. It is therefore mainly a learning tool so far.
 homepage:            https://github.com/aquincum/hfinnish-corpus

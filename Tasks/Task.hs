@@ -47,6 +47,12 @@ instance Monoid BoolParam where
   mempty = BoolParam False
   mappend (BoolParam b1) (BoolParam b2) = BoolParam $ b1 && b2
 
+
+data FFileType = FFreqDist | FSummaryTable deriving (Show, Eq)
+instance Monoid FFileType where
+  mempty = FFreqDist
+  mappend _ _ = FFreqDist
+
 data Flag = TaskFlag Task
           | MaxN IntParam
           | Capabilities IntParam
@@ -55,6 +61,7 @@ data Flag = TaskFlag Task
           | UCLAOutput BoolParam
           | FileName FilePath
           | FPattern [Pattern]
+          | FileType FFileType
           | FlagNoop
             deriving (Show, Eq)
 
@@ -79,7 +86,7 @@ showConstructorNamePlain c = showConstructorName $ c mempty
 -- to my ugly 'showConstructorNamePlain' trick.
 --
 -- >>> getFlag flags MaxN
--- 5
+-- Just (MaxN 5)
 getFlag :: (Show a, Monoid a) => [Flag] -> (a -> Flag) -> Maybe Flag
 getFlag [] _ = Nothing
 getFlag (f:fs) constr = if showConstructorName f == showConstructorNamePlain constr
@@ -109,3 +116,9 @@ readFPattern :: String -> [Pattern]
 readFPattern s = case readPattern finnishInventory (T.pack s) of
   Nothing -> []
   Just p -> p
+
+-- |Reader for file type. Anything but @summarytable@ will result in 'FFreqDist'.
+readFFileType :: String -> FFileType
+readFFileType s = case s of
+  "summarytable" -> FSummaryTable
+  _ -> FFreqDist

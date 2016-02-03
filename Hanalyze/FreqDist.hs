@@ -1,4 +1,4 @@
-{-# LANGUAGE BangPatterns, MultiParamTypeClasses, FlexibleInstances, FunctionalDependencies  #-}
+{-# LANGUAGE BangPatterns, MultiParamTypeClasses, FlexibleInstances, FunctionalDependencies, TypeFamilies #-}
 -- |The module for importing corpora into frequency distributions.
 module Hanalyze.FreqDist
        (
@@ -15,6 +15,9 @@ module Hanalyze.FreqDist
          -- ** Specifically for raw FreqDists
          countFreqs, readCountFreqs, multiReadCountFreqs,
          readFreqDist,
+
+         -- ** Other specific writers and readers
+         readSummaryTable,
 
          -- * Manipulating FreqDists
          -- ** Generalized for Tables
@@ -154,6 +157,17 @@ instance Table SummaryTable (Freq, Freq) where
   tGetMap = getSTMap
   tPrintfun _ (mkey, mval) = mconcat [mkey, T.pack "\t", T.pack $ show $ fst mval, T.pack "\t", T.pack $ show $ snd mval]
 
+instance Monoid SummaryTable where
+  mempty = sdEmpty
+  -- |Appending two 'FreqDist's by adding up the values in keys
+  mappend !left !right =
+    let innermap =
+          Map.unionWith (\(a,b) (c,d) -> (a+c, b+d))
+                        (left `seq` getSTMap left)
+                        (right `seq` getSTMap right)
+    in SummaryTable innermap
+
+
 {-
 data AnyTable = AnyTable {getATMap :: Map.Map Token [Float]} deriving (Eq, Show)
 
@@ -243,6 +257,39 @@ readFreqDist fp = do
       fd = FreqDist $  Map.map readFrequency stringmap
   putStrLn $ "Loading " ++ fp
   return fd
+
+
+-- |Reads a SummaryTable. There is a good need to generalize this, I don't quite yet know how,
+-- I'm running into problems.
+readSummaryTable :: FilePath -> IO SummaryTable
+readSummaryTable fp = do
+  ls <- fmap BUTF8.lines (MMap.mmapFileByteString fp Nothing)
+--  ls <- MMap.unsafeMMapFile fp)
+--  ls <- B.readFile fp)
+  let pairs =  map readSTLine ls
+      pairsconverted = map (id *** (readFrequency *** readFrequency)) pairs
+      stringmap =  Map.fromList pairsconverted
+      fd = tConstruct tEmpty stringmap
+  putStrLn $ "Loading " ++ fp
+  return fd
+ where
+   readSTLine :: BUTF8.ByteString -> (Token, (Token, Token))
+   readSTLine line =
+     let (w1, s2) = BUTF8.break (== '\t') line
+         (w2, w3) = BUTF8.break (== '\t') s2
+         txt2 =
+           case T.decodeFromUTF $
+                BUTF8.drop 1 w2 of
+             Left err -> T.pack "0"
+             Right x -> x
+         txt3 =
+           case T.decodeFromUTF $
+                BUTF8.drop 1 w3 of
+             Left err -> T.pack "0"
+             Right x -> x
+     in case T.decodeFromUTF w1 of
+       Left err -> (T.pack "UnicodeError", (txt2, txt3))
+       Right txt1 -> (txt1, (txt2, txt3))
 
 
 -- |Generic 'Table' writer.

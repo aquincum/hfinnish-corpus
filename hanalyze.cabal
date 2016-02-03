@@ -24,7 +24,8 @@ library
                      Hanalyze.Process, Hanalyze.Progress,
                      Hanalyze.Token, Hanalyze.Phoneme,
                      Hanalyze.Pattern, Hanalyze.Omorfi,
-                     Hanalyze.Chisq, Hanalyze.ToUCLAP
+                     Hanalyze.Chisq, Hanalyze.ToUCLAP,
+                     Tasks.Tasks, Tasks.Task
   cpp-options:         -DCABAL_INSTALL
   build-depends:       base >=4.6,
                        containers, 

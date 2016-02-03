@@ -5,31 +5,31 @@
 
 module Main where
 
-import System.IO
-import Control.Exception
-import System.Environment
+import           System.IO
+import           Control.Exception
+import           System.Environment
 import qualified Data.Map as Map
-import Hanalyze.FreqDist
-import Hanalyze.Vowels
-import Hanalyze.Pattern
-import Hanalyze.Phoneme
-import Hanalyze.Omorfi
-import Hanalyze.Chisq
-import Control.Monad
-import Data.Monoid
-import Data.Maybe
-import Data.List (intersperse)
-import Text.Printf
-import Data.Random
-import Data.Random.Source.DevRandom
+import           Hanalyze.FreqDist
+import           Hanalyze.Vowels
+import           Hanalyze.Pattern
+import           Hanalyze.Phoneme
+import           Hanalyze.Omorfi
+import           Hanalyze.Chisq
+import           Control.Monad
+import           Data.Monoid
+import           Data.Maybe
+import           Data.List (intersperse)
+import           Text.Printf
+import           Data.Random
+import           Data.Random.Source.DevRandom
 -- import Data.Data
-import qualified Hanalyze.Token as T
-import System.Console.GetOpt
-import Hanalyze.ToUCLAP
+import           Control.Monad.Writer
 import qualified Data.Text as Txt
 import qualified Data.Text.IO as TIO
-import Control.Monad.Writer
-import Tasks.Options
+import           Hanalyze.ToUCLAP
+import qualified Hanalyze.Token as T
+import           System.Console.GetOpt
+import           Tasks.Options
 
 sectionHeader :: String -> IO ()
 sectionHeader s = putStrLn s >> putStrLn "========"

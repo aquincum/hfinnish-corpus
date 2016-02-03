@@ -3,32 +3,30 @@
 
 module Tasks.Tasks where
 
-import           Data.Monoid
-import           Hanalyze.Pattern
-import           Hanalyze.Phoneme
-import qualified Hanalyze.Token as T
+import           Data.Maybe
 import           System.Console.GetOpt
-import           System.Exit
+import qualified Tasks.GenerateFromPattern
+import qualified Tasks.Sublexical
 import           Tasks.Task
 import qualified Tasks.UCLAPL
+import qualified Tasks.Wugs
 
+-- |The available tasks for 'hanalyze', the executable.
 tasks :: [Task]
 tasks = [ noTask,
           helpTask,
-          Tasks.UCLAPL.task
+          Tasks.GenerateFromPattern.task,
+          Tasks.Sublexical.task,
+          Tasks.UCLAPL.task,
+          Tasks.Wugs.task
         ]
 
-
+-- |A task that just prints out usage.
 helpTask :: Task
-helpTask = Task (\_ -> putStrLn printUsage) "help" "This task only prints out the usage info of the program"
+helpTask = Task (\_ -> putStrLn printUsage) Nothing "help" "This task only prints out the usage info of the program"
 
 
-readFPattern :: String -> [Pattern]
-readFPattern s = case readPattern finnishInventory (T.pack s) of
-  Nothing -> []
-  Just p -> p
-
-
+-- |The options list needed by GetOpt
 generateOptions :: [OptDescr Flag]
 generateOptions =
   let
@@ -48,28 +46,35 @@ generateOptions =
 
 
 
-
+-- |Compiles the arguments to flags
 compileOptions :: [String] -> IO ([Flag])
 compileOptions args = case getOpt Permute generateOptions args of
   (o, n, []) | length n == 0 && (taskflag o) == Nothing -> myerror ["No task specified!"]
              | length n == 0 -> return o
-             | taskflag o == Nothing -> return $ (getTaskFlag (head n)):(attachfiles o (tail n))
-             | otherwise -> return $ attachfiles o n
+             | taskflag o == Nothing -> return $ (taskInN n):(attachfiles o (tail n) (taskInN n))
+             | otherwise -> return $ attachfiles o n (fromJust $ taskflag o)
   (_, _, errs) -> myerror errs
   where
-    attachfiles :: [Flag] -> [String] -> [Flag]
-    attachfiles fs [] = fs
-    attachfiles fs (h:t) = FileName h:(attachfiles fs t)
+    taskInN n = getTaskFlag (head n)
+    attachfiles :: [Flag] -> [String] -> Flag -> [Flag]
+    attachfiles fs [] _ = fs
+    attachfiles fs (h:t) tf = (toInsert h tf):(attachfiles fs t tf)
+    toInsert :: String -> Flag -> Flag
+    toInsert s (TaskFlag t) = case parseUnflaggedOption t of
+      Nothing -> FlagNoop
+      Just f -> f s
     taskflag o = getFlag o (TaskFlag)
     myerror errs = error $ "Option parsing error: " ++ concat errs ++
       "\n--------------------------------------\n\n" ++ printUsage
 
+-- |The usage screen
 printUsage :: String
 printUsage = usageInfo "Usage: hanalyze [TASK] [OPTIONS...] [FILE]" generateOptions ++ "\n\nAvailable tasks:\n" ++ concatMap printTask tasks
   where
-    printTask t = taskFlagString t ++ ":\t" ++ descriptionString t ++ "\n"
+    printTask t = taskFlagString t ++ ":\t" ++ descriptionString t ++ "\n\n"
 
-
+-- |Getter for a task: returns 'TaskFlag' x where x is the task. If there is
+-- no match, returns the 'helpTask'.
 getTaskFlag :: String -> Flag
 getTaskFlag s =
   let matched = filter (\t -> taskFlagString t == s) tasks

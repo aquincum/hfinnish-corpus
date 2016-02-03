@@ -29,192 +29,7 @@ import Hanalyze.ToUCLAP
 import qualified Data.Text as Txt
 import qualified Data.Text.IO as TIO
 import Control.Monad.Writer
-
-
-
--- |Flag for tasks to run with the executable
-data Task = AnalyzeFile -- ^do the big analysis
-          | AnalyzeInventory -- ^analyze the phonemic inventory: display relevant natural classes
-          | Anderson -- ^Do the Anderson (1980) replication
-          | GetLexStats -- ^Get the lexical statistics for the wug study
-          | SplitFD -- ^Split a frequency distribution file to frontneutral and backneutral stems
-          | SplitCut -- ^Do the 'SplitFD' task and cut the words until the last segment before the 2nd vowel
-          | UCLAPL -- ^Produce input files for the UCLA Phonotactic Learner
-          | Sublexical -- ^Produce input files for Becker's sublexical analyzer
-          | Wugs -- ^Create wugs in CIC(C)A shape
-          | SampleWugs -- ^Sample wugs from the UCLAPL output
-          | GenerateExamplesForGrammar -- ^Generate examples for each constraint
-            -- in an UCLAPL output grammar.txt
-          | GenerateFromPatt -- ^Generate from dot pattern.
-          | HarmSummary -- ^Summarize lex stats
-          | Help -- ^Print out the help
-          deriving (Show, Eq)
-
-data Flag = Task Task
-          | MaxN Int
-          | SampleNone Int
-          | SamplePatt Int
-          | UCLAOutput Bool
-          | FileName FilePath
-          | FPattern [Pattern]
-            deriving (Show, Eq)
-
-readFPattern :: String -> [Pattern]
-readFPattern s = case readPattern finnishInventory (T.pack s) of
-  Nothing -> []
-  Just p -> p
-
-options :: [OptDescr Flag]
-options = [
-  Option ['t'] ["task"] (ReqArg optGetTask "task") "which task to do (analyzefile [default], analyzeinventory, anderson, getlexstats, split, splitcut, uclapl, sublexical, wugs, samplewugs, generateexamplesforgrammar, generatefrompatt, harmsummary)",
-  Option ['n'] [] (ReqArg (MaxN . read) "n") "Maximum n of features in a bundle for the analyzeinventory task",
-  Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze for the analyzefile and the anderson task",
-  Option ['p'] ["pattern"] (ReqArg (FPattern . readFPattern) "PATTERN") "Pattern to generate from. If task is generatefrompatt, it is required, but can be specified just plainly without -p",
-  Option ['i'] ["inventory"] (NoArg (Task AnalyzeInventory)) "Shortcut for -t analyzeinventory",
-  Option ['u'] ["uclaoutput"] (NoArg (UCLAOutput True)) "Display help",
-  Option ['h'] ["help"] (NoArg (Task Help)) "Display help",
-  Option [] ["samplenone"] (ReqArg (SampleNone . read) "n") "Required for samplewugs: how many no-patterns to sample.",
-  Option [] ["samplepatt"] (ReqArg (SamplePatt . read) "n") "Required for samplewugs: how many sample patterns to sample."
-  ]
-
-optGetTask :: String -> Flag
-optGetTask s = case s of
-  "analyzeinventory" -> Task AnalyzeInventory
-  "anderson" -> Task Anderson
-  "getlexstats" -> Task GetLexStats
-  "split" -> Task SplitFD
-  "splitcut" -> Task SplitCut
-  "uclapl" -> Task UCLAPL
-  "sublexical" -> Task Sublexical
-  "wugs" -> Task Wugs
-  "samplewugs" -> Task SampleWugs
-  "generateexamplesforgrammar" -> Task GenerateExamplesForGrammar
-  "generatefrompatt" -> Task GenerateFromPatt
-  "harmsummary" -> Task HarmSummary
-  "help" -> Task Help
-  _ -> Task AnalyzeFile
-
-compileOptions :: [String] -> IO ([Flag])
-compileOptions args = case getOpt Permute options args of
-  (o, n, []) -> do
-    let hasMaxn  = any (\fl -> case fl of
-                           MaxN _ -> True
-                           _ -> False) o
-        hasFn = any (\fl -> case fl of
-                           FileName _ -> True
-                           _ -> False) o
-        hasPt = any (\fl -> case fl of
-                        FPattern _ -> True
-                        _ -> False) o
-        hasTi = (Task AnalyzeInventory) `elem` o
-        hasTf = (Task AnalyzeFile) `elem` o
-        hasTa = (Task Anderson) `elem` o
-        hasGl = (Task GetLexStats) `elem` o
-        hasSp = (Task SplitFD) `elem` o
-        hasSc = (Task SplitCut) `elem` o
-        hasUC = (Task UCLAPL) `elem` o
-        hasSl = (Task Sublexical) `elem` o
-        hasWu = (Task Wugs) `elem` o
-        hasSw = (Task SampleWugs) `elem` o
-        hasGxfg = (Task GenerateExamplesForGrammar) `elem` o
-        hasGfp = (Task GenerateFromPatt) `elem` o
-        hasHarm = (Task HarmSummary) `elem` o
-        hasHl = (Task Help) `elem` o
-    when (hasHl) (error $ usageInfo "Usage: hanalyze1 [OPTIONS...] [FILE]" options)
-    when (hasMaxn && hasFn) (myError ["both maxn and filename, can't deduce task"])
-    when (hasMaxn && hasTa) (myError ["both maxn and anderson, ambiguous task"])
-    when (hasFn && hasTi) (myError ["both filename and analyzeinventory, ambiguous task"])
-
-    let retval | hasMaxn && not hasTi && not hasTf && not hasTa = Task AnalyzeFile:o
-               | hasSp || hasSc || hasUC || hasSl || hasWu || hasSw || hasGl || hasGxfg || hasHarm = o
-               | hasGfp && (UCLAOutput True) `elem` o = o
-               | hasGfp && not ((UCLAOutput True) `elem` o) = UCLAOutput False:o
-               | not hasMaxn && hasTi = MaxN 2:o
-               | not hasMaxn && not hasTa && not hasTi && not hasTf = Task AnalyzeFile:MaxN 2:o
-               | not hasMaxn && not hasTa && not hasTi && hasTf = MaxN 2:o
-               | otherwise = o
-
-        needsFile =    (Task AnalyzeFile) `elem` retval
-                    || (Task Anderson) `elem` retval
-                    || (Task GetLexStats) `elem` retval
-                    || (Task SplitFD) `elem` retval
-                    || (Task SplitCut) `elem` retval
-                    || (Task UCLAPL) `elem` retval
-                    || (Task Sublexical) `elem` retval
-                    || (Task SampleWugs) `elem` retval
-                    || (Task GenerateExamplesForGrammar) `elem` retval
-                    || (Task HarmSummary) `elem` retval
-
-        needsPattern = (Task GenerateFromPatt) `elem` retval
-    
-        retval' | needsFile && not hasFn && not (null n) = FileName (head n):retval
-                | needsFile && not hasFn && null n = myError ["no FILE given either with -n or otherwise"]
-                | needsPattern && not hasPt && not (null n) = FPattern (readFPattern $ head n):retval
-                | needsPattern && not hasPt && null n = myError ["no PATTERN given either with -p or otherwise"]
-                | otherwise = retval
-    when (Task SampleWugs `elem` retval) $ do
-      let hasNone = any (\fl -> case fl of
-                          SampleNone _ -> True
-                          _ -> False) retval'
-      let hasPatt = any (\fl -> case fl of
-                          SamplePatt _ -> True
-                          _ -> False) retval'
-      when (not hasNone && not hasPatt) (myError ["For a samplewugs task, give the number of samples to generate for no-patterns and patterns explicitly"])
-
-    return retval'
-  (_, _, errs) -> myError errs
- where
-  myError errs = error $ "Option parsing error: " ++ concat errs ++
-                  "\n" ++ usageInfo "Usage: hanalyze1 [OPTIONS...] [FILE]" options
-
-flagGetMaxn :: [Flag] -> Int
-flagGetMaxn [] = error "No maxn in flags"
-flagGetMaxn (h:f) = case h of
-  MaxN x -> x
-  _ -> flagGetMaxn f
-
-flagGetFn :: [Flag] -> String
-flagGetFn [] = error "No filename in flags"
-flagGetFn (h:f) = case h of
-  FileName x -> x
-  _ -> flagGetFn f
-
-flagGetSampleNone :: [Flag] -> Int
-flagGetSampleNone [] = error "No sample none in flags"
-flagGetSampleNone (h:f) = case h of
-  SampleNone x -> x
-  _ -> flagGetSampleNone f
-
-flagGetSamplePatt :: [Flag] -> Int
-flagGetSamplePatt [] = error "No sample patt in flags"
-flagGetSamplePatt (h:f) = case h of
-  SamplePatt x -> x
-  _ -> flagGetSamplePatt f
-
-flagGetPattern :: [Flag] -> [Pattern]
-flagGetPattern [] = error "No pattern in flags"
-flagGetPattern (h:f) = case h of
-  FPattern x -> x
-  _ -> flagGetPattern f
-
-flagGetUCLAOutput :: [Flag] -> Bool
-flagGetUCLAOutput [] = error "No UCLA output flag in flags"
-flagGetUCLAOutput (h:f) = case h of
-  UCLAOutput x -> x
-  _ -> flagGetUCLAOutput f
-
-{- too complicated
-flagGet :: [Flag] -> String -> Flag
-flagGet flags s = case readConstr (dataTypeOf (MaxN 4)) s of
-  Nothing -> error $ "No such flag as " ++ s
-  Just f -> go flags f
- where
-   go [] _ = error $ "No " ++ s ++ " in flags"
-   go (h:f) c = if toConstr h == c
-                then h
-                else go f c
--}
-
+import Tasks.Options
 
 sectionHeader :: String -> IO ()
 sectionHeader s = putStrLn s >> putStrLn "========"
@@ -362,11 +177,11 @@ main = do
   args <- getArgs
   flags <- compileOptions args
 
-  when ((Task SplitFD) `elem` flags || (Task SplitCut) `elem` flags) $ do 
+  when ((TaskFlag SplitFD) `elem` flags || (TaskFlag SplitCut) `elem` flags) $ do 
     fd <- readFreqDist $ flagGetFn flags
     let front = filterTable (\t -> harmonicity t == FrontNeutral) fd
         back = filterTable (\t -> harmonicity t == BackNeutral) fd
-    when ((Task SplitCut) `elem` flags) $ do
+    when ((TaskFlag SplitCut) `elem` flags) $ do
       let patt = case readPattern finnishInventory "{+consonantal}*{-consonantal}.{-consonantal}*{+consonantal}*" of
             Nothing -> error "readpattern"
             Just p -> p
@@ -379,23 +194,23 @@ main = do
       let back' = tMap takeUntil2ndV back
       saveTable front' (flagGetFn flags ++ "_front_cut")
       saveTable back' (flagGetFn flags ++ "_back_cut")
-    when ((Task SplitFD) `elem` flags) $ do
+    when ((TaskFlag SplitFD) `elem` flags) $ do
       saveTable front (flagGetFn flags ++ "_front")
       saveTable back (flagGetFn flags ++ "_back")
 
-  when ((Task UCLAPL) `elem` flags) $ do
+  when ((TaskFlag UCLAPL) `elem` flags) $ do
     let infn = flagGetFn flags
     convertFeaturesFile finnishInventoryWithEdges "Features.txt"
     convertCorpusFile finnishInventory infn "Training.txt"
     --createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
 
-  when ((Task Sublexical) `elem` flags) $ do
+  when ((TaskFlag Sublexical) `elem` flags) $ do
     let infn = flagGetFn flags
     --    createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
     convertCorpusFileSublexical finnishInventory infn "sublex-training.txt"
 
 
-  when ((Task Wugs) `elem` flags) $ do
+  when ((TaskFlag Wugs) `elem` flags) $ do
     let wugs1 = generateCICAWugs1
     let wugs2 = generateCICAWugsCluster
     let wugs3 = generateCICAWugsHiatus
@@ -405,7 +220,7 @@ main = do
                                     mapM_ (T.hPutStrLn h . spellout) wugs3
                                     )
 
-  when ((Task GenerateFromPatt) `elem` flags) $ do
+  when ((TaskFlag GenerateFromPatt) `elem` flags) $ do
     let patt = flagGetPattern flags
     when (length patt == 0) (error "Illegal pattern.")
     when (not (isDotPattern patt)) (error "Not a dot pattern!")
@@ -420,7 +235,7 @@ main = do
       TIO.putStrLn corp
       when (not (probs == Txt.empty)) (putStrLn "Problems:\n" >> TIO.putStrLn probs)
 
-  when ((Task SampleWugs) `elem` flags) $ do
+  when ((TaskFlag SampleWugs) `elem` flags) $ do
     let infn = flagGetFn flags
     contents <- TIO.readFile infn
     putStrLn "File read."
@@ -455,7 +270,7 @@ main = do
       writeTable nonesSample h >>
       mapM_ (flip writeTable h) pattSample
   
-  when ((Task AnalyzeInventory) `elem` flags) $ do
+  when ((TaskFlag AnalyzeInventory) `elem` flags) $ do
     -- something different
     let relb = selectRelevantBundles finnishInventory (flagGetMaxn flags)
         phonemes = map (pickByFeature finnishInventory) relb
@@ -465,7 +280,7 @@ main = do
                      putStr ": " >>
                      mapM_ (\ph -> putStr (ph ++ " ")) (snd zline) >>
                      putStrLn "") outputzip
-  when ((Task Anderson) `elem` flags) $ do
+  when ((TaskFlag Anderson) `elem` flags) $ do
     --  fd <- liftM filterVowelFinals $ readFreqDist $ head args    fd <- readFreqDist $ head args
     fd <- readFreqDist $ flagGetFn flags
     summarySection fd
@@ -484,14 +299,14 @@ main = do
     summarizeAnderson $ filterByValTable (> 100) fd
     --  saveTable fd' a"test.out"
     return ()
-  when ((Task HarmSummary) `elem` flags) $ do
+  when ((TaskFlag HarmSummary) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags
     let doSegment wd = case segment finnishInventory wd of
           Nothing -> []
           Just s -> s
         summary = summarizeFD (abbreviateBFNs . wordHarmonies . doSegment) fd
     writeTable summary stdout
-  when ((Task GetLexStats) `elem` flags) $ do
+  when ((TaskFlag GetLexStats) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags -- you want filtered3_all here, the whole corpus
     let pattern = fromJust $ readPattern finnishInventory "{+consonantal}*[i,ii,ie,e,ei,ee]{+consonantal}*[a,ä,aa,ää]{+consonantal}*"
         vfinals = filterTableByPattern pattern fd
@@ -526,7 +341,7 @@ main = do
     withFile "lexstats-pattern.txt" WriteMode (\h ->
                                                 mapM (\a -> printPatternAfd patternannotated a h) ["","1","2","3","4","5"])
     return ()
-  when ((Task AnalyzeFile) `elem` flags) $ do
+  when ((TaskFlag AnalyzeFile) `elem` flags) $ do
     fd <- readFreqDist $ flagGetFn flags
     summarySection fd
     -- get relevant bundles for vowels
@@ -536,7 +351,7 @@ main = do
         patternGenerator fb = [StarF consonant, DotF fb, StarF consonant, StarF vowel]
         patterns = map patternGenerator vowelRelevants
     mapM_ (summarizeByPattern fd' finnishInventory) patterns
-  when ((Task GenerateExamplesForGrammar) `elem` flags) $ do
+  when ((TaskFlag GenerateExamplesForGrammar) `elem` flags) $ do
     txt <- TIO.readFile $ flagGetFn flags
     let uclagr = readUCLAPLGrammar txt (flagGetFn flags)
     let patts = map generateExamples uclagr

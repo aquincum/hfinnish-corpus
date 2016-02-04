@@ -56,6 +56,20 @@ prop_monoid_iii x y z = mappend x (mappend y z) == mappend (mappend x y) z
 prop_monoid_iv :: [FreqDist] -> Bool
 prop_monoid_iv fds = mconcat fds == foldr mappend mempty fds
 
+ministTest :: IO Bool
+ministTest =
+  let
+    st1 = SummaryTable $ Map.fromList [("alma", (5,1)), ("korte", (3,6))]
+    st2 = SummaryTable $ Map.fromList [("alma", (2,3)), ("korte", (7,4))]
+    summ = st1 <> st2
+    smap = tGetMap summ
+  in
+   huTest[
+     "summary table additions" ~: do
+        Map.lookup ("alma") smap == Just (7,4) @? "alma addition"
+        Map.lookup ("korte") smap == Just (10,10) @? "korte addition"
+
+        ]
 
 testLoading ::  IO Bool
 testLoading = do
@@ -422,6 +436,7 @@ main = do
   myCheck "Monoid law III: " prop_monoid_iii
   myCheck "Monoid law IV: " prop_monoid_iv
 --  myCheck "ffi" prop_ffi
+  ministTest >>= flip unless (giveUp "ministTest")
   testChisq  >>= flip unless (giveUp "chiSq")
   testLoading >>= flip unless (giveUp "testLoading")
   -- doesn't work because laziness :/ writing does not start before reading

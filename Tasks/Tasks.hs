@@ -14,6 +14,7 @@ import qualified Tasks.GenerateFromPattern
 import qualified Tasks.HarmSummary
 import qualified Tasks.MergeFDs
 import qualified Tasks.SampleWugs
+import qualified Tasks.SplitByPercentiles
 import qualified Tasks.SplitFrontBack
 import qualified Tasks.Sublexical
 import qualified Tasks.Summaries
@@ -37,6 +38,7 @@ tasks = [ noTask,
           Tasks.HarmSummary.task,
           Tasks.MergeFDs.task,
           Tasks.SampleWugs.task,
+          Tasks.SplitByPercentiles.task,
           Tasks.SplitFrontBack.taskfb,
           Tasks.SplitFrontBack.taskcut,
           Tasks.Sublexical.task,
@@ -55,7 +57,7 @@ helpTask = Task (\_ -> putStrLn printUsage) Nothing "help" "This task only print
 generateOptions :: [OptDescr Flag]
 generateOptions =
   let
-    nonTaskOptions = [Option ['n'] [] (ReqArg (MaxN . readIntParam) "n") "Maximum n of features in a bundle for the analyzeinventory task",
+    nonTaskOptions = [Option ['n'] [] (ReqArg (MaxN . readIntParam) "n") "Maximum n of features in a bundle for the analyzeinventory task / Number of bins in the splitbypercentiles task.",
                       Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze",
                       Option [] ["capabilities"] (ReqArg (Capabilities . readIntParam) "n") "The number of capabilities = CPU cores to use in tasks that use this feature.",
                       Option ['p'] ["pattern"] (ReqArg (FPattern . readFPattern) "PATTERN") "Pattern to generate from. If task is generatefrompatt, it is required, but can be specified just plainly without -p",

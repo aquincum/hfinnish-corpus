@@ -27,12 +27,12 @@ doTask flags = do
   fd <- readFreqDist infn
   summarySection fd
   -- get relevant bundles for vowels
-  let vowels = filterInventoryByBundle finnishInventory vowel
+  let vowels = filterInventoryByBundle (theInventory flags) vowel
       vowelRelevants = selectRelevantBundles vowels maxn
-      fd' = filterTable (filterToken finnishInventory [StarF consonant, DotF vowel, StarF consonant, StarF vowel]) fd
+      fd' = filterTable (filterToken (theInventory flags) [StarF consonant, DotF vowel, StarF consonant, StarF vowel]) fd
       patternGenerator fb = [StarF consonant, DotF fb, StarF consonant, StarF vowel]
       patterns = map patternGenerator vowelRelevants
-  mapM_ (summarizeByPattern fd' finnishInventory) patterns
+  mapM_ (summarizeByPattern fd' (theInventory flags)) patterns
 
 summarizeByPattern :: FreqDist -> PhonemicInventory -> [Pattern] -> IO AnnotatedFreqDist
 summarizeByPattern fd inv patt = do

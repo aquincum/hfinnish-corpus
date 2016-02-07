@@ -40,9 +40,9 @@ harmonyV c
 -- |Determines the harmony value of a vowel /phoneme/
 harmonyVP :: Phoneme -> Maybe HarmonyV
 harmonyVP p  
-  | c `elem` ["a","aa","o","oo","u","uu"] = Just Back
-  | c `elem` ["e","ee","i","ii","ei","ie"] = Just Neutral
-  | c `elem` ["ä", "ää", "ö", "öö", "y", "yy"] = Just Front
+  | c `elem` ["a","aa","o","oo","u","uu", "ai", "oi", "ui", "au", "ou", "uo"] = Just Back
+  | c `elem` ["e","ee","i","ii","ei","ie", "eu", "iu", "ey", "iy"] = Just Neutral -- ey, iy??? Not that frequent anyway. But should check out. ISK: they don't show up in 1st syllable anyway, except for leyh-
+  | c `elem` ["ä", "ää", "ö", "öö", "y", "yy", "äi", "öi", "yi", "äy", "öy", "yö"] = Just Front
   | otherwise = Nothing
  where
    c = phonemeName p
@@ -116,6 +116,22 @@ suffixIt w = if w `elem` [AllFront, FrontNeutral, AllNeutral] then FrontSuffixes
 digraph :: String -> Bool
 digraph "ie" = True
 digraph "ei" = True
+digraph "ai" = True
+digraph "oi" = True
+digraph "ui" = True
+digraph "öi" = True
+digraph "yi" = True
+digraph "äi" = True
+digraph "au" = True
+digraph "ou" = True
+digraph "iu" = True
+digraph "eu" = True
+digraph "ey" = True
+digraph "iy" = True
+digraph "öy" = True
+digraph "äy" = True
+digraph "uo" = True
+digraph "yö" = True
 digraph [x,y] = x==y
 digraph _ = False
 {-

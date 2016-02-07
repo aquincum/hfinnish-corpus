@@ -16,6 +16,6 @@ doTask :: [Flag] -> IO ()
 doTask flags = do
   let minfn = getFlag flags FileName
   infn <- dieIfNoFN minfn
-  convertFeaturesFile finnishInventoryWithEdges "Features.txt"
-  convertCorpusFile finnishInventory infn "Training.txt"
-  --createNatClassFile finnishInventoryWithEdges "NatClassesFile.txt"
+  convertFeaturesFile (addEdgeToInventory (theInventory flags)) "Features.txt"
+  convertCorpusFile (theInventory flags) infn "Training.txt"
+  --createNatClassFile (addEdgeToInventory (theInventory flags)) "NatClassesFile.txt"

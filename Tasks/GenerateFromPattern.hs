@@ -27,14 +27,14 @@ doTask flags = do
         Just (FPattern p) -> p
   when (length patt == 0) (error "Illegal pattern.")
   when (not (isDotPattern patt)) (error "Not a dot pattern!")
-  let phs = case generatePattern finnishInventory patt of
+  let phs = case generatePattern (theInventory flags) patt of
         Nothing -> []
         Just phons -> phons
       words = map spellout phs
   case getFlag flags UCLAOutput of
     Just (UCLAOutput (BoolParam True)) -> do
       let fd = tFromList (zip words (replicate (length words) 1))
-          (corp, probs) = runWriter $ convertCorpus finnishInventory fd
+          (corp, probs) = runWriter $ convertCorpus (theInventory flags) fd
       TIO.putStrLn corp
       when (not (probs == Txt.empty)) (putStrLn "Problems:\n" >> TIO.putStrLn probs)
     _ -> mapM_ (T.hPutStrLn stdout) words

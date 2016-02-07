@@ -16,8 +16,8 @@ doTask flags = do
   let maxn = case getFlag flags MaxN of
         Nothing -> 2 -- default is 2
         Just (MaxN (IntParam n)) -> n
-  let relb = selectRelevantBundles finnishInventory maxn
-      phonemes = map (pickByFeature finnishInventory) relb
+  let relb = selectRelevantBundles (theInventory flags) maxn
+      phonemes = map (pickByFeature (theInventory flags)) relb
       phnames = (map . map) phonemeName phonemes
       outputzip = zip relb phnames
   mapM_ (\zline -> putStr (show $ fst zline) >>

@@ -15,5 +15,5 @@ doTask :: [Flag] -> IO ()
 doTask flags = do
   let minfn = getFlag flags FileName
   infn <- dieIfNoFN minfn
-  convertCorpusFileSublexical finnishInventory infn "sublex-training.txt"
+  convertCorpusFileSublexical (theInventory flags) infn "sublex-training.txt"
 

@@ -65,8 +65,8 @@ relevantStem (h:t) [v1] = (phonemeName h `elem` ["a","aa","ä","ää"]) && relev
 relevantStem (h:t) [] = (phonemeName h `elem` ["e","i","ee","ii","ei","ie"]) && relevantStem t [h]
 
 -- |Filter a token based on relevance 
-filterTokenRelevant :: Token ->  Bool
-filterTokenRelevant t = case segment finnishInventory t of
+filterTokenRelevant :: PhonemicInventory -> Token -> Bool
+filterTokenRelevant inv t = case segment inv t of
   Nothing -> False
   Just x -> relevantStem x []
 
@@ -82,10 +82,11 @@ stemFilterTokenRelevant t = filterTableByPattern  [StarF $ setBundle [fCons],
 cleanupWord :: Token -> Token
 cleanupWord = T.filter (`elem` "abcdefghijklmnopqrstuvwxyzäö")
 
-stemFDFile :: LocalTask -- ^Input flag -- Stem or StemFilter or Clean
+stemFDFile :: PhonemicInventory -- ^The inventory to work on
+              -> LocalTask -- ^Input flag -- Stem or StemFilter or Clean
               -> FilePath -- ^Input file
               -> IO ()
-stemFDFile fl fn = do
+stemFDFile inv fl fn = do
   let saveprefix | fl == StemFilter = "filtered2_"
                  | fl == Stem = "filtered3_"
                  | fl == Clean = "cleaned_"
@@ -123,7 +124,7 @@ stemFDFile fl fn = do
                       putStrLn $ "Verbs stemmed, " ++ (show $ length stemmedverbs) ++ " verbs."
                       let stemmed = takeStems stemmedverbs <> takeStems notverbs
                       putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."
-                      let filteredStemmed | fl == StemFilter = filterTable filterTokenRelevant stemmed
+                      let filteredStemmed | fl == StemFilter = filterTable (filterTokenRelevant inv) stemmed
                                           | otherwise = stemmed
                       when (fl == StemFilter) $ putStrLn $ "Relevance determined, " ++ (show $ tSize filteredStemmed) ++ " tokens."
                       saveTable filteredStemmed savefn
@@ -136,8 +137,8 @@ doTask lt flags = do
   let fns =  map (\(FileName f) -> f) $ getAllFlags flags FileName
   when (length fns < 1) (error "No files given.")
   progVar <- initializeProgVar fns
-  let filterAction | lt == ClassicFilter = filterFDFile filterTokenRelevant cleanupWord
-                   | otherwise = stemFDFile lt
+  let filterAction | lt == ClassicFilter = filterFDFile (filterTokenRelevant (theInventory flags)) cleanupWord
+                   | otherwise = stemFDFile (theInventory flags) lt
   let runOneFile fn = do
         filterAction fn
         incrementProgVar progVar

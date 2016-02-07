@@ -62,6 +62,7 @@ data Flag = TaskFlag Task
           | FileName FilePath
           | FPattern [Pattern]
           | FileType FFileType
+          | WithAllDiphthongs BoolParam
           | FlagNoop
             deriving (Show, Eq)
 
@@ -122,3 +123,9 @@ readFFileType :: String -> FFileType
 readFFileType s = case s of
   "summarytable" -> FSummaryTable
   _ -> FFreqDist
+
+-- |'finnishInventory' by default, 'finnishInventoryFullDiphthongs' if @-d@ is specified.
+theInventory :: [Flag] -> PhonemicInventory
+theInventory f = case getFlag f WithAllDiphthongs of
+  Nothing -> finnishInventory
+  Just (WithAllDiphthongs (BoolParam True)) -> finnishInventoryFullDiphthongs

@@ -29,16 +29,16 @@ doTask cut flags = do
   fd <- readFreqDist infn
   let front = filterTable (\t -> harmonicity t == FrontNeutral) fd
       back = filterTable (\t -> harmonicity t == BackNeutral) fd
-      (front', back') = if cut then cutFDs front back else (front, back)
+      (front', back') = if cut then cutFDs front back flags else (front, back)
   saveTable front' (infn ++ "_front" ++ if cut then "_cut" else "")
   saveTable back' (infn ++ "_back" ++ if cut then "_cut" else "")
 
-cutFDs :: FreqDist -> FreqDist -> (FreqDist, FreqDist)
-cutFDs front back =
-  let patt = case readPattern finnishInventory (T.pack "{+consonantal}*{-consonantal}.{-consonantal}*{+consonantal}*") of
+cutFDs :: FreqDist -> FreqDist -> [Flag] -> (FreqDist, FreqDist)
+cutFDs front back flags =
+  let patt = case readPattern (theInventory flags) (T.pack "{+consonantal}*{-consonantal}.{-consonantal}*{+consonantal}*") of
         Nothing -> error "readpattern"
         Just p -> p
-      takeUntil2ndV tok = case segment finnishInventory tok of
+      takeUntil2ndV tok = case segment (theInventory flags) tok of
         Nothing -> T.pack ""
         Just seg -> case matchWord seg patt of
           Nothing -> T.pack "no match"

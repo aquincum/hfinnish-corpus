@@ -171,8 +171,8 @@ convertCorpusFileSublexical pi infn outfn = do
 
 
 -- |Too much, not using this for now
-generateUCLAWugs :: [Pattern] -> [[Phoneme]]
-generateUCLAWugs up =
+generateUCLAWugs :: PhonemicInventory -> [Pattern] -> [[Phoneme]]
+generateUCLAWugs inv up =
   let 
     patt1 = [DotF vowel, DotF consonant, DotF vowel]
     patt2 = [DotF vowel, DotF consonant, DotF consonant, DotF vowel]
@@ -180,7 +180,7 @@ generateUCLAWugs up =
     patt4 = [DotF vowel, DotF consonant, DotF consonant, DotF vowel, DotF consonant]
     vPatts = [patt1, patt2, patt3, patt4]
     patts = vPatts ++ map (DotF consonant:) vPatts
-    wds = concatMap (generateOverlappedPatterns finnishInventory up) patts
+    wds = concatMap (generateOverlappedPatterns inv up) patts
   in
    wds
 
@@ -256,11 +256,11 @@ createNatClassFile pi fp =
   in
    TIO.writeFile fp str
 
-generateExamples :: UCLAConstraint -> [Token]
-generateExamples uc = let phons = case generatePattern finnishInventoryWithEdges (getPattern uc) of
-                            Just x -> x
-                            Nothing -> []
-                          toks = map spellout phons
+generateExamples :: PhonemicInventory -> UCLAConstraint -> [Token]
+generateExamples inv uc = let phons = case generatePattern (addEdgeToInventory inv) (getPattern uc) of
+                                Just x -> x
+                                Nothing -> []
+                              toks = map spellout phons
                       in
                        toks
 

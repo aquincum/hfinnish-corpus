@@ -14,6 +14,7 @@ import           Hanalyze.ToUCLAP
 import qualified Hanalyze.Token as T
 import           System.IO
 import           Tasks.Task
+import           Tasks.Summaries (annotateWithPatterns)
 
 task :: Task
 task = Task
@@ -50,7 +51,7 @@ doTask flags = do
   putStrLn $ "Known words filtered. n = " ++ show (tSize unknownsFD)
   let unknownPairsFD = findCouples unknownsFD
   putStrLn $ "Unknown pairs found. n = " ++ show (tSize unknownPairsFD)
-  let annotated = annotateWithPatterns unknownPairsFD 
+  let annotated = annotateWithPatterns unknownPairsFD flags
   putStrLn $ "Annotation done. Sampling..."
   let createSample :: Int -> String -> IO AnnotatedFreqDist
       createSample n annot =
@@ -85,24 +86,3 @@ findCouples fd =
   in
    mapTable T.reverse remerged
 
-annotateWithPatterns :: FreqDist -> AnnotatedFreqDist
-annotateWithPatterns fd =
-  let patternAnnotMap :: [(Annotation, Token -> Bool)]
-      patternAnnotMap = [
-        (T.pack "1", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.j{-consonantal}.*"))),
-        (T.pack "2", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.{-consonantal}.*"))),
-        (T.pack "3", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal,+high}.[p,pp]{-consonantal}.*"))),
-        (T.pack "4", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[l,ll]{-consonantal}.*"))),
-        (T.pack "5", fitsPattern (fromJust $ readPattern finnishInventory (T.pack "*{-consonantal}.[f,s,h,v]j{-consonantal}.*")))
-        ]
-  in
-   annotateFD patternAnnotMap fd
-                    
-fitsPattern :: [Pattern] -> Token -> Bool
-fitsPattern patt tkn =
-  let
-    phons = segment finnishInventory tkn
-  in
-   case phons of
-     Just phs -> filterWord phs patt
-     Nothing -> False

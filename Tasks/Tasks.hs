@@ -61,6 +61,7 @@ generateOptions =
                       Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze",
                       Option [] ["capabilities"] (ReqArg (Capabilities . readIntParam) "n") "The number of capabilities = CPU cores to use in tasks that use this feature.",
                       Option ['p'] ["pattern"] (ReqArg (FPattern . readFPattern) "PATTERN") "Pattern to generate from. If task is generatefrompatt, it is required, but can be specified just plainly without -p",
+                      Option ['d'] ["alldiphthongs"] (NoArg (WithAllDiphthongs (BoolParam True))) "If present, all diphthongs will be used in the Finnish inventory, otherwise only /ei/ and /ie/",
                       Option ['u'] ["uclaoutput"] (NoArg (UCLAOutput (BoolParam True))) "If present, the output will be UCLAPL usable",
                       Option ['h'] ["help"] (NoArg (TaskFlag helpTask)) "Display help",
                       Option [] ["samplenone"] (ReqArg (SampleNone . readIntParam) "n") "Required for samplewugs: how many no-patterns to sample.",

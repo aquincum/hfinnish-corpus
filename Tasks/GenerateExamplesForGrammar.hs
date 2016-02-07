@@ -20,7 +20,7 @@ doTask flags = do
   infn <- dieIfNoFN minfn
   txt <- TIO.readFile infn
   let uclagr = readUCLAPLGrammar txt infn
-  let patts = map generateExamples uclagr
+  let patts = map (generateExamples (theInventory flags)) uclagr
       pattsStr = map (\p -> mconcat $ intersperse (T.pack ",") p) patts
   mapM_ (\(uc, wds) ->
           putStrLn (show uc ++ "\t" ++ (T.unpack wds))) (zip uclagr pattsStr)

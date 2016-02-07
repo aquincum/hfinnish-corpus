@@ -19,15 +19,15 @@ doTask :: [Flag] -> IO ()
 doTask flags = do
   let fns = map (\(FileName f) -> f) $ getAllFlags flags FileName
   when (length fns < 1) $ error "No files given." 
-  summTables <- mapM doOneFile fns
+  summTables <- mapM (flip doOneFile flags) fns
   let bigSummary = mconcat summTables
   writeTable bigSummary stdout
 
   
-doOneFile :: FilePath -> IO SummaryTable
-doOneFile fp = do
+doOneFile :: FilePath -> [Flag] -> IO SummaryTable
+doOneFile fp flags = do
   fd <- readFreqDist fp
-  let doSegment wd = case segment finnishInventory wd of
+  let doSegment wd = case segment (theInventory flags) wd of
         Nothing -> []
         Just s -> s
       summary = summarizeFD (abbreviateBFNs . wordHarmonies . doSegment) fd

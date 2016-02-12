@@ -3,7 +3,10 @@
 
 module Tasks.Tasks where
 
+import           Data.List (intercalate)
+import qualified Data.Map as Map
 import           Data.Maybe
+import           Hanalyze.Phoneme
 import           System.Console.GetOpt
 import qualified Tasks.AnalyzeFile
 import qualified Tasks.AnalyzeInventory
@@ -49,6 +52,26 @@ tasks = [ noTask,
           Tasks.Wugs.task
         ]
 
+inventories :: Map.Map String PhonemicInventory
+inventories = Map.fromList [
+  ("classic", finnishInventory),
+  ("all", finnishInventoryFullDiphthongs),
+  ("nodiphthong", finnishInventoryNoDiphthongs),
+  ("bfnclassic", finnishInventoryBFNEIIE),
+  ("bfnall", finnishInventoryBFNFullDiphthongs),
+  ("bfnnodiphthong", finnishInventoryBFN)
+  ]
+
+
+listInventories :: String
+listInventories = intercalate "," (Map.keys inventories)
+
+readFInventory :: String -> PhonemicInventory
+readFInventory s = case Map.lookup s inventories of
+  Nothing -> error $ "No such inventory! Choices: " ++ listInventories
+  Just inv -> inv
+
+
 -- |A task that just prints out usage.
 helpTask :: Task
 helpTask = Task (\_ -> putStrLn printUsage) Nothing "help" "This task only prints out the usage info of the program"
@@ -62,12 +85,13 @@ generateOptions =
                       Option ['f'] ["file"] (ReqArg FileName "FILE") "The file to analyze",
                       Option [] ["capabilities"] (ReqArg (Capabilities . readIntParam) "n") "The number of capabilities = CPU cores to use in tasks that use this feature.",
                       Option ['p'] ["pattern"] (ReqArg (FPattern) "PATTERN") "Pattern to generate from. If task is generatefrompatt, it is required, but can be specified just plainly without -p",
-                      Option ['d'] ["alldiphthongs"] (NoArg (WithAllDiphthongs (BoolParam True))) "If present, all diphthongs will be used in the Finnish inventory, otherwise only /ei/ and /ie/",
+                      Option ['d'] ["alldiphthongs"] (NoArg (UseInventory finnishInventoryFullDiphthongs)) "Use the _all_ inventory",
                       Option ['u'] ["uclaoutput"] (NoArg (UCLAOutput (BoolParam True))) "If present, the output will be UCLAPL usable",
                       Option ['h'] ["help"] (NoArg (TaskFlag helpTask)) "Display help",
                       Option [] ["samplenone"] (ReqArg (SampleNone . readIntParam) "n") "Required for samplewugs: how many no-patterns to sample.",
                       Option [] ["samplepatt"] (ReqArg (SamplePatt . readIntParam) "n") "Required for samplewugs: how many sample patterns to sample.",
-                      Option ['t'] ["filetype"] (ReqArg (FileType . readFFileType) "TYPE") "The type of the freqdist to read in. Default is a plain FreqDist."
+                      Option ['t'] ["filetype"] (ReqArg (FileType . readFFileType) "TYPE") "The type of the freqdist to read in. Default is a plain FreqDist.",
+                      Option ['i'] ["inventory"] (ReqArg (UseInventory . readFInventory) "INVENTORY") ("Feature set/inventory to use. Choices: " ++ listInventories)
                      ]
     taskStr = "which task to do."
     taskOption = Option ['t'] [] (ReqArg getTaskFlag "TASK") taskStr

@@ -1,21 +1,21 @@
-module Tasks.FilterFDs (taskStem, taskStemFilter, taskClean, taskClassicFilter) where
+module Tasks.FilterFDs (taskStem, taskStemFilter, taskClean, taskClassicFilter, taskFilterByPattern) where
 
-import Control.Monad
-import Hanalyze.FreqDist
-import Hanalyze.Vowels
-import Hanalyze.Progress
-import Hanalyze.Phoneme
-import Hanalyze.Pattern
-import Hanalyze.Omorfi
+import           Control.Monad
+import           Data.Maybe (isNothing)
+import           Data.Monoid
+import           Hanalyze.FreqDist
+import           Hanalyze.Omorfi
+import           Hanalyze.Pattern
+import           Hanalyze.Phoneme
+import           Hanalyze.Progress
 import qualified Hanalyze.Token as T
-import Data.Maybe (isNothing)
-import Data.Monoid
-import System.FilePath.Posix
-import Tasks.Task
+import           Hanalyze.Vowels
+import           System.FilePath.Posix
+import           Tasks.Task
 
 -- Option parsing:
 
-data LocalTask = StemFilter | Stem | Clean | ClassicFilter deriving (Show, Eq)
+data LocalTask = StemFilter | Stem | Clean | ClassicFilter | FilterByPattern deriving (Show, Eq)
 
 taskStem :: Task
 taskStem = Task
@@ -44,6 +44,13 @@ taskClassicFilter = Task
            (Just FileName)
            "classicfilter"
            "Deprecated. Simply cleans up and filters to CIC(C)A word forms. Does no stemming whatsoever. cleaned_. Old filter_fds (no flags)"
+
+taskFilterByPattern :: Task
+taskFilterByPattern = Task
+           (doTask FilterByPattern)
+           (Just FileName)
+           "filterbypattern"
+           "Filter freqdists by pattern."
 
 
 -- |In my dissertation, I'll be looking at C[i,e,ie]C[a,ä] forms and more generally C[i,e,ie]CV forms.
@@ -131,6 +138,12 @@ stemFDFile inv fl fn = do
                      )
 
 
+parseFlagPattern :: [Flag] -> [Pattern]
+parseFlagPattern fl = case getFlag fl FPattern of
+  Nothing -> error "No pattern given."
+  Just (FPattern pattstr) -> case readPattern (theInventory fl) (T.pack pattstr) of
+    Nothing -> error "Wrong pattern."
+    Just patt -> patt
 
 doTask :: LocalTask -> [Flag] -> IO ()
 doTask lt flags = do
@@ -138,6 +151,7 @@ doTask lt flags = do
   when (length fns < 1) (error "No files given.")
   progVar <- initializeProgVar fns
   let filterAction | lt == ClassicFilter = filterFDFile (filterTokenRelevant (theInventory flags)) cleanupWord
+                   | lt == FilterByPattern = filterFDFile (filterToken (theInventory flags) (parseFlagPattern flags)) cleanupWord
                    | otherwise = stemFDFile (theInventory flags) lt
   let runOneFile fn = do
         filterAction fn

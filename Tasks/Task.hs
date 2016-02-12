@@ -60,7 +60,7 @@ data Flag = TaskFlag Task
           | SamplePatt IntParam
           | UCLAOutput BoolParam
           | FileName FilePath
-          | FPattern [Pattern]
+          | FPattern String
           | FileType FFileType
           | WithAllDiphthongs BoolParam
           | FlagNoop
@@ -113,6 +113,7 @@ dieIfNoFN _ =  putStrLn "Error in dieIfNoFN." >> exitFailure
 
 -- |Wrapper around 'Hanalyze.Pattern.readPattern', converting a 'Maybe' to a list,
 -- so if the parse fails, it returns []
+-- deprecated, we're changing it up
 readFPattern :: String -> [Pattern]
 readFPattern s = case readPattern finnishInventory (T.pack s) of
   Nothing -> []

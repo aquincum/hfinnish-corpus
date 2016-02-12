@@ -17,10 +17,10 @@ task = Task
 
 -- |Runs the merging operation
 runMerge :: (Table t a, Monoid t) =>
-            FilePath -> -- ^The file name of the _output_
-            [FilePath] -> -- ^File names of the _input_ files
-            (FilePath -> IO t) -> -- ^The 'Table'-specific reader function
-            IO ()
+            FilePath -- ^The file name of the _output_
+         -> [FilePath] -- ^File names of the _input_ files
+         -> (FilePath -> IO t) -- ^The 'Table'-specific reader function
+         -> IO ()
 runMerge out ins readfunc = do
   fd <- foldl (\a b -> liftA2 mappend a (readfunc b)) (return tEmpty) ins 
 

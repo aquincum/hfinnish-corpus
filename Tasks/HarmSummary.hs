@@ -8,6 +8,7 @@ import Hanalyze.Vowels
 import System.IO
 import Tasks.Task
 
+
 task :: Task
 task = Task
          doTask

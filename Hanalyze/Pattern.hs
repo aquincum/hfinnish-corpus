@@ -23,12 +23,14 @@ module Hanalyze.Pattern (
   isDotPattern
   ) where
 
-import Hanalyze.Phoneme
+import           Data.List (intersperse)
+import qualified Data.Map.Lazy as Map
+import           Data.Maybe (mapMaybe)
+import           Data.Monoid ((<>))
+import           Hanalyze.Phoneme
+import           Hanalyze.Token (Token, pack, unpack)
 import qualified Hanalyze.Token as T
-import Hanalyze.Token (Token, pack, unpack)
-import Data.List (intersperse)
-import Text.Parsec
-import Data.Maybe (mapMaybe)
+import           Text.Parsec
 
 type PattParser st x = Parsec String st x
 
@@ -113,7 +115,21 @@ writePattern = concatMap write'
       QuestionF fb -> "{" ++ foldl (++) "" (intersperse "," (map show (getBundle fb))) ++ "}?"
 
 parsePatterns :: PhonemicInventory -> PattParser st [Pattern]
-parsePatterns pi = many1 $ parsePattern pi
+parsePatterns pi = try parsePresetPattern <|> many1 (parsePattern pi)
+
+parsePresetPattern :: PattParser st [Pattern]
+parsePresetPattern = do
+  nextwd <- many1 (noneOf " ")
+  case Map.lookup nextwd presetPatterns of
+    Nothing -> fail ""
+    Just patt -> return patt
+
+presetPatterns :: Map.Map String [Pattern]
+presetPatterns = Map.fromList [
+  ("monosyllable", [StarF consonant, DotF vowel, StarF consonant]),
+  ("disyllable", [StarF consonant, DotF vowel, StarF consonant, DotF vowel, StarF consonant]),
+  ("cicca", [QuestionF consonant, DotF (vowel <> high <> mid <> unrounded), StarF consonant, DotF (vowel <> short <> low)])
+  ]
 
 parsePattern :: PhonemicInventory -> PattParser st Pattern
 parsePattern pi = try digraph <|> star <|> question <|> dot <|>

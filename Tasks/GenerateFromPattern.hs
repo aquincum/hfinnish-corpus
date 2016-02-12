@@ -14,7 +14,7 @@ import           Tasks.Task
 task :: Task
 task = Task
          doTask
-         (Just (FPattern . readFPattern))
+         (Just (FPattern))
          "generatefrompatt"
          "Generates words based on a pattern. The pattern must be a dot pattern. The pattern can be specified with the -p, the --pattern flags, or it can be just plainly written in place of the file name. Outputs to the stdout."
 
@@ -23,8 +23,9 @@ doTask flags = do
   let mpatt = getFlag flags FPattern
       patt = case mpatt of
         Nothing -> error "No pattern given."
-        Just (FPattern []) -> error "Illegal pattern."
-        Just (FPattern p) -> p
+        Just (FPattern pstr) -> case readPattern (theInventory flags) (T.pack pstr) of
+          Nothing -> error "Illegal pattern."
+          Just p -> p
   when (length patt == 0) (error "Illegal pattern.")
   when (not (isDotPattern patt)) (error "Not a dot pattern!")
   let phs = case generatePattern (theInventory flags) patt of

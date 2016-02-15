@@ -59,7 +59,10 @@ inventories = Map.fromList [
   ("nodiphthong", finnishInventoryNoDiphthongs),
   ("bfnclassic", finnishInventoryBFNEIIE),
   ("bfnall", finnishInventoryBFNFullDiphthongs),
-  ("bfnnodiphthong", finnishInventoryBFN)
+  ("bfnnodiphthong", finnishInventoryBFN),
+  ("bfnonlyclassic", finnishInventoryBFNOnlyEIIE),
+  ("bfnonlyall", finnishInventoryBFNOnlyFullDiphthongs),
+  ("bfnonlynodiphthong", finnishInventoryBFNOnly)
   ]
 
 

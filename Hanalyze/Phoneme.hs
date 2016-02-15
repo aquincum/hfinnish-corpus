@@ -52,6 +52,9 @@ module Hanalyze.Phoneme
          finnishInventory, finnishInventoryFullDiphthongs,
          finnishInventoryNoDiphthongs, finnishInventoryBFN,
          finnishInventoryBFNEIIE, finnishInventoryBFNFullDiphthongs,
+         finnishInventoryBFNOnly, finnishInventoryBFNOnlyEIIE,
+         finnishInventoryBFNOnlyFullDiphthongs,
+         finnishInventoryBFNreplaced,
 
          -- ** Operations on inventories
          selectRelevantBundles, listFeatures,
@@ -414,7 +417,7 @@ bfnBack = Bundle $ [bfnfBack, minus bfnfNeutral, minus bfnfFront]
 bfnNeutral = Bundle $ [minus bfnfBack,  bfnfNeutral, minus bfnfFront]
 bfnFront = Bundle $ [minus bfnfBack, minus bfnfNeutral, bfnfFront]
 
--- |With BFN features insead of +-front and +-rounded
+-- |With BFN features instead of +-front and +-rounded
 testInvVowelsBFN = [
                Phoneme "a" (mconcat [bfnBack, low]), 
                Phoneme "o" (mconcat [bfnBack, mid]),
@@ -424,6 +427,18 @@ testInvVowelsBFN = [
                Phoneme "i" (mconcat [bfnNeutral, high]),
                Phoneme "ö" (mconcat [bfnFront, mid]),
                Phoneme "y" (mconcat [bfnFront, high])
+               ]
+
+-- |With BFN features ONLY
+testInvVowelsBFNOnly = [
+               Phoneme "a" (mconcat [vowel, bfnBack]), 
+               Phoneme "o" (mconcat [vowel, bfnBack]),
+               Phoneme "u" (mconcat [vowel, bfnBack]),
+               Phoneme "ä" (mconcat [vowel, bfnFront]),
+               Phoneme "e" (mconcat [vowel, bfnNeutral]),
+               Phoneme "i" (mconcat [vowel, bfnNeutral]),
+               Phoneme "ö" (mconcat [vowel, bfnFront]),
+               Phoneme "y" (mconcat [vowel, bfnFront])
                ]
 
 
@@ -452,6 +467,24 @@ finnishInventoryBFN = mapWithFeat testInvVowelsBFN short ++
                         Phoneme "ng" (mconcat [nasal, velar, geminate])
                       ]
 
+finnishInventoryBFNOnly :: PhonemicInventory
+finnishInventoryBFNOnly = testInvVowelsBFNOnly ++
+                          double testInvVowelsBFNOnly ++
+                          mapWithFeat testInvConsonants singleton ++
+                          mapWithFeat (double testInvConsonants) geminate ++
+                          [
+                            Phoneme "ng" (mconcat [nasal, velar, geminate])
+                          ]
+
+finnishInventoryBFNreplaced :: PhonemicInventory
+finnishInventoryBFNreplaced = mapWithFeat testInvConsonants singleton ++
+                              mapWithFeat (double testInvConsonants) geminate ++
+                              [
+                                Phoneme "B" (mconcat [vowel, bfnBack]),
+                                Phoneme "F" (mconcat [vowel, bfnFront]),
+                                Phoneme "N" (mconcat [vowel, bfnNeutral])
+                              ]
+
 double :: [Phoneme] -> [Phoneme]
 double = map (\phon -> let n = phonemeName phon in
                Phoneme (n ++ n) (featureBundle phon))
@@ -474,8 +507,15 @@ finnishInventory = finnishInventoryBase ++
 finnishInventoryBFNEIIE :: PhonemicInventory
 finnishInventoryBFNEIIE = finnishInventoryBFN ++
                    [
-  Phoneme "ie" (mconcat [bfnFront, high, long, diphthong]),
-  Phoneme "ei" (mconcat [bfnFront, mid, long, diphthong])
+  Phoneme "ie" (mconcat [bfnNeutral, high, long, diphthong]),
+  Phoneme "ei" (mconcat [bfnNeutral, mid, long, diphthong])
+  ]
+
+finnishInventoryBFNOnlyEIIE :: PhonemicInventory
+finnishInventoryBFNOnlyEIIE = finnishInventoryBFNOnly ++
+                   [
+  Phoneme "ie" (mconcat [vowel, bfnNeutral]),
+  Phoneme "ei" (mconcat [vowel, bfnNeutral])
   ]
 
 -- |The Finnish inventory with "ae" and "oe" instead of "ä" and "ö" respectively 
@@ -544,6 +584,30 @@ finnishInventoryBFNFullDiphthongs = finnishInventoryBFN ++
                                    Phoneme "yö" (mconcat [bfnFront, high, lowering]),
                                    Phoneme "ie" (mconcat [bfnNeutral, high, lowering]),
                                    Phoneme "uo" (mconcat [bfnBack, high, lowering])
+                                   -- ea, eä, oa are _not_ diphthongs according to ISK. Okay.
+                                 ]
+
+finnishInventoryBFNOnlyFullDiphthongs :: PhonemicInventory -- Iso Suomen Kielioppi
+finnishInventoryBFNOnlyFullDiphthongs = finnishInventoryBFNOnly ++
+                                 [
+                                   Phoneme "ai" (mconcat [vowel, bfnBack]),
+                                   Phoneme "oi" (mconcat [vowel, bfnBack]),
+                                   Phoneme "ui" (mconcat [vowel, bfnBack]),
+                                   Phoneme "äi" (mconcat [vowel, bfnFront]),
+                                   Phoneme "ei" (mconcat [vowel, bfnNeutral]),
+                                   Phoneme "öi" (mconcat [vowel, bfnFront]),
+                                   Phoneme "yi" (mconcat [vowel, bfnFront]),
+                                   Phoneme "au" (mconcat [vowel, bfnBack]),
+                                   Phoneme "ou" (mconcat [vowel, bfnBack]),
+                                   Phoneme "iu" (mconcat [vowel, bfnNeutral]),
+                                   Phoneme "eu" (mconcat [vowel, bfnNeutral]),
+                                   Phoneme "äy" (mconcat [vowel, bfnFront]),
+                                   Phoneme "öy" (mconcat [vowel, bfnFront]),
+                                   Phoneme "ey" (mconcat [vowel, bfnNeutral]),
+                                   Phoneme "iy" (mconcat [vowel, bfnNeutral]),
+                                   Phoneme "yö" (mconcat [vowel, bfnFront]),
+                                   Phoneme "ie" (mconcat [vowel, bfnNeutral]),
+                                   Phoneme "uo" (mconcat [vowel, bfnBack])
                                    -- ea, eä, oa are _not_ diphthongs according to ISK. Okay.
                                  ]
 

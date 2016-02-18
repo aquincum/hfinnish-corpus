@@ -413,9 +413,9 @@ bfnfBack = Feature Plus "Back"
 bfnfNeutral = Feature Plus "Neutral"
 bfnfFront = Feature Plus "Front"
 
-bfnBack = Bundle $ [bfnfBack, minus bfnfNeutral, minus bfnfFront]
-bfnNeutral = Bundle $ [minus bfnfBack,  bfnfNeutral, minus bfnfFront]
-bfnFront = Bundle $ [minus bfnfBack, minus bfnfNeutral, bfnfFront]
+bfnBack = Bundle $ [bfnfBack]
+bfnNeutral = Bundle $ [bfnfNeutral]
+bfnFront = Bundle $ [bfnfFront]
 
 -- |With BFN features instead of +-front and +-rounded
 testInvVowelsBFN = [

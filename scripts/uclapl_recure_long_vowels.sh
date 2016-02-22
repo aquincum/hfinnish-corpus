@@ -2,5 +2,5 @@
 
 for f in $*
 do
-    sed "s/\([aeiou]\+\)h/\\1\\1/g" "$f" -i
+    sed "s/\([aeiouy]\+\)h/\\1\\1/g" "$f" -i
 done

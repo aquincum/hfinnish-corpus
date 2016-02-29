@@ -170,6 +170,7 @@ stemFDFile inv fl fn = do
                           | isFilterForStems fl = takeTokens $ matchStems fl (stemmedverbs <> notverbs)
                           | otherwise = stemmed
       when (fl == StemFilter) $ putStrLn $ "Relevance determined, " ++ (show $ tSize filteredStemmed) ++ " tokens."
+      when (isFilterForStems fl) $ putStrLn $ "Stems matched, " ++ (show $ tSize filteredStemmed) ++ " tokens."
       return filteredStemmed
   saveTable tableToSave savefn
 

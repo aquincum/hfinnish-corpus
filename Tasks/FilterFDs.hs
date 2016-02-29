@@ -1,6 +1,7 @@
 module Tasks.FilterFDs (taskStem, taskStemFilter, taskClean, taskClassicFilter, taskFilterByPattern, taskFilterForStems) where
 
 import           Control.Monad
+import qualified Data.Map as Map
 import           Data.Maybe (isNothing)
 import           Data.Monoid
 import           Hanalyze.FreqDist
@@ -111,10 +112,22 @@ cleanupWord = T.filter (`elem` "abcdefghijklmnopqrstuvwxyzäö")
 matchStems :: LocalTask -> OmorfiSFD -> OmorfiSFD
 matchStems (FilterForStems stemfd) tofilter =
   let
-    stems = fdKeys stemfd
-    shareStems (_,omi) = if (getStem omi) `elem` stems then True else False
+    stemmap :: Map.Map Token Freq -- ^a map of stems to filter for
+    stemmap = tGetMap stemfd  
+    tofilterStems :: [Token] -- ^The stems for each token in the fd
+    tofilterStems = map (getStem . snd) tofilter
+    tofilterMapList :: [(Token,(Token, OmorfiInfo))] -- ^A list with stem--(token,ois) elements
+    tofilterMapList = zip tofilterStems tofilter
+    tofilterMapListSingletons :: [(Token,[(Token, OmorfiInfo)])] -- ^Same, but we need a singleton inside for the map+intersection to work
+    tofilterMapListSingletons = map (\(st, (tok,oi)) -> (st, [(tok, oi)])) tofilterMapList
+    tofilterMap :: Map.Map Token [(Token, OmorfiInfo)] -- ^The map, with stems as keys, and lists of appeared token-oi's with values
+    tofilterMap = Map.fromListWith (++) tofilterMapListSingletons
+    onlyContained :: Map.Map Token [(Token, OmorfiInfo)] -- ^This was our goal! Now we have a map like above, with only the tokens whose stems are contained in stemmap
+    onlyContained = Map.intersection tofilterMap stemmap
+    onlyContainedList :: [(Token, [(Token, OmorfiInfo)])] -- ^List back and we just need to concat the 'snd's
+    onlyContainedList = Map.toList onlyContained
   in
-   filter shareStems tofilter
+   concatMap snd onlyContainedList
 
 matchStems _ _ = error "matchStems only works with FilterForStems"
 

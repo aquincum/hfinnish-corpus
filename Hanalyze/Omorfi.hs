@@ -12,7 +12,8 @@ module Hanalyze.Omorfi (
 
   -- * Manipulating Omorfized tables
   clearErrors, splitCompounds, splitVerbs,
-  takeStems, getUnknownWords, takeWords
+  takeStems, takeTokens, getUnknownWords, takeWords,
+  omorfiToSFD
 
   ) where
 
@@ -328,6 +329,11 @@ splitCompounds omfd = concatMap splitLine (tToList omfd)
                    in
                     (last parts,oi):(zip parts partois)
 
+-- |Splits an 'OmorfiFD' to a list by splitting analyses but not compounds
+omorfiToSFD :: OmorfiFD -> OmorfiSFD
+omorfiToSFD omfd = concatMap toLines (tToList omfd)
+  where
+    toLines (t, ois) = map (\oi -> (t, oi)) ois
 
 
 -- |Splits an 'OmorfiSFD' to a separate list of verbs and notverbs.
@@ -411,12 +417,17 @@ stemOneVerb generator progVar tok = do
 
 -- |Converts an 'OmorfiSFD' to a 'FreqDist' by throwing away all
 -- morphological information and summing all occurences of the same
--- token.
+-- stem, returning a freqdist of stems.
 takeStems :: OmorfiSFD -> FreqDist
 takeStems = foldl addT fdEmpty . map (fst &&& (getFrequency . snd))
   where
     addT acc (tok,freq) = FreqDist $ Map.insertWith (+) tok freq (getMap acc)
 -- still
+
+-- |Converts an 'OmorfiSFD' to a 'FreqDist' by throwing away all
+-- morphological information and returning a freqdist of tokens
+takeTokens :: OmorfiSFD -> FreqDist
+takeTokens = tFromList . (map (fst &&& getFrequency . snd))
 
 -- |Converts an 'OmorfiFD' to a 'FreqDist' by throwing away all
 -- morphological information and the stem! And summing all token

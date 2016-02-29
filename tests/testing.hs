@@ -157,9 +157,8 @@ runWithDiff toRun output =
   runCommand ("sort " ++ output ++ "_testagainst > t2") >>= waitForProcess >>
   runCommand ("diff -q t1 t2") >>=
   waitForProcess >>= \excode ->
-  runCommand ("rm t1 t2") >>= waitForProcess >>
   if excode == ExitSuccess then
-    return True
+    runCommand ("rm t1 t2") >>= waitForProcess >> return True
   else
     (putStrLn $ "File " ++ output ++ " differs from expected") >>
     (return False)
@@ -169,6 +168,9 @@ testFilter = runWithDiff "../dist/build/hanalyze/hanalyze classicfilter freqdist
 
 testStemming :: IO Bool
 testStemming = runWithDiff "../dist/build/hanalyze/hanalyze stem test_corp" "filtered3_test_corp"
+
+testFilterForStem :: IO Bool
+testFilterForStem = runWithDiff "../dist/build/hanalyze/hanalyze filterforstems stemstofilterfor test_corp" "filteredFS_test_corp"
 
 testOmorfiPlain :: IO Bool
 testOmorfiPlain = do
@@ -445,8 +447,9 @@ main = do
   testHarmony >>= flip unless (giveUp "testHarmonyW")
   myCheck "Summing FDs: " prop_sum
   testOmorfiPlain >>= flip unless (giveUp "testOmorfiPlain")
-  runIfExistsCommand  "omorfi-interactive.sh" (testOmorfi >>= flip unless (giveUp "testOmorfiPlain"))
-  runIfExistsCommand  "omorfi-interactive.sh" (testStemming >>= flip unless (giveUp "testOmorfiPlain"))
+  runIfExistsCommand  "omorfi-interactive.sh" (testOmorfi >>= flip unless (giveUp "testOmorfi"))
+  runIfExistsCommand  "omorfi-interactive.sh" (testStemming >>= flip unless (giveUp "testStemming"))
+  runIfExistsCommand  "omorfi-interactive.sh" (testFilterForStem >>= flip unless (giveUp "testFilterForStem"))
 -- ex-testing_phonemes
   putStrLn "Testing phonemes."
   testFeatureAddition >>= flip unless (giveUp "testFeatureAddition")

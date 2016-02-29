@@ -1,4 +1,4 @@
-module Tasks.FilterFDs (taskStem, taskStemFilter, taskClean, taskClassicFilter, taskFilterByPattern) where
+module Tasks.FilterFDs (taskStem, taskStemFilter, taskClean, taskClassicFilter, taskFilterByPattern, taskFilterForStems) where
 
 import           Control.Monad
 import           Data.Maybe (isNothing)
@@ -14,8 +14,20 @@ import           System.FilePath.Posix
 import           Tasks.Task
 
 -- Option parsing:
+--
+data LocalTask = StemFilter
+               | Stem
+               | Clean
+               | ClassicFilter
+               | FilterByPattern
+               | FilterForStems FreqDist
+               deriving (Show, Eq)
 
-data LocalTask = StemFilter | Stem | Clean | ClassicFilter | FilterByPattern deriving (Show, Eq)
+isFilterForStems :: LocalTask -> Bool
+isFilterForStems lt = case lt of
+  FilterForStems _ -> True
+  _ -> False
+
 
 taskStem :: Task
 taskStem = Task
@@ -51,6 +63,13 @@ taskFilterByPattern = Task
            (Just FileName)
            "filterbypattern"
            "Filter freqdists by pattern."
+
+taskFilterForStems :: Task
+taskFilterForStems = Task
+           doFilterForStemsTask
+           (Just FileName)
+           "filterforstems"
+           "Filters a frequency distribution to include only words whose stem is found in a list of stems. This list of stems is given as a freqdist, and has to be given as the first filename argument."
 
 
 -- |In my dissertation, I'll be looking at C[i,e,ie]C[a,ä] forms and more generally C[i,e,ie]CV forms.
@@ -89,14 +108,26 @@ stemFilterTokenRelevant t = filterTableByPattern  [StarF $ setBundle [fCons],
 cleanupWord :: Token -> Token
 cleanupWord = T.filter (`elem` "abcdefghijklmnopqrstuvwxyzäö")
 
+matchStems :: LocalTask -> OmorfiSFD -> OmorfiSFD
+matchStems (FilterForStems stemfd) tofilter =
+  let
+    stems = fdKeys stemfd
+    shareStems (_,omi) = if (getStem omi) `elem` stems then True else False
+  in
+   filter shareStems tofilter
+
+matchStems _ _ = error "matchStems only works with FilterForStems"
+
+
 stemFDFile :: PhonemicInventory -- ^The inventory to work on
-              -> LocalTask -- ^Input flag -- Stem or StemFilter or Clean
+              -> LocalTask -- ^Input flag -- Stem or StemFilter or Clean or FilterForStems
               -> FilePath -- ^Input file
               -> IO ()
 stemFDFile inv fl fn = do
   let saveprefix | fl == StemFilter = "filtered2_"
                  | fl == Stem = "filtered3_"
                  | fl == Clean = "cleaned_"
+                 | isFilterForStems fl = "filteredFS_"
       (dirname,fname) = splitFileName fn
       savefn = dirname </> (saveprefix ++ fname)
   fd <- readFreqDist fn
@@ -117,26 +148,30 @@ stemFDFile inv fl fn = do
   putStrLn $ "Errors removed, " ++ (show $ tSize noError) ++ " tokens."
   let om' = filterByValTable (any getKnown) noError
   putStrLn $ "Unknown stems thrown away, " ++ (show $ tSize om') ++ " tokens."
-  when (fl == Clean) (do
-                      let om'' = takeWords om'
-                      putStrLn $ "Wordforms found, " ++ (show $ tSize om'') ++ " tokens."
-                      saveTable om'' savefn
-                      )
-  when (fl /= Clean) (do
-                      let uncompounded = splitCompounds om'
-                      putStrLn $ "Compounds split, " ++ (show $ length uncompounded) ++ " tokens."
-                      let (verbs,notverbs) = splitVerbs uncompounded
-                      putStrLn $ "Verbs split, " ++ (show $ length verbs) ++ " verbs."
-                      stemmedverbs <- stemVerbs verbs
-                      putStrLn $ "Verbs stemmed, " ++ (show $ length stemmedverbs) ++ " verbs."
-                      let stemmed = takeStems stemmedverbs <> takeStems notverbs
-                      putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."
-                      let filteredStemmed | fl == StemFilter = filterTable (filterTokenRelevant inv) stemmed
-                                          | otherwise = stemmed
-                      when (fl == StemFilter) $ putStrLn $ "Relevance determined, " ++ (show $ tSize filteredStemmed) ++ " tokens."
-                      saveTable filteredStemmed savefn
-                     )
-
+  tableToSave <- case fl of
+    Clean -> do
+      let om'' = takeWords om'
+      putStrLn $ "Wordforms found, " ++ (show $ tSize om'') ++ " tokens."
+      return om''
+    _ -> do
+      uncompounded <- case fl of
+            FilterForStems _ -> return $ omorfiToSFD om'
+            _ -> do
+              let sc = splitCompounds om'
+              putStrLn $ "Compounds split, " ++ (show $ length sc) ++ " tokens."
+              return sc
+      let (verbs,notverbs) = splitVerbs uncompounded
+      putStrLn $ "Verbs split, " ++ (show $ length verbs) ++ " verbs."
+      stemmedverbs <- stemVerbs verbs
+      putStrLn $ "Verbs stemmed, " ++ (show $ length stemmedverbs) ++ " verbs."
+      let stemmed = takeStems stemmedverbs <> takeStems notverbs
+      putStrLn $ "Stemming done, " ++ (show $ tSize stemmed) ++ " tokens."
+      let filteredStemmed | fl == StemFilter = filterTable (filterTokenRelevant inv) stemmed
+                          | isFilterForStems fl = takeTokens $ matchStems fl (stemmedverbs <> notverbs)
+                          | otherwise = stemmed
+      when (fl == StemFilter) $ putStrLn $ "Relevance determined, " ++ (show $ tSize filteredStemmed) ++ " tokens."
+      return filteredStemmed
+  saveTable tableToSave savefn
 
 parseFlagPattern :: [Flag] -> [Pattern]
 parseFlagPattern fl = case getFlag fl FPattern of
@@ -159,3 +194,18 @@ doTask lt flags = do
         printWithProgVal printProgress progVar >>= putStrLn
   mapM_ runOneFile fns
   return ()
+
+doFilterForStemsTask :: [Flag] -> IO ()
+doFilterForStemsTask flags = do
+  let allfnargs = map (\(FileName f) -> f) $ getAllFlags flags FileName
+  progVar <- initializeProgVar allfnargs
+  when (length allfnargs < 2) (error "You have to give at least two files:\nhanalyze filterforstems <stemfd> [fds...]")
+  stemfd <- readFreqDist $ head allfnargs
+  let runOneFile fn = do
+        stemFDFile (theInventory flags) (FilterForStems stemfd) fn
+        incrementProgVar progVar
+        printWithProgVal printProgress progVar >>= putStrLn
+  mapM_ runOneFile (tail allfnargs)
+  return ()
+  
+      

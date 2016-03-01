@@ -94,7 +94,7 @@ generateOptions =
                       Option ['h'] ["help"] (NoArg (TaskFlag helpTask)) "Display help",
                       Option [] ["samplenone"] (ReqArg (SampleNone . readIntParam) "n") "Required for samplewugs: how many no-patterns to sample.",
                       Option [] ["samplepatt"] (ReqArg (SamplePatt . readIntParam) "n") "Required for samplewugs: how many sample patterns to sample.",
-                      Option ['t'] ["filetype"] (ReqArg (FileType . readFFileType) "TYPE") "The type of the freqdist to read in. Default is a plain FreqDist.",
+                      Option ['y'] ["filetype"] (ReqArg (FileType . readFFileType) "TYPE") "The type of the freqdist to read in. Default is a plain FreqDist.",
                       Option ['i'] ["inventory"] (ReqArg (UseInventory . readFInventory) "INVENTORY") ("Feature set/inventory to use. Choices: " ++ listInventories)
                      ]
     taskStr = "which task to do."

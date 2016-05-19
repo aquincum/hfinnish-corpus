@@ -57,7 +57,8 @@ module Hanalyze.Phoneme
          finnishInventoryBFNOnly, finnishInventoryBFNOnlyEIIE,
          finnishInventoryBFNOnlyFullDiphthongs,
          finnishInventoryBFNreplaced,
-
+         addFBNExclToInventory,
+         
          -- ** Operations on inventories
          selectRelevantBundles, listFeatures,
          listBundles, pickByFeature, filterInventory,
@@ -615,6 +616,13 @@ finnishInventoryBFNOnlyFullDiphthongs = finnishInventoryBFNOnly ++
                                    -- ea, eä, oa are _not_ diphthongs according to ISK. Okay.
                                  ]
 
+addFBNExclToInventory :: PhonemicInventory -> PhonemicInventory
+addFBNExclToInventory = (++ [
+                            Phoneme "B" (mconcat [vowel, bfnBack]),
+                            Phoneme "F" (mconcat [vowel, bfnFront]),
+                            Phoneme "N" (mconcat [vowel, bfnNeutral]),
+                            Phoneme "!" (setBundle [Feature Plus "error"])
+                            ])
 
 
 
@@ -810,3 +818,4 @@ segmentWords pi tokens = mapM (\tok -> do
                                   when (isNothing seg) $ tell (T.getText tok <> "\n")
                                   return seg
                               ) tokens
+

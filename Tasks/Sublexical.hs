@@ -30,6 +30,10 @@ doTask flags = do
   infn <- dieIfNoFN minfn
   convertCorpusFileSublexical (theInventory flags) infn "sublex-training.txt"
 
+
+
+
+
 convertCorpusFileSublexical :: PhonemicInventory -> FilePath -> FilePath -> IO ()
 convertCorpusFileSublexical pi infn outfn = do
   fd <- readFreqDist infn -- this will be the frequent disyllables in 3.2
@@ -47,9 +51,18 @@ convertCorpusFileSublexical pi infn outfn = do
   let essivesOK = map (fromMaybe []) essivesS
       finalvowels = finalV essivesOK
       finalharms = map (abbreviateBFN . harmonyVP) finalvowels -- :: [Char]
-      pseudosuffixeds = map (\(a,b) -> a <> (T.pack [b])) (zip stems finalharms)
-      outputtkn = T.unlines (map (\(a,b) -> a <> "\t" <> b) (zip stems pseudosuffixeds))
-      outputtxt = T.getText outputtkn
+      (stemsS, problems2) = runWriter $ segmentWords pi stems
+      stemsTxt = map strToken stemsS
+  when (problems2 /= "") $ putStrLn ("Problems with spelling for stems:\n" ++ (Txt.unpack problems2))
+  let pseudosuffixeds = map (\(a,b) -> a <> (T.pack [b])) (zip stems finalharms)
+      (pseudosuffixedsS, problems3) = runWriter $ segmentWords (addFBNExclToInventory pi) pseudosuffixeds
+      pseudosuffixedsTxt = map strToken pseudosuffixedsS
+      pseudosuffixedsTxt' = filter (\t -> case (Txt.uncons (Txt.reverse t)) of
+                                       Nothing -> False
+                                       Just (ch, _) -> ch /= '!'
+                                       ) pseudosuffixedsTxt
+  when (problems3 /= "") $ putStrLn ("Problems with spelling for pseudosuffixeds:\n" ++ (Txt.unpack problems3))
+  let outputtxt = Txt.unlines (map (\(a,b) -> a <> "\t" <> b) (zip stemsTxt pseudosuffixedsTxt'))
   TxtIO.writeFile outfn outputtxt
 
 generateEssives :: [Token] -> IO [(Token,Token)]

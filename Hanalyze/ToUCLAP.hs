@@ -16,7 +16,8 @@ module Hanalyze.ToUCLAP (
   generateCICAWugsHiatus,
   readUCLAPLOutput,
   readUCLAPLGrammar,
-  generateExamples
+  generateExamples,
+  strToken
   )
        where
 
@@ -102,8 +103,7 @@ convertFeaturesFile :: PhonemicInventory -> FilePath -> IO ()
 convertFeaturesFile pi fn = (TIO.writeFile fn $ convertFeatures pi) >>
                             putStrLn ("Features file " ++ fn ++ " saved.")
 
-
-
+-- |Spell out a word with space in between phonemes
 strToken :: Maybe [Phoneme] -> T.Text
 strToken mp = case mp of
   Just phs -> T.intercalate " " (map (T.pack . phonemeName) phs)

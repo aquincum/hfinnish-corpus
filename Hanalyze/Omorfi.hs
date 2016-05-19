@@ -8,10 +8,10 @@ module Hanalyze.Omorfi (
   OmorfiFD, OmorfiSFD,
 
   -- * Running analyses
-  analyseFDOmorfi, loadOmorfiFile, stemVerbs,
+  analyseFDOmorfi, loadOmorfiFile, stemVerbs, generateForm,
 
   -- * Manipulating Omorfized tables
-  clearErrors, splitCompounds, splitVerbs,
+  clearErrors, splitCompounds, splitPOS, splitVerbs,
   takeStems, takeTokens, getUnknownWords, takeWords,
   omorfiToSFD
 
@@ -101,8 +101,9 @@ data OmorfiFD = OmorfiFD { getFDMap :: Map.Map Token [OmorfiInfo] } deriving Eq
 -- |A Frequency Distribution with Omorfi stemmed information -- one line one analysis
 type OmorfiSFD = [(Token, OmorfiInfo)]
 
--- |The possible tasks for Omorfi: analysis or generation
-data OmorfiTask = Analyze | Generate
+-- |The possible tasks for Omorfi: analysis or generation. In the latter case,
+-- specify the form to be generated
+data OmorfiTask = Analyze | Generate String
 
 -- |Either-like datatype for the result of 'getOmorfiAnalysis'
 data AnalysisResult = Analysis [OmorfiInfo] | Generation [Token] | AnalysisError deriving Show
@@ -123,7 +124,7 @@ instance Table OmorfiFD [OmorfiInfo] where
 -}
 
 cHFSTtransducer task = case task of
-  Generate -> "/usr/local/share/hfst/fi/generation.ftb3.hfst"
+  Generate _ -> "/usr/local/share/hfst/fi/generation.ftb3.hfst"
   Analyze -> "/usr/local/share/hfst/fi/morphology.ftb3.hfst"
 
 
@@ -152,7 +153,7 @@ initOmorfi task = do
   slave <- fdToHandle fd2
   let prog = case task of
         Analyze -> "omorfi-interactive.sh"
-        Generate -> "omorfi-generate.sh"
+        Generate _ -> "omorfi-generate.sh"
   let oproc = (proc prog []){
         std_in = UseHandle slave,
         std_out = UseHandle slave,
@@ -168,7 +169,7 @@ getOmorfiAnalysis :: OmorfiPipe -> Token -> IO AnalysisResult
 getOmorfiAnalysis (OmorfiPipe inh outh ph task) tok = do
   let input = case task of
         Analyze -> tok
-        Generate -> tok <> T.pack " V Prs Act ConNeg"
+        Generate form -> tok <> T.pack " " <> T.pack form -- "V Prs Act ConNeg"
         -- we're generating verbs and ConNeg is the stem afaik
   T.hPutStrLn inh input
   hFlush inh
@@ -182,7 +183,7 @@ getOmorfiAnalysis (OmorfiPipe inh outh ph task) tok = do
         Analyze -> case parse parseToken "omorfi" anal of
           Left e -> putStrLn ("Omorfi parsing error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return AnalysisError
           Right (tok', ofis) -> return $ Analysis ofis
-        Generate -> case parse (parseGenerator True) "omorfi-generate" anal of
+        Generate _ -> case parse (parseGenerator True) "omorfi-generate" anal of
           Left e -> putStrLn ("Omorfi generating parse error -- " ++ show e ++ "\n" ++ Txt.unpack anal) >> return AnalysisError
           Right res -> return $ Generation $ nub $ map T.toLower res
 
@@ -335,39 +336,36 @@ omorfiToSFD omfd = concatMap toLines (tToList omfd)
   where
     toLines (t, ois) = map (\oi -> (t, oi)) ois
 
+-- |Splits an 'OmorfiSFD' to a separate list of stems belonging to
+-- a specified POS
+splitPOS :: OmorfiSFD -> POS -> (OmorfiSFD,OmorfiSFD)
+splitPOS omsfd pos = List.partition isPOS omsfd
+  where
+    isPOS (_,oi) = getPOS oi == pos
 
 -- |Splits an 'OmorfiSFD' to a separate list of verbs and notverbs.
 -- The return value is (verbs, notverbs)
 splitVerbs :: OmorfiSFD -> (OmorfiSFD,OmorfiSFD)
-splitVerbs omsfd = case List.partition isVerb omsfd of
-  (verbs,notverbs) -> (verbs,notverbs) -- ...
-  where
-    isVerb (_,oi) = getPOS oi == V
+splitVerbs = flip splitPOS $ V
 
 
 
--- |Takes in a list of verbs in the form of an 'OmorfiSFD' (already stemmed corpus),
--- where the omorfi analysis returned the Infinitive forms of the verbs as stems. In
--- Finnish, the ConNeg form is closer to the stem, so this function determines this form
--- for each verb, and replaces the tokens in the list with the true verb stem. It does
+-- |Takes in a list of tokens and generates any given morphological form of them. It does
 -- this by writing out the corpus to a temporary file, runs @hfst-lookup@ generation on
--- them, manipulates that file and reads it back, remerging the original frequencies to
--- the 'OmorfiSFD'.
-stemVerbs :: OmorfiSFD -> IO OmorfiSFD
-stemVerbs verbs = do
-  let grouped = List.groupBy (\(s1,o1) (s2,o2) -> (s1 == s2) && (getStem o1 == getStem o2)) verbs
-      verbsnubbed = map (\sois -> (fst (head sois), (snd (head sois)){getFrequency = sum (map (getFrequency . snd) sois)})) grouped
-      verblist = map fst verbsnubbed
+-- them, manipulates that file and reads it back. The result is '[[Token]]', because one
+-- element of that list still corresponds to the given stem.
+generateForm :: [Token] -> String -> IO [[Token]]
+generateForm toks morphform = do
   -- 1. output vlist to file
   (fn,h) <- openTempFile "." "verbstostem.txt"
-  mapM (T.hPutStrLn h . (<> " V Prs Act ConNeg")) verblist
+  mapM_ (T.hPutStrLn h . (<> " " <> T.pack morphform)) toks
   hClose h
   
   -- 2. run hfst on file
   let outputfn = fn ++ ".out"
       output2 = fn ++ ".out2"
       output3 = fn ++ ".out3"
-  processhandle <- spawnProcess "hfst-lookup" [cHFSTtransducer Generate, "-I", fn, "-o", outputfn, "-s", "-P"]
+  processhandle <- spawnProcess "hfst-lookup" [cHFSTtransducer (Generate morphform), "-I", fn, "-o", outputfn, "-s", "-P"]
   waitForProcess processhandle
   (fnsh, hsh) <- openTempFile "." "seduniq.sh"
   hPutStrLn hsh "echo Lowercasing..."
@@ -383,18 +381,30 @@ stemVerbs verbs = do
   ls <- TxtIO.readFile output3
 
   -- 4. parse file
-  verbstems <- case parse parseGeneratorFile fn ls of
+  stems <- case parse parseGeneratorFile fn ls of
         Left e -> putStrLn ("Parse error: " ++ show e) >> return []
         Right a -> return $ map (nub . map T.toLower) a
-
-  -- 5. match verb with stems
-  let matchmap = zip3 verblist verbstems (map snd verbsnubbed)
-      stemfreqs = concatMap (\(_,st,oi) -> map (\s -> (s,oi{getOtherInfo = NoOI, getFrequency = (getFrequency oi `div` length st)})) st) matchmap
   removeFile fn
   removeFile outputfn
   removeFile output2
   removeFile output3
   removeFile fnsh
+  return stems
+
+-- |Takes in a list of verbs in the form of an 'OmorfiSFD' (already stemmed corpus),
+-- where the omorfi analysis returned the Infinitive forms of the verbs as stems. In
+-- Finnish, the ConNeg form is closer to the stem, so this function determines this form
+-- for each verb, and replaces the tokens in the list with the true verb stem. 
+stemVerbs :: OmorfiSFD -> IO OmorfiSFD
+stemVerbs verbs = do
+  let grouped = List.groupBy (\(s1,o1) (s2,o2) -> (s1 == s2) && (getStem o1 == getStem o2)) verbs
+      verbsnubbed = map (\sois -> (fst (head sois), (snd (head sois)){getFrequency = sum (map (getFrequency . snd) sois)})) grouped
+      verblist = map fst verbsnubbed
+
+  verbstems <- generateForm verblist "V Prs Act ConNeg"
+  -- 5. match verb with stems
+  let matchmap = zip3 verblist verbstems (map snd verbsnubbed)
+      stemfreqs = concatMap (\(_,st,oi) -> map (\s -> (s,oi{getOtherInfo = NoOI, getFrequency = (getFrequency oi `div` length st)})) st) matchmap
   return stemfreqs
 {-  stemmed <- mapM (\(tok, oi) -> do
                                      stems <- stemOneVerb generator progVar tok

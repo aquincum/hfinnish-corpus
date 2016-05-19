@@ -11,7 +11,7 @@ module Hanalyze.Token (
   --  for append, concat -- use Monoid functions
   words, toLower, filter, reverse,
   decodeFromUTF, decimal, length,
-  split,
+  split, unlines,
 
   -- * Folds, maps
   foldl,
@@ -31,7 +31,7 @@ import qualified Data.Text.Read as TxtR
 import qualified Data.String as String
 import Data.Monoid
 import Control.DeepSeq
-import Prelude hiding (concat, filter, readFile, hPutStrLn, words, foldl, reverse,length, last)
+import Prelude hiding (concat, filter, readFile, hPutStrLn, words, foldl, reverse,length, last, unlines)
 import Control.Monad
 import Control.Arrow
 import System.IO hiding (readFile, hPutStrLn, hGetLine)
@@ -109,6 +109,10 @@ toLower = Tok . Txt.toLower . getText
 -- |Filters a token using a 'Char -> Bool' function
 filter :: (Char -> Bool) -> Token -> Token
 filter func t = Tok . Txt.filter func $ getText t
+
+-- |Concatenate together tokens with newlines between them
+unlines :: [Token] -> Token
+unlines toks = Tok $ Txt.unlines (map getText toks)
 
 -- |Reverses a token
 reverse :: Token -> Token

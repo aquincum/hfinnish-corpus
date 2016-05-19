@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Hanalyze.Phoneme
        (
          -- * Data types
@@ -21,7 +23,7 @@ module Hanalyze.Phoneme
          findInBundle, findPhoneme, isPhoneme,
 
          -- * Segmenting
-         segment, spellout,
+         segment, segmentWords, spellout,
 
          -- * Generating
          generateFromFBs,
@@ -68,13 +70,15 @@ module Hanalyze.Phoneme
 
          ) where
 
-import Data.Monoid
-import Data.Maybe
-import Control.Monad
+import           Control.Monad
+import           Control.Monad.Writer
+import           Data.Function (on)
+import           Data.List (delete,nub,sortBy,minimumBy,groupBy)
+import           Data.Maybe
+import           Data.Monoid
+import qualified Data.Text as Txt
+import           Hanalyze.Token (Token)
 import qualified Hanalyze.Token as T
-import Hanalyze.Token (Token)
-import Data.List (delete,nub,sortBy,minimumBy,groupBy)
-import Data.Function (on)
 
 -- |Plus or minus of a binary feature
 data PlusMinus = Plus | Minus | Null deriving (Eq)
@@ -800,3 +804,9 @@ augmentWord wd (left, right) = aug left ++ wd ++ aug right
       Just x -> [x]
 
 
+segmentWords :: PhonemicInventory -> [Token] -> Writer Txt.Text ([Maybe [Phoneme]])
+segmentWords pi tokens = mapM (\tok -> do
+                                  let seg = segment pi tok
+                                  when (isNothing seg) $ tell (T.getText tok <> "\n")
+                                  return seg
+                              ) tokens

@@ -9,7 +9,7 @@ module Hanalyze.ToUCLAP (
   UCLAGrammar, UCLAConstraint(..),
   convertFeatures, convertFeaturesFile,
   convertCorpus, convertCorpusFile,
-  convertCorpusFileSublexical,
+  convertCorpusFileSublexicalAncient,
   createNatClassFile,
   generateCICAWugs1,
   generateCICAWugsCluster,
@@ -103,12 +103,6 @@ convertFeaturesFile pi fn = (TIO.writeFile fn $ convertFeatures pi) >>
                             putStrLn ("Features file " ++ fn ++ " saved.")
 
 
-segmentWords :: PhonemicInventory -> [Token] -> Writer T.Text ([Maybe [Phoneme]])
-segmentWords pi tokens = mapM (\tok -> do
-                                  let seg = segment pi tok
-                                  when (isNothing seg) $ tell (Tkn.getText tok <> "\n")
-                                  return seg
-                              ) tokens
 
 strToken :: Maybe [Phoneme] -> T.Text
 strToken mp = case mp of
@@ -135,8 +129,12 @@ convertCorpusFile pi infn outfn = do
   putStrLn $ "Corpus (training) file " ++ outfn ++ " saved.\n\nProblems:\n"
   putStrLn (T.unpack problems)
 
-convertCorpusFileSublexical :: PhonemicInventory -> FilePath -> FilePath -> IO ()
-convertCorpusFileSublexical pi infn outfn = do
+
+
+-- |This is the old sublexical plan. This one chops off the final vowel+C* and replaces them with
+-- F/B representing Frontness/Backness accordingly
+convertCorpusFileSublexicalAncient :: PhonemicInventory -> FilePath -> FilePath -> IO ()
+convertCorpusFileSublexicalAncient pi infn outfn = do
   fd <- readFreqDist infn
 {-  let finaltable = annotateFD [(Tkn.pack "a", \t -> T.last (Tkn.getText t) == 'a'),
                                (Tkn.pack "ae", \t -> T.last (Tkn.getText t) == 'ä')]

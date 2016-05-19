@@ -86,8 +86,8 @@ relevantStem :: [Phoneme] -- ^token recursively folded left-to-right
 relevantStem [] [_,_] = True
 relevantStem [] _ = False
 relevantStem (h:t) l
-  | isNothing $ harmonyV $ head (phonemeName h) = relevantStem t l
-relevantStem (h:t) [v1,v2] = (isNothing . harmonyV $ head (phonemeName h)) && relevantStem t [v1,v2]
+  | isNothing $ harmonyVM $ head (phonemeName h) = relevantStem t l
+relevantStem (h:t) [v1,v2] = (isNothing . harmonyVM $ head (phonemeName h)) && relevantStem t [v1,v2]
 relevantStem (h:t) [v1] = (phonemeName h `elem` ["a","aa","ä","ää"]) && relevantStem t [v1,h] 
 relevantStem (h:t) [] = (phonemeName h `elem` ["e","i","ee","ii","ei","ie"]) && relevantStem t [h]
 

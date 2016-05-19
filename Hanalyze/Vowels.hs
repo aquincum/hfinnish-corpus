@@ -5,7 +5,7 @@ module Hanalyze.Vowels (
 
   -- * Basic harmonicity functions
   
-  harmonyV, harmonyVP, onlyVowels, harmonicity, fullHarmonic,
+  harmonyV, harmonyVM, harmonyVP, harmonyVPM, onlyVowels, harmonicity, fullHarmonic,
   suffixIt, wordHarmonies, abbreviateBFN, abbreviateBFNs
 
   ) where
@@ -16,7 +16,7 @@ import Hanalyze.Phoneme
 import Data.Maybe
 
 -- |Harmony value of a vowel (Front, Neutral, Back), [i,e] are neutral
-data HarmonyV = Front | Neutral | Back deriving (Show, Eq)
+data HarmonyV = Front | Neutral | Back | HarmonyError deriving (Show, Eq)
 -- |Harmonicity of a word, with only the information relevant for suffixation
 data HarmonyW = Anything -- ^Only consonants, indeterminable
               | AllFront -- ^Only front non-neutral vowels
@@ -30,16 +30,20 @@ data HarmonyW = Anything -- ^Only consonants, indeterminable
 data Suffixing = BackSuffixes | FrontSuffixes | LastVowel deriving (Show, Eq)
 
 -- |Determines the harmony value of a vowel /character/
-harmonyV :: Char -> Maybe HarmonyV
-harmonyV c
+harmonyVM :: Char -> Maybe HarmonyV
+harmonyVM c
   | c `elem` "aou" = Just Back
   | c `elem` "ei" = Just Neutral
   | c `elem` "äöy" = Just Front
   | otherwise = Nothing
 
+-- |Instead of Maybe, returns HarmonyError in case there is a problem
+harmonyV :: Char -> HarmonyV
+harmonyV = (fromMaybe HarmonyError) . harmonyVM
+  
 -- |Determines the harmony value of a vowel /phoneme/
-harmonyVP :: Phoneme -> Maybe HarmonyV
-harmonyVP p  
+harmonyVPM :: Phoneme -> Maybe HarmonyV
+harmonyVPM p  
   | c `elem` ["a","aa","o","oo","u","uu", "ai", "oi", "ui", "au", "ou", "uo"] = Just Back
   | c `elem` ["e","ee","i","ii","ei","ie", "eu", "iu", "ey", "iy"] = Just Neutral -- ey, iy??? Not that frequent anyway. But should check out. ISK: they don't show up in 1st syllable anyway, except for leyh-
   | c `elem` ["ä", "ää", "ö", "öö", "y", "yy", "äi", "öi", "yi", "äy", "öy", "yö"] = Just Front
@@ -47,10 +51,15 @@ harmonyVP p
  where
    c = phonemeName p
 
+-- |Instead of Maybe, returns HarmonyError in case there is a problem
+harmonyVP :: Phoneme -> HarmonyV
+harmonyVP = (fromMaybe HarmonyError) . harmonyVPM
+
+
 -- |Returns the vowel harmonicities in a phoneme list as a list
 wordHarmonies :: [Phoneme] -> [HarmonyV]
 wordHarmonies [] = []
-wordHarmonies (h:t) = case harmonyVP h of
+wordHarmonies (h:t) = case harmonyVPM h of
   Nothing -> wordHarmonies t
   Just harm -> harm:wordHarmonies t
 
@@ -60,6 +69,7 @@ abbreviateBFN h = case h of
   Back -> 'B'
   Neutral -> 'N'
   Front -> 'F'
+  HarmonyError -> '!'
 
 -- |Simple abbreviated word form for a word
 abbreviateBFNs :: [HarmonyV] -> String
@@ -69,7 +79,7 @@ abbreviateBFNs = map abbreviateBFN
                 
 -- |return a 'String' with the vowels only
 onlyVowels :: Token -> Token
-onlyVowels = T.filter (isJust . harmonyV)
+onlyVowels = T.filter (isJust . harmonyVM)
 
 
 -- |Tells whether a token contains vowels exclusively in the given 'HarmonyV' category.
@@ -79,12 +89,12 @@ onlyVowels = T.filter (isJust . harmonyV)
 -- >>> fullHarmonic "ela" Neutral
 -- False
 fullHarmonic :: Token -> HarmonyV -> Bool
-fullHarmonic str harm = T.foldl (\acc x -> harmonyV x `elem` [Just harm, Nothing] && acc) True str
+fullHarmonic str harm = T.foldl (\acc x -> harmonyVM x `elem` [Just harm, Nothing] && acc) True str
 
 -- |Determines the 'HarmonyW' category of a word.
 harmonicity :: Token -> HarmonyW
 harmonicity t = case T.uncons t of -- x:xs
-  Just (x, xs) -> let sofar = harmonicity xs in case harmonyV x of
+  Just (x, xs) -> let sofar = harmonicity xs in case harmonyVM x of
     Just Back -> case sofar of
       AllFront -> FrontBack
       BackNeutral -> BackNeutral

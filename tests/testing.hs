@@ -95,9 +95,9 @@ testHarmony :: IO Bool
 testHarmony =
   huTest [
         "harmonyV" ~: do
-           harmonyV 'a' == Just Back @? "a"
-           harmonyV 'ä' == Just Front @? "ä"
-           harmonyV 'e' == Just Neutral @? "e"
+           harmonyVM 'a' == Just Back @? "a"
+           harmonyVM 'ä' == Just Front @? "ä"
+           harmonyVM 'e' == Just Neutral @? "e"
         ,
         "harmonicity" ~: do
            harmonicity "qalmaq" == AllBack @? "AllBack"
@@ -171,6 +171,9 @@ testStemming = runWithDiff "../dist/build/hanalyze/hanalyze stem test_corp" "fil
 
 testFilterForStem :: IO Bool
 testFilterForStem = runWithDiff "../dist/build/hanalyze/hanalyze filterforstems stemstofilterfor test_corp" "filteredFS_test_corp"
+
+testSublexical :: IO Bool
+testSublexical = runWithDiff "../dist/build/hanalyze/hanalyze sublexical test_sublex" "sublex-training.txt"
 
 testOmorfiPlain :: IO Bool
 testOmorfiPlain = do
@@ -450,6 +453,7 @@ main = do
   runIfExistsCommand  "omorfi-interactive.sh" (testOmorfi >>= flip unless (giveUp "testOmorfi"))
   runIfExistsCommand  "omorfi-interactive.sh" (testStemming >>= flip unless (giveUp "testStemming"))
   runIfExistsCommand  "omorfi-interactive.sh" (testFilterForStem >>= flip unless (giveUp "testFilterForStem"))
+  runIfExistsCommand  "omorfi-interactive.sh" (testSublexical >>= flip unless (giveUp "testSublexical"))
 -- ex-testing_phonemes
   putStrLn "Testing phonemes."
   testFeatureAddition >>= flip unless (giveUp "testFeatureAddition")

@@ -83,6 +83,10 @@ class Eq t => Table t val  | t -> val where
   tMap fun tab = tConstruct tab $ Map.mapKeys fun $ tGetMap tab
   tSize :: t -> Int
   tSize = length . tToList
+  tKeys :: t -> [Token]
+  tKeys = Map.keys . tGetMap
+  tElems :: t -> [val]
+  tElems = Map.elems . tGetMap
 --  eq :: t -> t -> Bool
 
 -- |Type synonym for frequency counts.

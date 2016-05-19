@@ -29,7 +29,7 @@ doTask flags = do
   let minfn = getFlag flags FileName
   infn <- dieIfNoFN minfn
   convertCorpusFileSublexical (theInventory flags) infn "sublex-training.txt"
-
+  
 
 
 
@@ -57,12 +57,12 @@ convertCorpusFileSublexical pi infn outfn = do
   let pseudosuffixeds = map (\(a,b) -> a <> (T.pack [b])) (zip stems finalharms)
       (pseudosuffixedsS, problems3) = runWriter $ segmentWords (addFBNExclToInventory pi) pseudosuffixeds
       pseudosuffixedsTxt = map strToken pseudosuffixedsS
-      pseudosuffixedsTxt' = filter (\t -> case (Txt.uncons (Txt.reverse t)) of
-                                       Nothing -> False
-                                       Just (ch, _) -> ch /= '!'
-                                       ) pseudosuffixedsTxt
+      tooutputdoubles = filter (\(x,t) -> case Txt.uncons (Txt.reverse t) of
+                                   Nothing -> False
+                                   Just (ch, _) -> ch /= '!'
+                               ) (zip stemsTxt pseudosuffixedsTxt)
   when (problems3 /= "") $ putStrLn ("Problems with spelling for pseudosuffixeds:\n" ++ (Txt.unpack problems3))
-  let outputtxt = Txt.unlines (map (\(a,b) -> a <> "\t" <> b) (zip stemsTxt pseudosuffixedsTxt'))
+  let outputtxt = Txt.unlines (map (\(a,b) -> a <> "\t" <> b) tooutputdoubles)
   TxtIO.writeFile outfn outputtxt
 
 generateEssives :: [Token] -> IO [(Token,Token)]

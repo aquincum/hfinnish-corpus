@@ -255,7 +255,7 @@ createNatClassFile pi fp =
    TIO.writeFile fp str
 
 generateExamples :: PhonemicInventory -> UCLAConstraint -> [Token]
-generateExamples inv uc = let phons = case generatePattern (addEdgeToInventory inv) (getPattern uc) of
+generateExamples inv uc = let phons = case generatePattern (addEdgeToInventory inv "#") (getPattern uc) of
                                 Just x -> x
                                 Nothing -> []
                               toks = map spellout phons

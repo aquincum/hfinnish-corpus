@@ -534,14 +534,14 @@ finnishInventoryAe = map replace finnishInventory
       _ -> sofar ++ [ch]
 
 
-addEdgeToInventory :: PhonemicInventory -> PhonemicInventory
-addEdgeToInventory inv = mapWithFeat inv phoneme  ++ [
-    Phoneme "#" word_boundary
+addEdgeToInventory :: PhonemicInventory -> String -> PhonemicInventory
+addEdgeToInventory inv symbol= mapWithFeat inv phoneme  ++ [
+    Phoneme symbol word_boundary
     ]
 
       
 finnishInventoryWithEdges :: PhonemicInventory
-finnishInventoryWithEdges = addEdgeToInventory finnishInventory
+finnishInventoryWithEdges = addEdgeToInventory finnishInventory "#"
 
 finnishInventoryFullDiphthongs :: PhonemicInventory -- Iso Suomen Kielioppi
 finnishInventoryFullDiphthongs = finnishInventoryBase ++
@@ -617,12 +617,19 @@ finnishInventoryBFNOnlyFullDiphthongs = finnishInventoryBFNOnly ++
                                  ]
 
 addFBNExclToInventory :: PhonemicInventory -> PhonemicInventory
-addFBNExclToInventory = (++ [
-                            Phoneme "B" (mconcat [vowel, bfnBack]),
-                            Phoneme "F" (mconcat [vowel, bfnFront]),
-                            Phoneme "N" (mconcat [vowel, bfnNeutral]),
-                            Phoneme "!" (setBundle [Feature Plus "error"])
-                            ])
+addFBNExclToInventory inv = if "Back" `elem` (listFeatures inv)
+                            then inv ++ [ -- BFN system
+                              Phoneme "B" (mconcat [vowel, bfnBack]),
+                              Phoneme "F" (mconcat [vowel, bfnFront]),
+                              Phoneme "N" (mconcat [vowel, bfnNeutral]),
+                              Phoneme "!" (setBundle [Feature Plus "error"])
+                            ]
+                            else inv ++ [ -- plain system, how to do N!?
+                              Phoneme "B" (mconcat [vowel, back]), -- a
+                              Phoneme "F" (mconcat [vowel, front, low]),
+                              Phoneme "N" (mconcat [vowel, front, high]), -- ??
+                              Phoneme "!" (setBundle [Feature Plus "error"])
+                              ]
 
 
 

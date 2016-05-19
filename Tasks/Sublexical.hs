@@ -29,7 +29,8 @@ doTask flags = do
   let minfn = getFlag flags FileName
   infn <- dieIfNoFN minfn
   convertCorpusFileSublexical (theInventory flags) infn "sublex-training.txt"
-  
+  let inv = addEdgeToInventory (addFBNExclToInventory $ theInventory flags) "empty"
+  convertFeaturesFile inv "sublex-features.txt"
 
 
 

@@ -294,7 +294,8 @@ fPalatal = Feature Plus "palatal"
 
 fContinuant = Feature Plus "continuant"
 fSonorant =  Feature Plus "sonorant"
-fCons = Feature Plus "consonantal"
+-- fCons = Feature Plus "consonantal"
+fCons = Feature Minus "syllabic"
 fVowel = minus fCons
 
 fVoiced = Feature Plus "voiced"

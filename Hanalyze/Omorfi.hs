@@ -17,32 +17,33 @@ module Hanalyze.Omorfi (
 
   ) where
 
-import qualified Hanalyze.Token as T
+import           Control.Arrow
+import           Control.Concurrent
+import           Control.Monad
+import           Data.List (nub)
+import qualified Data.Map as Map
+import           Data.Maybe
+import           Data.Monoid
 import qualified Data.Text as Txt
 import qualified Data.Text.IO as TxtIO
-import Hanalyze.Token (Token)
-import Hanalyze.FreqDist
-import Hanalyze.Progress
-import System.IO
-import System.Directory
-import System.Process
-import System.Process.Internals (ProcessHandle(..), ProcessHandle__(..))
-import System.Posix.Terminal
-import System.Posix.IO
-import System.Posix.Signals
-import System.Timeout
-import Control.Monad
-import qualified Data.Map as Map
-import Data.Monoid
-import Text.Parsec
-import Control.Concurrent
-import Control.Arrow
-import Data.List (nub)
+import           Hanalyze.FreqDist
+import           Hanalyze.Progress
+import           Hanalyze.Token (Token)
+import qualified Hanalyze.Token as T
+import           System.Directory
+import           System.IO
+import           System.Posix.IO
+import           System.Posix.Signals
+import           System.Posix.Terminal
+import           System.Process
+import           System.Process.Internals (ProcessHandle(..), ProcessHandle__(..))
+import           System.Timeout
+import           Text.Parsec
 -- DEBUG:
-import System.IO.Unsafe
+import           System.IO.Unsafe
 --import Data.IORef
 import qualified Data.Sequence as S
-import Data.Sequence ((><),ViewR(..))
+import           Data.Sequence ((><),ViewR(..))
 import qualified Data.Foldable as DF
 import qualified Data.Traversable as DT
 import qualified Data.List as List
@@ -579,17 +580,19 @@ parseGenerator interactive = do
   when interactive (try (skipMany1 (noneOf "\t\n") >> eol))
   analyses <- many1 $ analysisLine
   eol
-  return analyses
+  return $ catMaybes analyses
     where
-      analysisLine :: Parsec Txt.Text st Token
+      analysisLine :: Parsec Txt.Text st (Maybe Token)
       analysisLine = do
         maybePrompt
         skipMany1 (noneOf "\t\n") --skip until tab
         tab
-        res <- parseOneWord
+        res <- many1 (noneOf "\n\t+?")
+        known <- option True (T.pack `liftM` string "+?" >> return False)
+        --(unsafePerformIO $ putStrLn $ "The word " ++ res ++ ", known is " ++ show known) `seq` (skipMany (noneOf "\n"))
         skipMany (noneOf "\n")
         eol
-        return res
+        return $ if not known then Nothing else Just (T.pack res)
 
 -- |tools for parsing:
 

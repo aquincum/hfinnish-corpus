@@ -19,7 +19,7 @@ def separateFM(constraints):
 
 def bigramizeConstraints(constraints):
     (faithfulness,markedness) = separateFM(constraints)
-    bigramMarkedness = [x+" "+y for x in markedness for y in markedness]
+    bigramMarkedness = [x+" ([-syllabic] ?)* "+y for x in markedness for y in markedness]
     return bigramMarkedness + faithfulness
 
 def writeConstraints(constraints,

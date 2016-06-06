@@ -1,0 +1,10 @@
+j$
+[+syllabic]$
+[+labial]$
+l$
+[+continuant,-sonorant] j
+^[+syllabic,+long]
+
+F: Ident [voice]
+F: Ident [labial]
+F: Ident [palatal]

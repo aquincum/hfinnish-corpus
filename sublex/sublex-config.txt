@@ -1,0 +1,44 @@
+{
+    "files": {
+        "constraints": "",
+        "training": "",
+        "testing": "",
+        "trainOutputFile": "output_train.txt",
+        "testOutputFile": "output_test.txt",
+        "features": null
+    },
+    "learner": {
+        "mutationType": "both",
+        "useGrammarsProper": true,
+        "changeOrientations": {
+            "delete": "product", 
+            "mutate": "product", 
+            "metathesize": "product",
+        },
+        "preReductionProductivityThreshold": 1,
+        "minProductiveSize": 1,
+        "howMuchTraining": "all",
+        "verboseReduction": false,
+        "nucleusFeature": "syllabic",
+        "sizeBiasPriorFunction": null,
+        "skipTesting" : false,
+    },
+    "maxent": {
+        "useGaussianPriors": true,
+        "defaultMu": 0,
+        "defaultSigma": 100000,
+        "iterationCount": 10000,
+        "learningRate": 1,
+        "noPositiveWeights": true,
+        "initialWeight": 0,
+    },
+    "aligner": {
+        "features": true,
+        "insert_delete": 1.5,
+        "substitution": 2,
+        "metathesis": 1.5,
+        "tolerance": 0,
+    },
+    "name": "(unnamed)",
+    "description": "(no description provided)"
+}
